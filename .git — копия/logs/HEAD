@@ -1,0 +1,7 @@
+0000000000000000000000000000000000000000 f3c05d038e2844434821a987b94e35c40c403038 Yura <you@example.com> 1688981938 +0300	commit (initial): Добавить .gitattributes, .gitignore и README.md.
+f3c05d038e2844434821a987b94e35c40c403038 5f66f51fe50913a188ce693337833c178b23af34 Yura <you@example.com> 1688981941 +0300	commit: Добавьте файлы проекта.
+5f66f51fe50913a188ce693337833c178b23af34 c9bf451e228c64e9026778d3eb2a2705ecf2e03a Yura <you@example.com> 1688982163 +0300	commit: Rename
+c9bf451e228c64e9026778d3eb2a2705ecf2e03a 8710edbd2ee01c4eee521093ba4bd0e2d8901c5e Yura <you@example.com> 1688982452 +0300	commit: CleanCode
+8710edbd2ee01c4eee521093ba4bd0e2d8901c5e 8710edbd2ee01c4eee521093ba4bd0e2d8901c5e Yura <you@example.com> 1688982646 +0300	reset: moving to HEAD
+8710edbd2ee01c4eee521093ba4bd0e2d8901c5e 8710edbd2ee01c4eee521093ba4bd0e2d8901c5e Yura <you@example.com> 1688982670 +0300	checkout: moving from master to master
+8710edbd2ee01c4eee521093ba4bd0e2d8901c5e 8710edbd2ee01c4eee521093ba4bd0e2d8901c5e Yura <you@example.com> 1688982766 +0300	reset: moving to HEAD
