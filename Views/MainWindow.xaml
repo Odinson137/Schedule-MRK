@@ -312,10 +312,6 @@
                         </Border.Style>
 
                     </Border>
-                    <!--<ComboBox Grid.Column="3" Template="{DynamicResource ComboBoxTemplate1}" FontSize="20" Foreground="White" BorderBrush="{x:Null}" Cursor="Hand">
-                        <TextBlock Text="Числитель"/>
-                        <TextBlock Text="Знаменатель"/>
-                    </ComboBox>-->
                     <ComboBox SelectedIndex="{Binding Para}" Grid.Column="4" Template="{DynamicResource ComboBoxTemplate1}" FontSize="20" Foreground="White" BorderBrush="{x:Null}" Cursor="Hand">
                         <TextBlock Text="1 пара"/>
                         <TextBlock Text="2 пара"/>
