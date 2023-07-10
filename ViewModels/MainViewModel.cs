@@ -183,7 +183,6 @@ namespace Sasha_Project.ViewModels
 
                     OnPropertyChanged("OfficeMas");
                 }
-
             }
         }
 
