@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33403.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sasha Project", "Sasha Project.csproj", "{E13D2A8C-98F2-4DF3-B7ED-35A47E7335AD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Test|Any CPU = Test|Any CPU
+		Test|x64 = Test|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E13D2A8C-98F2-4DF3-B7ED-35A47E7335AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E13D2A8C-98F2-4DF3-B7ED-35A47E7335AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E13D2A8C-98F2-4DF3-B7ED-35A47E7335AD}.Debug|x64.ActiveCfg = Debug|x64
+		{E13D2A8C-98F2-4DF3-B7ED-35A47E7335AD}.Debug|x64.Build.0 = Debug|x64
+		{E13D2A8C-98F2-4DF3-B7ED-35A47E7335AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E13D2A8C-98F2-4DF3-B7ED-35A47E7335AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E13D2A8C-98F2-4DF3-B7ED-35A47E7335AD}.Release|x64.ActiveCfg = Release|x64
+		{E13D2A8C-98F2-4DF3-B7ED-35A47E7335AD}.Release|x64.Build.0 = Release|x64
+		{E13D2A8C-98F2-4DF3-B7ED-35A47E7335AD}.Test|Any CPU.ActiveCfg = Test|Any CPU
+		{E13D2A8C-98F2-4DF3-B7ED-35A47E7335AD}.Test|Any CPU.Build.0 = Test|Any CPU
+		{E13D2A8C-98F2-4DF3-B7ED-35A47E7335AD}.Test|x64.ActiveCfg = Test|x64
+		{E13D2A8C-98F2-4DF3-B7ED-35A47E7335AD}.Test|x64.Build.0 = Test|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0D8BE214-95A0-4A85-84DC-26FE2CCF7F5E}
+	EndGlobalSection
+EndGlobal

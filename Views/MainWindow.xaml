@@ -1,0 +1,1536 @@
+﻿<Window x:Class="Sasha_Project.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Sasha_Project" xmlns:viewmodels="clr-namespace:Sasha_Project.ViewModels"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        Background="Transparent"
+        AllowsTransparency="True"
+        MouseDown="Window_MouseDown"
+        Title="Расписание" Height="700" Width="1000" Icon="/Views/timetable.png" ShowInTaskbar="True" WindowStartupLocation="CenterScreen" Topmost="False"
+    xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2" xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:converters="clr-namespace:Sasha_Project.Views.Converters">
+
+    <Window.DataContext>
+        <viewmodels:ViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <converters:BoolConvert x:Key="BoolToString"/>
+        <converters:BoolConvertSecond x:Key="BoolToStringSecond"/>
+        <converters:CafedraChange x:Key="CafedraChange"/>
+        <converters:MainChange x:Key="MainChange"/>
+        <converters:RazdelChange x:Key="RazdelChange"/>
+
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFD8D8D8"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#FF6F6F6F"/>
+                </Trigger>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="Background" Value="#FFA4A4A4"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <SolidColorBrush x:Key="FontColor" Color="White"/>
+        <SolidColorBrush x:Key="MainBlueColorBlack" Color="#FF0C2A4C"/>
+        <SolidColorBrush x:Key="MainBlueColorWhite" Color="#278BEF"/>
+        <SolidColorBrush x:Key="MainBlueColorMiddle" Color="#FF183C65"/>
+        <SolidColorBrush x:Key="MainBlueColorDop" Color="#FF013052"/>
+
+        <Style x:Key="BorderAdd" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource MainBlueColorMiddle}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource MainBlueColorBlack}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="ClickMode" Value="Press"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="templateRoot" Background="{StaticResource MainBlueColorDop}" BorderBrush="{x:Null}" BorderThickness="0" SnapsToDevicePixels="true"/>
+                        <ControlTemplate.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsEditable, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}" Value="true"/>
+                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                    <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource Self}}" Value="false"/>
+                                    <Condition Binding="{Binding IsEnabled, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource MainBlueColorBlack}"/>
+                                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource MainBlueColorMiddle}"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true"/>
+                                    <Condition Binding="{Binding IsEditable, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}" Value="false"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource MainBlueColorBlack}"/>
+                            </MultiDataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <ControlTemplate x:Key="ComboBoxTemplate1" TargetType="{x:Type ComboBox}">
+            <Grid x:Name="templateRoot" SnapsToDevicePixels="false">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Popup x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" Placement="Bottom" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+                    <theme:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MinWidth="{Binding ActualWidth, ElementName=templateRoot}" MaxHeight="{TemplateBinding MaxDropDownHeight}" OpacityMask="{StaticResource MainBlueColorBlack}">
+                        <Border x:Name="dropDownBorder" Background="{DynamicResource MainBlueColorMiddle}" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1">
+                            <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
+                                <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </Grid>
+                        </Border>
+                    </theme:SystemDropShadowChrome>
+
+                </Popup>
+                
+                <ToggleButton x:Name="toggleButton" BorderThickness="{TemplateBinding BorderThickness}" Grid.ColumnSpan="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"  Style="{StaticResource ComboBoxToggleButton}">
+
+                </ToggleButton>
+                <ContentPresenter x:Name="contentPresenter" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" Content="{TemplateBinding SelectionBoxItem}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                </ContentPresenter>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
+                    <Setter Property="Margin" TargetName="shadow" Value="0,0,5,5"/>
+                    <Setter Property="Color" TargetName="shadow" Value="#71000000"/>
+                </Trigger>
+                <Trigger Property="HasItems" Value="false">
+                    <Setter Property="Height" TargetName="dropDownBorder" Value="0"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsGrouping" Value="true"/>
+                        <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+                    </MultiTrigger.Conditions>
+                </MultiTrigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </Window.Resources>
+
+    <Border CornerRadius="15"
+            BorderThickness="5">
+        <Border.BorderBrush>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#3F888F" Offset="0"/>
+                <GradientStop Color="#3E5F8A" Offset="0.50"/>
+                <GradientStop Color="#002F55" Offset="1"/>
+            </LinearGradientBrush>
+        </Border.BorderBrush>
+
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                <GradientStop Color="#003153" Offset="0"/>
+                <GradientStop Color="#0E294B" Offset="0.75"/>
+            </LinearGradientBrush>
+        </Border.Background>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="1"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="5"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" 
+                        x:Name="MiniMized"
+                        Foreground="White"
+                        FontSize="16"
+                        Cursor="Hand"
+                        BorderThickness="0"
+                        Click="MiniMized_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#34AEDA"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#278BEF"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                            
+                        </Button.Style>
+
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Width="20" Height="20" 
+                                    CornerRadius="30"
+                                    Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button Grid.Column="1" 
+                        x:Name="FullWindow"
+                        Foreground="White"
+                        FontSize="16"
+                        Cursor="Hand"
+                        BorderThickness="0"
+                        Click="FullWindow_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#DAB334"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#FFBB910A"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Width="20" Height="20" 
+                                    CornerRadius="30"
+                                    Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button Grid.Column="15" 
+                        x:Name="Closed"
+                        Foreground="White"
+                        FontSize="16"
+                        Cursor="Hand"
+                        BorderThickness="0"
+                        Click="Closed_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#DA34AE"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#FFB94756"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Width="20" Height="20" 
+                                    CornerRadius="30"
+                                    Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+                <Grid Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="15*"/>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="25*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Background="{StaticResource MainBlueColorMiddle}" CornerRadius="12 0 0 0" Cursor="Hand">
+                        <Image Source="/Views/menu.png" Margin="5,2,5,2" StretchDirection="DownOnly"/>
+                    </Border>
+                    <Border Grid.Column="1" BorderThickness="1" CornerRadius="0" Background="{StaticResource MainBlueColorMiddle}">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Расписание на"/>
+                    </Border>
+                    <ComboBox SelectedIndex="{Binding Day}" Grid.Column="2" Template="{DynamicResource ComboBoxTemplate1}" FontSize="20" Foreground="White" BorderBrush="{x:Null}" Cursor="Hand">
+                        <TextBlock Text="Понедельник"/>
+                        <TextBlock Text="Вторник"/>
+                        <TextBlock Text="Среда"/>
+                        <TextBlock Text="Четверг"/>
+                        <TextBlock Text="Пятница"/>
+                        <TextBlock Text="Суббота"/>
+                    </ComboBox>
+                    <Border Grid.Column="3">
+                        <TextBlock Foreground="{StaticResource FontColor}" FontSize="20"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                       Text="{Binding Week}" Cursor="Hand">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseDown">
+                                    <i:InvokeCommandAction 
+                                                    Command="{Binding GetWeek}"
+                                                    CommandParameter="1"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBlock>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="{StaticResource MainBlueColorDop}"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource MainBlueColorBlack}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
+                    </Border>
+                    <!--<ComboBox Grid.Column="3" Template="{DynamicResource ComboBoxTemplate1}" FontSize="20" Foreground="White" BorderBrush="{x:Null}" Cursor="Hand">
+                        <TextBlock Text="Числитель"/>
+                        <TextBlock Text="Знаменатель"/>
+                    </ComboBox>-->
+                    <ComboBox SelectedIndex="{Binding Para}" Grid.Column="4" Template="{DynamicResource ComboBoxTemplate1}" FontSize="20" Foreground="White" BorderBrush="{x:Null}" Cursor="Hand">
+                        <TextBlock Text="1 пара"/>
+                        <TextBlock Text="2 пара"/>
+                        <TextBlock Text="3 пара"/>
+                        <TextBlock Text="4 пара"/>
+                        <TextBlock Text="5 пара"/>
+                        <TextBlock Text="6 пара"/>
+                        <TextBlock Text="7 пара"/>
+                    </ComboBox>
+                    <ComboBox Grid.Column="6" SelectedIndex="0" Template="{DynamicResource ComboBoxTemplate1}" 
+                              FontSize="20" Foreground="White" IsReadOnly="True" Cursor="Hand">
+                        <TextBlock Text="Создание файла:"/>
+                        <TextBlock Text="Преподаватели (Excel)">
+                                   <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown">
+                                            <i:InvokeCommandAction 
+                                                Command="{Binding SelectFile}"
+                                                CommandParameter="0"/>
+                                            </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                        </TextBlock>
+                        <TextBlock Text="Кабинеты (Word)">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown">
+                                            <i:InvokeCommandAction 
+                                                Command="{Binding SelectFile}"
+                                                CommandParameter="1"/>
+                                            </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                        </TextBlock>
+                        <TextBlock Text="Для учащихся (Word)">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown">
+                                            <i:InvokeCommandAction 
+                                                Command="{Binding SelectFile}"
+                                                CommandParameter="2"/>
+                                            </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                        </TextBlock>
+                    </ComboBox>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="1" Background="White"/>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70*"/>
+                    <ColumnDefinition Width="30*"/>
+                </Grid.ColumnDefinitions>
+
+                <DataGrid CanUserAddRows="False" Margin="0 0" ColumnWidth="*" Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False" ItemsSource="{Binding Phones}"
+                 SelectedItem="{Binding SelectedPhone}" IsSynchronizedWithCurrentItem="True" 
+                          BorderBrush="{x:Null}" SelectionUnit="FullRow" Padding="1,1,1,1" 
+                          FontSize="20" FontFamily="Calibri" Foreground="White" 
+                          HorizontalAlignment="Center" Background="{x:Null}" 
+                          VerticalGridLinesBrush="#FF0E2540" 
+                          HorizontalGridLinesBrush="#FF0E2540" SelectionMode="Single" 
+                          CanUserDeleteRows="False" CanUserResizeRows="False" 
+                          RowDetailsVisibilityMode="Collapsed" AreRowDetailsFrozen="True" RowBackground="#FF183C65" 
+                          VerticalScrollBarVisibility="Hidden" HeadersVisibility="Column"
+                          HorizontalScrollBarVisibility="Hidden" MinRowHeight="30" AlternatingRowBackground="#FF092D56"
+                          >
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}" >
+                            <Setter Property="Background" Value="#FF0C2A4C"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Группа" Binding="{Binding Path=Groups}"/>
+                        <DataGridTextColumn Header="Предмет" Binding="{Binding Path=MainLesson}"/>
+                        <DataGridTextColumn Header="Кабинет" Binding="{Binding Path=Rooms}"/>
+                        <DataGridTextColumn Header="Преподаватель" Binding="{Binding Path=Prepods}"/>
+                        <DataGridTextColumn Header="Замены" Binding="{Binding Path=Changes}"/>
+                        <DataGridTextColumn Header="Кафедрально" Binding="{Binding Path=Office}"/>
+                    </DataGrid.Columns>
+
+                    <DataGrid.RowStyle>
+                        <Style TargetType="{x:Type DataGridRow}" >
+                            <Setter Property="Background" Value="#FF0C2A4C"></Setter>
+                            <Setter Property="Foreground" Value="White"></Setter>
+                            <Setter Property="BorderBrush" Value="White"></Setter>
+                            <Setter Property="BorderThickness" Value="0"></Setter>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGrid.RowStyle>
+
+                    <DataGrid.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}">
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Padding" Value="0 2"/>
+                                    <Setter Property="BorderBrush" Value="White"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Background" Value="#FF0C2A4C"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.CellStyle>
+
+                </DataGrid>
+
+                <Grid Grid.Row="1" Grid.Column="1">
+                    <StackPanel Margin="0 0 10 0">
+                        <StackPanel Orientation="Horizontal" Margin="0 10" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Grid.ColumnSpan="2" Foreground="{StaticResource FontColor}" DataContext="{Binding SelectedPhone}" FontSize="20" HorizontalAlignment="Center" Text="{Binding Groups}" VerticalAlignment="Center"/>
+                            <Image ToolTip="Сохранить" Margin="10 0 0 0" Grid.Column="2" Source="/Views/diskette.png" Cursor="Hand">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown">
+                                        <i:InvokeCommandAction 
+                                                Command="{Binding ClickSave}"
+                                                CommandParameter="0" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Image>
+                            <!--<Image Margin="10 0 0 0" Grid.Column="2" Source="/Views/disketteNonActive.png" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Сохранить" InputScope="Xml" ForceCursor="True"/>-->
+                        </StackPanel>
+                        <Grid Margin="0,10,0,0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Background="{Binding SelectedPhone.RazdelPara, Converter={StaticResource MainChange}}" 
+                                     Height="30">
+                                <TextBlock Foreground="{StaticResource FontColor}" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" Text="Пара"/>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown">
+                                        <i:InvokeCommandAction 
+                                                Command="{Binding SelectPara}"
+                                                CommandParameter="0" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Border>
+                            <Border Background="{Binding SelectedPhone.RazdelPara, Converter={StaticResource CafedraChange}}"
+                                Grid.Column="1">
+                                <TextBlock Foreground="{StaticResource FontColor}" HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center" Text="Половина пары"/>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown">
+                                        <i:InvokeCommandAction 
+                                                Command="{Binding SelectRazdel}"
+                                                CommandParameter="1" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Border>
+
+                            <!--<TextBlock Foreground="{StaticResource FontColor}" Grid.Column="0" Text="Длительность:" HorizontalAlignment="Center" FontSize="18"/>
+                            <ComboBox SelectedIndex="{Binding SelectedPhone.RazdelPara, Converter={StaticResource RazdelChange}}" 
+                                      BorderThickness="1" BorderBrush="White" Foreground="{StaticResource FontColor}" 
+                                      Template="{DynamicResource ComboBoxTemplate1}"
+                                      Grid.Column="1" FontSize="16">
+                                --><!--<TextBlock Foreground="{StaticResource FontColor}" Text="Пара">
+                                   <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown">
+                                            <i:InvokeCommandAction 
+                                                Command="{Binding SelectPara}"/>
+                                            </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </TextBlock>
+                                <TextBlock Foreground="{StaticResource FontColor}" Text="Половина пары">
+                                   <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown">
+                                            <i:InvokeCommandAction 
+                                                Command="{Binding SelectRazdel}"/>
+                                            </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </TextBlock>--><!--
+                                <TextBlock Text="Пара">
+                                   <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown">
+                                            <i:InvokeCommandAction 
+                                                Command="{Binding SelectPara}"
+                                                CommandParameter="0"/>
+                                            </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </TextBlock>
+                                <TextBlock Text="Половина пары">
+                                   <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown">
+                                            <i:InvokeCommandAction 
+                                                Command="{Binding SelectRazdel}"
+                                                CommandParameter="0"/>
+                                            </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </TextBlock>
+                            </ComboBox>-->
+                        </Grid>
+
+                        <Grid Margin="0,20,0,0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="{Binding SelectedPhone.OfficeValue, Converter={StaticResource MainChange}}" 
+                                    x:Name="ButtonMain" Height="30">
+                                <TextBlock Foreground="{StaticResource FontColor}" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" Text="Основное"/>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown">
+                                        <i:InvokeCommandAction 
+                                                Command="{Binding SwipeLessons}"
+                                                CommandParameter="0" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Border>
+                            <Border Background="{Binding SelectedPhone.OfficeValue, Converter={StaticResource CafedraChange}}"
+                                Grid.Column="1" x:Name="CafedraButton">
+                                <TextBlock Foreground="{StaticResource FontColor}" HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center" Text="Кафедральное"/>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown">
+                                        <i:InvokeCommandAction 
+                                                Command="{Binding SwipeLessons}"
+                                                CommandParameter="1" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Border>
+                        </Grid>
+
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Foreground="{StaticResource FontColor}"  Grid.Column="0" Text="Предмет:"
+                                       HorizontalAlignment="Center" FontSize="18"/>
+                            <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToString}}" 
+                                      ItemsSource="{Binding Lessons}" SelectedItem="{Binding SelectedPhone.Lesson}" Grid.Column="1">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction 
+                                                            Command="{Binding Click}"
+                                                            CommandParameter="1" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ComboBox>
+                            <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToStringSecond}}" ItemsSource="{Binding Lessons}" SelectedItem="{Binding SelectedPhone.OfficeLesson}" Grid.Column="1">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction 
+                                                            Command="{Binding Click}"
+                                                            CommandParameter="2" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ComboBox>
+                        </Grid>
+
+                        <StackPanel x:Name="SelectedMenu">
+                            <Grid Margin="0,20,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{StaticResource FontColor}" Grid.Column="0"  Text="Преподаватель:" HorizontalAlignment="Center" FontSize="18"/>
+                                <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToString}}" 
+                                          ItemsSource="{Binding TeacherMas}" SelectedItem="{Binding SelectedPhone.Prepod1}" Grid.Column="1"/>
+                                <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToStringSecond}}" 
+                                          ItemsSource="{Binding OfficeMas}" SelectedItem="{Binding SelectedPhone.Office1}" Grid.Column="1"/>
+                            </Grid>
+
+                            <Grid Margin="0,10,0,0" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{StaticResource FontColor}" Text="Кабинет:" HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0"/>
+                                <ComboBox ItemsSource="{Binding RoomsMas}" SelectedItem="{Binding SelectedPhone.Room1}" Grid.Column="1"/>
+                            </Grid>
+
+
+                            <Grid Margin="0,10,0,0" x:Name="BlockZamena" 
+                                  Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToString}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{StaticResource FontColor}" Text="Замена:" HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0"/>
+                                <ComboBox ItemsSource="{Binding ChangesMas}" SelectedItem="{Binding SelectedPhone.Changes1}" Grid.Column="1"/>
+                            </Grid>
+
+                        </StackPanel>
+
+                        <Border Style="{StaticResource BorderAdd}" Margin="0 10 0 10" 
+                                Visibility="{Binding SelectedPhone.Second, Converter={StaticResource BoolToString}}"
+                                Height="30">
+                            <TextBlock Foreground="{StaticResource FontColor}" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                       Text="Второй преподаватель +"/>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseDown">
+                                    <i:InvokeCommandAction 
+                                                Command="{Binding ManageSecond}"
+                                                CommandParameter="1"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Border>
+
+                        <StackPanel Visibility="{Binding SelectedPhone.Second, Converter={StaticResource BoolToStringSecond}}" Margin="0, 10, 0, 0">
+                            <Grid Margin="0,10,0,0" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{StaticResource FontColor}" Text="2 Преподаватель:" HorizontalAlignment="Center" FontSize="18"/>
+                                <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToString}}" 
+                                          ItemsSource="{Binding TeacherMas}" SelectedItem="{Binding SelectedPhone.Prepod2}" Grid.Column="1"/>
+                                <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToStringSecond}}" 
+                                          ItemsSource="{Binding OfficeMas}" SelectedItem="{Binding SelectedPhone.Office2}" Grid.Column="1"/>
+                            </Grid>
+
+                            <Grid Margin="0,10,0,0" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{StaticResource FontColor}" Text="2 кабинет:" HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0"/>
+                                <ComboBox ItemsSource="{Binding RoomsMas}" SelectedItem="{Binding SelectedPhone.Room2}" Grid.Column="1" Width="160"/>
+                            </Grid>
+
+                            <Grid Margin="0,10,0,0" x:Name="BlockZamena2" 
+                                  Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToString}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{StaticResource FontColor}" Text="2 замена:" HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0"/>
+                                <ComboBox ItemsSource="{Binding ChangesMas}" SelectedItem="{Binding SelectedPhone.Changes2}" Grid.Column="1" Width="160"/>
+                            </Grid>
+
+                            <Grid Margin="0 10 0 0" x:Name="ThirdSwitch" Visibility="{Binding SelectedPhone.Third, Converter={StaticResource BoolToString}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Height="30" Style="{StaticResource BorderAdd}">
+                                    <TextBlock Foreground="{StaticResource FontColor}" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" Text="Удалить"/>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown">
+                                            <i:InvokeCommandAction 
+                                                Command="{Binding ManageSecond}"
+                                                CommandParameter="0"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Border>
+
+                                <Border Style="{StaticResource BorderAdd}" Grid.Column="1" Height="30">
+                                    <TextBlock Foreground="{StaticResource FontColor}" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" Text="Добавить"/>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown">
+                                            <i:InvokeCommandAction 
+                                                Command="{Binding ManageThird}"
+                                                CommandParameter="1"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Border>
+
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel x:Name="Third" Margin="0, 10, 0, 0" Visibility="{Binding SelectedPhone.Third, Converter={StaticResource BoolToStringSecond}}">
+                            <Grid Margin="0,10,0,0" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{StaticResource FontColor}" Text="3 Преподаватель:" HorizontalAlignment="Center" FontSize="18"/>
+                                <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToString}}" 
+                                          ItemsSource="{Binding TeacherMas}" SelectedItem="{Binding SelectedPhone.Prepod3}" Grid.Column="1"/>
+                                <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToStringSecond}}" 
+                                          ItemsSource="{Binding OfficeMas}" SelectedItem="{Binding SelectedPhone.Office3}" Grid.Column="1"/>
+                            </Grid>
+
+                            <Grid Margin="0,10,0,0" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{StaticResource FontColor}" Text="3 кабинет:" HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0"/>
+                                <ComboBox ItemsSource="{Binding RoomsMas}" SelectedItem="{Binding SelectedPhone.Room3}" Grid.Column="1" Width="160"/>
+                            </Grid>
+
+                            <Grid Margin="0,10,0,0" x:Name="BlockZamena3" Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToString}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Foreground="{StaticResource FontColor}" Text="3 замена:" HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0"/>
+                                <ComboBox ItemsSource="{Binding ChangesMas}" SelectedItem="{Binding SelectedPhone.Changes3}" Grid.Column="1" Width="160"/>
+                            </Grid>
+
+                            <Grid Margin="0,10,0,0" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                            </Grid>
+
+                            <Border Style="{StaticResource BorderAdd}" Height="30">
+                                <TextBlock Foreground="{StaticResource FontColor}" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" Text="Удалить"/>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDown">
+                                        <i:InvokeCommandAction 
+                                                Command="{Binding ManageThird}"
+                                                CommandParameter="0"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Border>
+                        </StackPanel>
+                        
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Grid>
+
+    </Border>
+
+    <!--<Grid>
+        <TabControl x:Name="Replacer" Margin="0 -5 0 0">
+            <TabControl.Resources >
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
+            <TabItem>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60*"/>
+                        <ColumnDefinition Width="40*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="95*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0" x:Name="GridPara1">
+                            <Button FontSize="16" Content="1 пара">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <i:InvokeCommandAction 
+                                        Command="{Binding ChangePara}"
+                                        CommandParameter="1" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Button>
+                        </Grid>
+                        <Grid Grid.Column="1" x:Name="GridPara2">
+                            <Button FontSize="16" Content="2 пара">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <i:InvokeCommandAction 
+                                        Command="{Binding ChangePara}"
+                                        CommandParameter="2" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Button>
+                        </Grid>
+                        <Grid Grid.Column="2" x:Name="GridPara3">
+                            <Button FontSize="16" Content="3 пара">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <i:InvokeCommandAction 
+                                        Command="{Binding ChangePara}"
+                                        CommandParameter="3" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Button>
+                        </Grid>
+                        <Grid Grid.Column="3" x:Name="GridPara4">
+                            <Button FontSize="16" Content="4 пара">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <i:InvokeCommandAction 
+                                        Command="{Binding ChangePara}"
+                                        CommandParameter="4" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Button>
+                        </Grid>
+                        <Grid Grid.Column="4" x:Name="GridPara5">
+                            <Button FontSize="16" Content="5 пара">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <i:InvokeCommandAction 
+                                        Command="{Binding ChangePara}"
+                                        CommandParameter="5" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Button>
+                        </Grid>
+                        <Grid Grid.Column="5" x:Name="GridPara6">
+                            <Button FontSize="16" Content="6 пара">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <i:InvokeCommandAction 
+                                        Command="{Binding ChangePara}"
+                                        CommandParameter="6" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Button>
+                        </Grid>
+                        <Grid Grid.Column="6" x:Name="GridPara7">
+                            <Button FontSize="16" Content="7 пара">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <i:InvokeCommandAction 
+                                        Command="{Binding ChangePara}"
+                                        CommandParameter="7" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Button>
+                        </Grid>
+
+                        <ComboBox Grid.Column="7" Grid.ColumnSpan="2" VerticalAlignment="Center" SelectedIndex="0">
+                            <TextBlock>Понедельник</TextBlock>
+                            <TextBlock>Вторник</TextBlock>
+                            <TextBlock>Среда</TextBlock>
+                            <TextBlock>Четверг</TextBlock>
+                            <TextBlock>Пятница</TextBlock>
+                            <TextBlock>Суббота</TextBlock>
+                        </ComboBox>
+                    </Grid>
+
+                    <Grid Grid.Row="0" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0"/>
+                            <ColumnDefinition Width="7*"/>
+                            <ColumnDefinition Width="7*"/>
+                            <ColumnDefinition Width="0*"/>
+                            <ColumnDefinition Width="7*"/>
+                            <ColumnDefinition Width="10*"/>
+                            <ColumnDefinition Width="5*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="1">
+                            <Button FontSize="12" CommandParameter="ч" Command="{Binding ChangeWeek}" Content="Числитель"/>
+                        </Grid>
+                        <Grid Grid.Column="2">
+                            <Button FontSize="12" CommandParameter="з" Command="{Binding ChangeWeek}" Content="Знаменатель"/>
+                        </Grid>
+
+                        <Grid Grid.Column="4">
+                            <Button Content="Сохранить" Command="{Binding ClickSave}"/>
+                        </Grid>
+                        <Grid Grid.Column="5">
+                            <ComboBox Grid.Column="8" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="0,0,5,0">
+                                <TextBlock Text="Преподаватели (Excel)">
+                                   <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown">
+                                            <i:InvokeCommandAction 
+                                                Command="{Binding SelectFile}"
+                                                CommandParameter="0"/>
+                                            </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </TextBlock>
+                                <TextBlock Text="Кабинеты (Word)">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown">
+                                            <i:InvokeCommandAction 
+                                                Command="{Binding SelectFile}"
+                                                CommandParameter="1"/>
+                                            </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </TextBlock>
+                                <TextBlock Text="Для учащихся (Word)">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown">
+                                            <i:InvokeCommandAction 
+                                                Command="{Binding SelectFile}"
+                                                CommandParameter="2"/>
+                                            </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </TextBlock>
+                                <TextBlock></TextBlock>
+                            </ComboBox>
+                        </Grid>
+                        <Border Name="first" Grid.Column="6">
+                            <Button Click="ReplaceMenu" BorderBrush="{x:Null}">Меню</Button>
+                        </Border>
+
+                    </Grid>
+
+                    <DataGrid CanUserAddRows="False" Margin="0 0" ColumnWidth="*" Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False" ItemsSource="{Binding Phones}"
+                 SelectedItem="{Binding SelectedPhone}" IsSynchronizedWithCurrentItem="True" Background="{x:Null}" BorderBrush="#FFE3E3E3" SelectionUnit="FullRow" Padding="1,1,1,1" FontSize="20" FontFamily="Calibri">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Группа" Binding="{Binding Path=Groups}"/>
+                            <DataGridTextColumn Header="Предмет" Binding="{Binding Path=MainLesson}"/>
+                            <DataGridTextColumn Header="Кабинет" Binding="{Binding Path=Rooms}"/>
+                            <DataGridTextColumn Header="Преподаватель" Binding="{Binding Path=Prepods}"/>
+                            <DataGridTextColumn Header="Замены" Binding="{Binding Path=Changes}"/>
+                            <DataGridTextColumn Header="Кафедрально" Binding="{Binding Path=Office}"/>
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                    <Grid Grid.Row="1" Grid.Column="1">
+                        <StackPanel>
+                            <TextBlock DataContext="{Binding SelectedPhone}" FontSize="20" HorizontalAlignment="Center" Margin="0,4,0,5" Text="{Binding Groups}"/>
+                            <Grid Margin="0,10,0,0" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Длительность:" HorizontalAlignment="Center" FontSize="18"/>
+                                <ComboBox DataContext="{Binding SelectedPhone}" SelectedIndex="{Binding Razdel}" Grid.Column="1" Width="160">
+                                    <TextBlock><Run Text="Пара"/></TextBlock>
+                                    <TextBlock><Run Text="Половина пары"/></TextBlock>
+                                </ComboBox>
+                            </Grid>
+
+                            <Grid Margin="0,20,0,0" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Border Background="{Binding SelectedPhone.CheckMain}" x:Name="ButtonMain" Height="30">
+                                    <TextBlock Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Center"><Run Text="Основное"/></TextBlock>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown">
+                                            <i:InvokeCommandAction 
+                                                Command="{Binding SwipeLessons}"
+                                                CommandParameter="0" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Border>
+                                <Border Grid.Column="1" Background="{Binding SelectedPhone.CheckCafedra}" x:Name="CafedraButton">
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black"><Run Text="Кафедральное"/></TextBlock>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDown">
+                                            <i:InvokeCommandAction 
+                                                Command="{Binding SwipeLessons}"
+                                                CommandParameter="1" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </Border>
+                            </Grid>
+
+                            <Grid Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="Предмет:" HorizontalAlignment="Center" FontSize="18"/>
+                                <ComboBox Visibility="{Binding SelectedPhone.OfficeBox1}" ItemsSource="{Binding Lessons}" SelectedItem="{Binding SelectedPhone.Lesson}" Grid.Column="1" Width="160">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction 
+                                                            Command="{Binding Click}"
+                                                            CommandParameter="1" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                                <ComboBox Visibility="{Binding SelectedPhone.OfficeBox2}" ItemsSource="{Binding Lessons}" SelectedItem="{Binding SelectedPhone.OfficeLesson}" Grid.Column="1" Width="160">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="SelectionChanged">
+                                            <i:InvokeCommandAction 
+                                                            Command="{Binding Click}"
+                                                            CommandParameter="2" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </ComboBox>
+                            </Grid>
+
+                            <StackPanel x:Name="SelectedMenu">
+                                <Grid Margin="0,20,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"  Text="Преподаватель:" HorizontalAlignment="Center" FontSize="18"/>
+                                    <ComboBox ItemsSource="{Binding TeacherMas}" SelectedItem="{Binding SelectedPhone.Prepod1}" Visibility="{Binding SelectedPhone.OfficeBox1}" Grid.Column="1" Width="150"/>
+                                    <ComboBox Visibility="{Binding SelectedPhone.OfficeBox2}" ItemsSource="{Binding OfficeMas}" SelectedItem="{Binding SelectedPhone.Office1}" Grid.Column="1" Width="160"/>
+                                </Grid>
+
+                                <Grid Margin="0,10,0,0" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Кабинет:" HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0"/>
+                                    <ComboBox ItemsSource="{Binding RoomsMas}" SelectedItem="{Binding SelectedPhone.Room1}" Grid.Column="1" Width="160"/>
+                                </Grid>
+
+                                <Grid Margin="0,10,0,0" x:Name="BlockZamena" Visibility="{Binding SelectedPhone.OfficeBox1}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Замена:" HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0"/>
+                                    <ComboBox ItemsSource="{Binding ChangesMas}" SelectedItem="{Binding SelectedPhone.Changes1}" Grid.Column="1" Width="160"/>
+                                </Grid>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                </Grid>
+
+                                <Button Visibility="{Binding SelectedPhone.SecondSwitch}" Command="{Binding ToVisibleSecond}" Padding="20, 5" Margin="10 20" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Content="Второй преподаватель +"/>
+
+                                <StackPanel Visibility="{Binding SelectedPhone.VisibiltySecond}" Margin="0, 10, 0, 0">
+                                    <Grid Margin="0,10,0,0" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock  Text="2 Преподаватель:" HorizontalAlignment="Center" FontSize="18"/>
+                                        <ComboBox ItemsSource="{Binding TeacherMas}" SelectedItem="{Binding SelectedPhone.Prepod2}" Grid.Column="1" Width="160"/>
+                                        <ComboBox Visibility="{Binding SelectedPhone.OfficeBox2}" ItemsSource="{Binding OfficeMas}" SelectedItem="{Binding SelectedPhone.Office2}" Grid.Column="1" Width="160"/>
+                                    </Grid>
+
+                                    <Grid Margin="0,10,0,0" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="2 кабинет:" HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0"/>
+                                        <ComboBox ItemsSource="{Binding RoomsMas}" SelectedItem="{Binding SelectedPhone.Room2}" Grid.Column="1" Width="160"/>
+                                    </Grid>
+
+                                    <Grid Margin="0,10,0,0" x:Name="BlockZamena2" Visibility="{Binding SelectedPhone.OfficeBox1}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="2 замена:" HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0"/>
+                                        <ComboBox ItemsSource="{Binding ChangesMas}" SelectedItem="{Binding SelectedPhone.Changes2}" Grid.Column="1" Width="160"/>
+                                    </Grid>
+
+                                    <Grid Margin="0,10,0,0" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                    </Grid>
+                                    <Grid x:Name="ThirdSwitch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Button Padding="20, 5" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Visibility="{Binding SelectedPhone.ThirdSwitch}" Command="{Binding ToVisibleThird}" Content="Преподаватель +"/>
+                                        <Button Grid.Column="1" Padding="20, 5" Margin="10 20" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding SelectedPhone.ThirdSwitch}" Command="{Binding DeletingSecond}" FontSize="16" Content="Удалить"/>
+                                    </Grid>
+                                </StackPanel>
+
+                                <StackPanel x:Name="Third" Margin="0, 10, 0, 0" Visibility="{Binding SelectedPhone.VisibiltyThird}">
+                                    <Grid Margin="0,10,0,0" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="3 Преподаватель:" HorizontalAlignment="Center" FontSize="18"/>
+                                        <ComboBox ItemsSource="{Binding TeacherMas}" SelectedItem="{Binding SelectedPhone.Prepod3}" Grid.Column="1" Width="160"/>
+                                        <ComboBox Visibility="{Binding SelectedPhone.OfficeBox2}" ItemsSource="{Binding OfficeMas}" SelectedItem="{Binding SelectedPhone.Office3}" Grid.Column="1" Width="160"/>
+                                    </Grid>
+
+                                    <Grid Margin="0,10,0,0" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="3 кабинет:" HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0"/>
+                                        <ComboBox ItemsSource="{Binding RoomsMas}" SelectedItem="{Binding SelectedPhone.Room3}" Grid.Column="1" Width="160"/>
+                                    </Grid>
+
+                                    <Grid Margin="0,10,0,0" x:Name="BlockZamena3" Visibility="{Binding SelectedPhone.OfficeBox1}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="3 замена:" HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0"/>
+                                        <ComboBox ItemsSource="{Binding ChangesMas}" SelectedItem="{Binding SelectedPhone.Changes3}" Grid.Column="1" Width="160"/>
+                                    </Grid>
+
+                                    <Grid Margin="0,10,0,0" >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                    </Grid>
+
+                                    <Button Padding="10 5" Command="{Binding DeletingThird}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5,0,0" FontSize="16" Content="Удалить"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="95*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Background="White">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="6*"/>
+                            <ColumnDefinition Width="6*"/>
+                            <ColumnDefinition Width="10*"/>
+                            <ColumnDefinition Width="10*"/>
+                            <ColumnDefinition Width="6*"/>
+                            <ColumnDefinition Width="5*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="1">
+                            <Button FontSize="20" Margin="0,0,10,0" Click="ReplaceRoomTab0">Комнаты</Button>
+                            -->
+    <!--<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">Комнаты</TextBlock>-->
+    <!--
+                        </Border>
+                        <Border Grid.Column="2">
+                            <Button FontSize="20" Margin="0,0,10,0" Click="ReplaceRoomTab1">Группы</Button>
+                            -->
+    <!--<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">Группы</TextBlock>-->
+    <!--
+                        </Border>
+                        <Border Grid.Column="3">
+                            <Button FontSize="20" Margin="0,0,10,0" Click="ReplaceRoomTab2">Преподаватели</Button>
+                            -->
+    <!--<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">Преподаватели</TextBlock>-->
+    <!--
+                        </Border>
+                        <Border Grid.Column="4">
+                            <Button FontSize="20" Margin="0,0,10,0" Click="ReplaceRoomTab3">Специальности</Button>
+                            -->
+    <!--<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">Преподаватели</TextBlock>-->
+    <!--
+                        </Border>
+                        <Border Grid.Column="5">
+                            <Button FontSize="20" Margin="0,0,10,0" Click="ReplaceRoomTab4">Предметы</Button>
+                            -->
+    <!--<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20">Преподаватели</TextBlock>-->
+    <!--
+                        </Border>
+
+                        <Button Grid.Column="6" Click="ReplaceTab1" HorizontalAlignment="Right">Главная</Button>
+                    </Grid>
+
+                    <TabControl Grid.Row="1" x:Name="ReplaceRoom" Margin="0 -5 0 0" BorderBrush="White">
+                        <TabItem BorderBrush="White" Background="White">
+                            <Grid Background="White">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30*"/>
+                                    <ColumnDefinition Width="40*"/>
+                                    <ColumnDefinition Width="30*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="10*"/>
+                                    <RowDefinition Height="60*"/>
+                                    <RowDefinition Height="30*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.ColumnSpan="3" FontSize="24" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center">Все места, где проводится обучение:</TextBlock>
+                                -->
+    <!--<ScrollViewer Grid.Row="1" Grid.Column="1" CanContentScroll="True" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">-->
+    <!--
+                                <ListView Grid.Row="1" Grid.Column="1" x:Name="RoomsList" BorderBrush="{x:Null}">
+                                    -->
+    <!--<ListView.View>-->
+    <!--<GridView>
+                                            <GridViewColumn DisplayMemberBinding="{Binding Path=Value}">Комнаты</GridViewColumn>
+                                            <GridViewColumn>Удаление</GridViewColumn>
+                                        </GridView>
+                                    </ListView.View>-->
+    <!--<ListView.ItemContainerStyle>
+                                            <Style TargetType="{x:Type ListViewItem}">
+                                                <Setter Property="Background" Value="#FF353535"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                            <ContentPresenter />
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </ListView.ItemContainerStyle>-->
+    <!--
+
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="1*"/>
+                                                        <ColumnDefinition Width="2*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0"  Margin="10" Text="{Binding Value}" FontSize="14" HorizontalAlignment="Left"/>
+                                                <TextBlock Grid.Column="1" Margin="10" FontSize="14" Text="Удалить"  ToolTip="{Binding Id}" MouseDown="DeleteRoom" HorizontalAlignment="Right"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                -->
+    <!--</ScrollViewer>-->
+    <!--
+                                <Grid Grid.Row="2" Grid.Column="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="85*"/>
+                                        <ColumnDefinition Width="15*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Row="1" x:Name="titleToomBox" Text="Введите кабинет..." VerticalAlignment="Center" Margin="0,0,20,0" MouseDown="SelectedChangeRoom"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" MouseDown="AddRoom">Добавить</TextBlock>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+
+                        <TabItem>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30*"/>
+                                    <ColumnDefinition Width="40*"/>
+                                    <ColumnDefinition Width="30*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="10*"/>
+                                    <RowDefinition Height="60*"/>
+                                    <RowDefinition Height="30*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.ColumnSpan="3" FontSize="24" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center">Все группы:</TextBlock>
+                                -->
+    <!--<ScrollViewer Grid.Row="1" Grid.Column="1" CanContentScroll="True" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">-->
+    <!--
+                                    <ListView Grid.Row="1" Grid.Column="1" x:Name="GroupList" BorderBrush="{x:Null}">
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="{x:Type ListViewItem}">
+                                                <Setter Property="Background" Value="#FF353535"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                            <ContentPresenter />
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="40*"/>
+                                                        <ColumnDefinition Width="30*"/>
+                                                        <ColumnDefinition Width="30*"/>
+                                                        <ColumnDefinition Width="10*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Margin="10" Text="{Binding Value}" FontSize="14"/>
+                                                    <TextBlock Grid.Column="1" Margin="10" Text="{Binding ValueTwo}" FontSize="14" HorizontalAlignment="Left"/>
+                                                    <TextBlock Grid.Column="2" Margin="10" Text="{Binding ValueThree}" FontSize="14" HorizontalAlignment="Left"/>
+                                                    <TextBlock Grid.Column="3" Margin="10" FontSize="14" Text="Удалить" ToolTip="{Binding Value}" MouseDown="DeleteGroup"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                -->
+    <!--</ScrollViewer>-->
+    <!--
+                                <Grid Grid.Row="2" Grid.Column="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40*"/>
+                                        <ColumnDefinition Width="25*"/>
+                                        <ColumnDefinition Width="20*"/>
+                                        <ColumnDefinition Width="15*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Row="1" x:Name="titleGroupBox" Text="Введите группу..." VerticalAlignment="Center" Margin="0,0,20,0" MouseDown="SelectedChangeRoom"/>
+                                    <ComboBox Grid.Column="1" Grid.Row="1" x:Name="GroupsComboBox" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                    <ComboBox Grid.Column="2" Grid.Row="1" x:Name="DistantComboBox" VerticalAlignment="Center" Margin="0,0,10,0">
+                                        <TextBlock>Дневная</TextBlock>
+                                        <TextBlock>Заочная</TextBlock>
+                                        <TextBlock>Дистанционная</TextBlock>
+                                    </ComboBox>
+                                    <TextBlock Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" MouseDown="AddGroup">Добавить</TextBlock>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+
+                        <TabItem>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20*"/>
+                                    <ColumnDefinition Width="60*"/>
+                                    <ColumnDefinition Width="20*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="10*"/>
+                                    <RowDefinition Height="60*"/>
+                                    <RowDefinition Height="30*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.ColumnSpan="3" FontSize="24" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center">Все преподователи и их предметы:</TextBlock>
+                                -->
+    <!--<ScrollViewer  CanContentScroll="True" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">-->
+    <!--
+                                    <ListView Grid.Row="1" Grid.Column="1" x:Name="PrepodsList" BorderBrush="{x:Null}">
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="{x:Type ListViewItem}">
+                                                <Setter Property="Background" Value="#FF353535"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                            <ContentPresenter />
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="30*"/>
+                                                        <ColumnDefinition Width="50*"/>
+                                                        <ColumnDefinition Width="20*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Margin="10" Text="{Binding Value}" FontSize="14"/>
+                                                    <TextBlock Grid.Column="1" Margin="10" Text="{Binding ValueTwo}" FontSize="14" HorizontalAlignment="Left"/>
+                                                    <TextBlock Grid.Column="2" Margin="10" FontSize="14" Text="Удалить" ToolTip="{Binding Id}" MouseDown="DeletePrepod" HorizontalAlignment="Right"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                -->
+    <!--</ScrollViewer>-->
+    <!--
+                                <Grid Grid.Row="2" Grid.Column="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40*"/>
+                                        <ColumnDefinition Width="45*"/>
+                                        <ColumnDefinition Width="15*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Row="1" x:Name="titlePrepodBox" Text="Введите преподавателя..." VerticalAlignment="Center" Margin="0,0,20,0" MouseDown="SelectedChangeRoom"/>
+                                    <ComboBox Grid.Column="1" Grid.Row="1" x:Name="LessonsComboBox" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" MouseDown="AddPrepod" HorizontalAlignment="Center">Добавить</TextBlock>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+
+                        <TabItem>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30*"/>
+                                    <ColumnDefinition Width="40*"/>
+                                    <ColumnDefinition Width="30*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="10*"/>
+                                    <RowDefinition Height="60*"/>
+                                    <RowDefinition Height="30*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.ColumnSpan="3" FontSize="24" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center">Все специальности:</TextBlock>
+                                -->
+    <!--<ScrollViewer Grid.Row="1" Grid.Column="1" CanContentScroll="True" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">-->
+    <!--
+                                    <ListView Grid.Row="1" Grid.Column="1" x:Name="SpecList" BorderBrush="{x:Null}">
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="{x:Type ListViewItem}">
+                                                <Setter Property="Background" Value="#FF353535"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                            <ContentPresenter />
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="30*"/>
+                                                        <ColumnDefinition Width="50*"/>
+                                                        <ColumnDefinition Width="20*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Margin="10" Text="{Binding ValueTwo}" FontSize="14"/>
+                                                    <TextBlock Grid.Column="1" Margin="10" Text="{Binding Value}" FontSize="14"/>
+                                                    <TextBlock Grid.Column="2" Margin="10" FontSize="14" Text="Удалить" ToolTip="{Binding Id}" MouseDown="DeleteSpec" HorizontalAlignment="Right"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                -->
+    <!--</ScrollViewer>-->
+    <!--
+                                <Grid Grid.Row="2" Grid.Column="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="55*"/>
+                                        <ColumnDefinition Width="50*"/>
+                                        <ColumnDefinition Width="15*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Row="1" x:Name="titleSpecBox" Text="Введите специальность..." VerticalAlignment="Center" Margin="0,0,20,0" MouseDown="SelectedChangeRoom"/>
+                                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="SequenceSpecBox" Text="Номер страницы..." VerticalAlignment="Center" Margin="0,0,20,0" />
+                                    <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" MouseDown="AddSpec">Добавить</TextBlock>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+
+                        <TabItem>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20*"/>
+                                    <ColumnDefinition Width="40*"/>
+                                    <ColumnDefinition Width="20*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="10*"/>
+                                    <RowDefinition Height="60*"/>
+                                    <RowDefinition Height="30*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.ColumnSpan="5" FontSize="24" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center">Все учебные предметы:</TextBlock>
+                                -->
+    <!--<ScrollViewer Grid.Row="1" Grid.Column="1" CanContentScroll="True" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">-->
+    <!--
+                                    <ListView Grid.Row="1" Grid.Column="1" x:Name="PredmetList" BorderBrush="{x:Null}">
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="{x:Type ListViewItem}">
+                                                <Setter Property="Background" Value="#FF353535"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                            <ContentPresenter />
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="60*"/>
+                                                        <ColumnDefinition Width="20*"/>
+                                                        <ColumnDefinition Width="20*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Margin="10" Text="{Binding ValueTwo}" FontSize="14"/>
+                                                    <TextBlock Grid.Column="1" Margin="10" Text="{Binding Value}" FontSize="14"/>
+                                                    <TextBlock Grid.Column="2" Margin="10" FontSize="14" Text="Удалить" ToolTip="{Binding Id}" MouseDown="DeletePredmet" HorizontalAlignment="Right"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                -->
+    <!--</ScrollViewer>-->
+    <!--
+                                <Grid Grid.Row="2" Grid.Column="1">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80*"/>
+                                        <ColumnDefinition Width="20*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Row="1" x:Name="titlePredmetBox" Text="Введите предмет..." VerticalAlignment="Center" Margin="0,0,20,0"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" MouseDown="AddPredmet" FontSize="16">Добавить</TextBlock>
+                                </Grid>
+                            </Grid>
+                        </TabItem>
+
+                    </TabControl>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>-->
+
+</Window>
