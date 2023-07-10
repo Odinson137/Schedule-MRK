@@ -1,0 +1,40 @@
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\Sasha Project.exe
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\Sasha Project.deps.json
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\Sasha Project.runtimeconfig.json
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\Sasha Project.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\Sasha Project.pdb
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\EPPlus.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\EPPlus.Interfaces.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\EPPlus.System.Drawing.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\Microsoft.Extensions.Configuration.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\Microsoft.Extensions.Configuration.FileExtensions.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\Microsoft.Extensions.Configuration.Json.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\Microsoft.Extensions.FileProviders.Abstractions.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\Microsoft.Extensions.FileProviders.Physical.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\Microsoft.Extensions.FileSystemGlobbing.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\Microsoft.Extensions.Primitives.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\System.Data.SQLite.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\runtimes\linux-x64\native\SQLite.Interop.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\runtimes\osx-x64\native\SQLite.Interop.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\runtimes\win-x64\native\SQLite.Interop.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\runtimes\win-x86\native\SQLite.Interop.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\Sasha Project.csproj.AssemblyReference.cache
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\MainWindow.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\App.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\Sasha Project_MarkupCompile.cache
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\Sasha Project_MarkupCompile.lref
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\MainWindow.baml
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\Sasha Project.g.resources
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\Sasha Project.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\Sasha Project.AssemblyInfoInputs.cache
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\Sasha Project.AssemblyInfo.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\Sasha Project.csproj.CoreCompileInputs.cache
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\Sasha Project.csproj.CopyComplete
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\Sasha Project.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\refint\Sasha Project.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\Sasha Project.pdb
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\Sasha Project.genruntimeconfig.cache
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\Release\net7.0-windows\ref\Sasha Project.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\Release\net7.0-windows\DocumentFormat.OpenXml.dll
