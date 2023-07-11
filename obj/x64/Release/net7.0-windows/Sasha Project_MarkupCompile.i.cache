@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\x64\Release\net7.0-windows\
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Release\net7.0-windows\
 Sasha_Project
 none
 false
 TRACE;RELEASE;NET;NET7_0;NETCOREAPP
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\App.xaml
-1-1644662438
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\App.xaml
+4-1785126965
 
-141724268255
+2072164826
 214541834883
-Views\MainWindow.xaml;
+Views\MainView.xaml;Views\MainWindow.xaml;Views\SettingsView.xaml;Views\TableView.xaml;
 
-False
+True
 

@@ -40,3 +40,12 @@ C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\x64\Test\ne
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\x64\Test\net7.0-windows\Views\MainWindow.baml
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\bin\x64\Test\net7.0-windows\Microsoft.Xaml.Behaviors.dll
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\x64\Test\net7.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Test\net7.0-windows\Sasha Project.csproj.AssemblyReference.cache
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Test\net7.0-windows\Views\MainView.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Test\net7.0-windows\Views\MainWindow.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Test\net7.0-windows\Views\SettingsView.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Test\net7.0-windows\Views\TableView.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Test\net7.0-windows\App.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Test\net7.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Test\net7.0-windows\Sasha Project_MarkupCompile.cache
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Test\net7.0-windows\Sasha Project_MarkupCompile.lref

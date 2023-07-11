@@ -1,0 +1,9 @@
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\NewDebug\net7.0-windows\Sasha Project.csproj.AssemblyReference.cache
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\NewDebug\net7.0-windows\Views\MainView.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\NewDebug\net7.0-windows\Views\MainWindow.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\NewDebug\net7.0-windows\Views\SettingsView.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\NewDebug\net7.0-windows\Views\TableView.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\NewDebug\net7.0-windows\App.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\NewDebug\net7.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\NewDebug\net7.0-windows\Sasha Project_MarkupCompile.cache
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\NewDebug\net7.0-windows\Sasha Project_MarkupCompile.lref

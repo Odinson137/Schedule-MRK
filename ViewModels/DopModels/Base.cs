@@ -5,6 +5,7 @@ using System.Windows;
 using DopFiles;
 using MainTable;
 using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 
 namespace Base;
 
@@ -471,63 +472,79 @@ class DataBase
         Dictionary<string, List<string>> mas = new Dictionary<string, List<string>>();
         List<string> sovpda = new List<string>();
 
-        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+        try
         {
-            connection.Open();
-            using (SQLiteCommand command = new SQLiteCommand("SELECT lessons, prepods FROM Prepods ORDER BY lessons ASC", connection))
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
             {
-                SQLiteDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                connection.Open();
+                using (SQLiteCommand command = new SQLiteCommand("SELECT lessons, prepods FROM Prepods ORDER BY lessons ASC", connection))
                 {
-                    string lesson = reader.GetString(0);
-                    string prepod = reader.GetString(1);
+                    SQLiteDataReader reader = command.ExecuteReader();
 
-                    if (!sovpda.Contains(prepod))
+                    while (reader.Read())
                     {
-                        prepods.InsertNewValue(prepod);
-                        sovpda.Add(prepod);
-                    }
+                        string lesson = reader.GetString(0);
+                        string prepod = reader.GetString(1);
+
+                        if (!sovpda.Contains(prepod))
+                        {
+                            prepods.InsertNewValue(prepod);
+                            sovpda.Add(prepod);
+                        }
 
 
-                    if (mas.ContainsKey(lesson))
-                    {
-                        mas[lesson].Add(prepod);
-                    }
-                    else
-                    {
-                        mas.Add(lesson, new List<string>());
-                        mas[lesson].Add(prepod);
-                    }
+                        if (mas.ContainsKey(lesson))
+                        {
+                            mas[lesson].Add(prepod);
+                        }
+                        else
+                        {
+                            mas.Add(lesson, new List<string>());
+                            mas[lesson].Add(prepod);
+                        }
 
+                    }
                 }
+                connection.Close();
             }
-            connection.Close();
-        }
 
-        prepods.NewDict(mas);
+            prepods.NewDict(mas);
+        }
+        catch
+        {
+            MessageBox.Show("Базы данных нет 1");
+        }
     }
 
     public void SelectRooms(UpdateValues rooms)
     {
         rooms.DeleteValues();
-        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+
+        try
         {
-            connection.Open();
-
-            using (SQLiteCommand command = new SQLiteCommand("SELECT rooms FROM FreeRooms ORDER BY rooms ASC", connection))
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
             {
-                SQLiteDataReader reader = command.ExecuteReader();
+                connection.Open();
 
-                while (reader.Read())
+                using (SQLiteCommand command = new SQLiteCommand("SELECT rooms FROM FreeRooms ORDER BY rooms ASC", connection))
                 {
-                    string freeRoom = reader.GetString(0);
+                    SQLiteDataReader reader = command.ExecuteReader();
 
-                    rooms.InsertNewValue(freeRoom);
+                    while (reader.Read())
+                    {
+                        string freeRoom = reader.GetString(0);
+
+                        rooms.InsertNewValue(freeRoom);
+                    }
                 }
+                connection.Close();
             }
-            connection.Close();
         }
+        catch
+        {
+            MessageBox.Show("Базы данных нет 2");
+        }
+
     }
     private string Nulling(string value)
     {
@@ -645,68 +662,75 @@ class DataBase
     public ObservableCollection<Tables> SelectBigBase(int indexLastPara, string week, int indexDay, UpdateValues rooms, UpdateValuesPrepods prepods)
     {
         ObservableCollection<Tables> phonesList = new ObservableCollection<Tables> { };
-        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+        try
         {
-            connection.Open();
-            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM Tables WHERE para = @para and week = @week and days = @days ORDER BY groups ASC", connection))
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
             {
-                command.Parameters.AddWithValue("@para", indexLastPara);
-                command.Parameters.AddWithValue("@week", week);
-                command.Parameters.AddWithValue("@days", indexDay);
-                SQLiteDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                connection.Open();
+                using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM Tables WHERE para = @para and week = @week and days = @days ORDER BY groups ASC", connection))
                 {
-                    int id = reader.GetInt32(0);
-                    string room = reader.GetString(2);
-                    string room2 = reader.GetString(9);
-                    string prepod = reader.GetString(3);
-                    string prepod2 = reader.GetString(10);
-                    bool razdelPara = reader.GetBoolean(8);
-                    string titleGroup = reader.GetString(1);
+                    command.Parameters.AddWithValue("@para", indexLastPara);
+                    command.Parameters.AddWithValue("@week", week);
+                    command.Parameters.AddWithValue("@days", indexDay);
+                    SQLiteDataReader reader = command.ExecuteReader();
 
-                    if (razdelPara)
+                    while (reader.Read())
                     {
-                        titleGroup = titleGroup + " (1 час)";
-                    }
+                        int id = reader.GetInt32(0);
+                        string room = reader.GetString(2);
+                        string room2 = reader.GetString(9);
+                        string prepod = reader.GetString(3);
+                        string prepod2 = reader.GetString(10);
+                        bool razdelPara = reader.GetBoolean(8);
+                        string titleGroup = reader.GetString(1);
 
-                    Tables firstTable = new Tables
-                    {
-                        Id = id,
-                        Groups = titleGroup,
-                        Rooms = room,
-                        Prepods = prepod,
-                        Changes = reader.GetString(4),
-                        Office = reader.GetString(5),
-                        OfficeLesson = reader.GetString(16),
-                        RazdelPara = razdelPara,
-                        Lesson = reader.GetString(14),
-                    };
+                        if (razdelPara)
+                        {
+                            titleGroup = titleGroup + " (1 час)";
+                        }
 
-                    phonesList.Add(firstTable);
-
-                    if (razdelPara)
-                    {
-                        Tables secondTable = new Tables
+                        Tables firstTable = new Tables
                         {
                             Id = id,
-                            Groups = reader.GetString(1) + " (2 час)",
-                            Rooms = room2,
-                            Prepods = prepod2,
-                            Changes = reader.GetString(11),
-                            OfficeLesson = reader.GetString(17),
-                            Office = reader.GetString(12),
-                            RazdelPara = true,
-                            Lesson = reader.GetString(15),
-                            Link = firstTable
+                            Groups = titleGroup,
+                            Rooms = room,
+                            Prepods = prepod,
+                            Changes = reader.GetString(4),
+                            Office = reader.GetString(5),
+                            OfficeLesson = reader.GetString(16),
+                            RazdelPara = razdelPara,
+                            Lesson = reader.GetString(14),
                         };
-                        phonesList.Add(secondTable);
-                        firstTable.Link = secondTable;
+
+                        phonesList.Add(firstTable);
+
+                        if (razdelPara)
+                        {
+                            Tables secondTable = new Tables
+                            {
+                                Id = id,
+                                Groups = reader.GetString(1) + " (2 час)",
+                                Rooms = room2,
+                                Prepods = prepod2,
+                                Changes = reader.GetString(11),
+                                OfficeLesson = reader.GetString(17),
+                                Office = reader.GetString(12),
+                                RazdelPara = true,
+                                Lesson = reader.GetString(15),
+                                Link = firstTable
+                            };
+                            phonesList.Add(secondTable);
+                            firstTable.Link = secondTable;
+                        }
                     }
                 }
-            }
-            connection.Close();
+                connection.Close();
+            } 
+        } catch
+        {
+            MessageBox.Show("Базы данных нет");
         }
+
 
         rooms.ZapolDict(phonesList);
         prepods.ZapolDict(phonesList);
