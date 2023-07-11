@@ -36,7 +36,6 @@ namespace Sasha_Project
         private void FullWindow_Click(object sender, RoutedEventArgs e)
         {
 
-        }
 
         //private void ReplaceMenu(object sender, RoutedEventArgs e)
         //{
