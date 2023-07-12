@@ -1,10 +1,6 @@
-﻿using Sasha_Project.Commands;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace MainTable
 {
@@ -32,7 +28,7 @@ namespace MainTable
             {
                 if (value == "0")
                 {
-                    rooms = " ";
+                    rooms = "";
                 }
                 else
                 {
@@ -143,7 +139,7 @@ namespace MainTable
             {
                 if (value == "0")
                 {
-                    prepods = " ";
+                    prepods = "";
                 }
                 else
                 {
@@ -254,7 +250,7 @@ namespace MainTable
             {
                 if (value == "0")
                 {
-                    changes = " ";
+                    changes = "";
                 }
                 else
                 {
@@ -366,7 +362,7 @@ namespace MainTable
             {
                 if (value == "0")
                 {
-                    office = " ";
+                    office = "";
                 }
                 else
                 {

@@ -21,33 +21,7 @@ namespace Sasha_Project.ViewModels
     public class TableViewModel : BaseViewModel
     {
         private Tables selectedPhone;
-        public List<string> Lessons { get; set; }
-        public string Lesson { get; set; }
-        private readonly UpdateValuesPrepods prepods = new UpdateValuesPrepods();
-        private readonly UpdateValues rooms = new UpdateValues();
-
-        public TableViewModel()
-        {
-            DataBase a = new DataBase();
-            a.SelectLessons(prepods);
-            a.SelectRooms(rooms);
-
-            Lessons = prepods.GetLessons();
-
-            Phones = a.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
-        }
-
-        private void UpdateValues()
-        {
-            DataBase a = new DataBase();
-            a.SelectLessons(prepods);
-            a.SelectRooms(rooms);
-
-            Phones = a.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
-
-            OnPropertyChanged("Phones");
-        }
-
+        public ObservableCollection<Tables> Phones { get; set; }
         public List<string> RoomsMas { get; set; }
         public List<string> TeacherMas { get; set; }
         public List<string> OfficeMas { get; set; }
@@ -96,24 +70,46 @@ namespace Sasha_Project.ViewModels
             }
         }
 
-        public ObservableCollection<Tables> Phones { get; set; }
+        public List<string> Lessons { get; set; }
+        public string Lesson { get; set; }
+        private readonly UpdateValuesPrepods prepods = new UpdateValuesPrepods();
+        private readonly UpdateValues rooms = new UpdateValues();
+
+        public TableViewModel()
+        {
+            DataBase a = new DataBase();
+            a.SelectLessons(prepods);
+            a.SelectRooms(rooms);
+
+            Lessons = prepods.GetLessons();
+
+            Phones = a.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
+        }
+
+        private void UpdateValues()
+        {
+            DataBase a = new DataBase();
+            a.SelectLessons(prepods);
+            a.SelectRooms(rooms);
+
+            Phones = a.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
+
+            OnPropertyChanged("Phones");
+        }
+
         public Tables SelectedPhone
         {
             get { return selectedPhone; }
             set
             {
                 rooms.GetValues(value, out bool razdel, out bool vel);
-                RoomsMas = rooms.GetMas(razdel, vel);
-                RoomsMas.Add(" ");
+                RoomsMas = rooms.GetMas(razdel, vel, value.Rooms);
 
-                TeacherMas = prepods.GetMas(razdel, vel, value.Lesson);
-                TeacherMas.Add(" ");
+                TeacherMas = prepods.GetMas(razdel, vel, value.Prepods, value.Lesson);
 
-                OfficeMas = prepods.GetMas(razdel, vel, value.OfficeLesson);
-                OfficeMas.Add(" ");
+                OfficeMas = prepods.GetMas(razdel, vel, value.Office, value.OfficeLesson);
 
-                ChangesMas = prepods.GetAllPrepods(razdel, vel);
-                ChangesMas.Add(" ");
+                ChangesMas = prepods.GetAllPrepods(razdel, value.Prepods, vel);
 
                 Lesson = value.Lesson;
 
@@ -168,22 +164,18 @@ namespace Sasha_Project.ViewModels
             if (Lesson != selectedPhone.Lesson)
             {
                 prepods.GetValues(selectedPhone, out bool razdel, out bool vel);
-                MessageBox.Show("asd");
                 if (commandParameter as string == "1")
                 {
-                    TeacherMas = prepods.GetMas(razdel, vel, selectedPhone.Lesson);
-                    TeacherMas.Add(" ");
+                    TeacherMas = prepods.GetMas(razdel, vel, selectedPhone.Prepods, selectedPhone.Lesson);
 
-                    ChangesMas = prepods.GetAllPrepods(razdel, vel);
-                    ChangesMas.Add(" ");
+                    ChangesMas = prepods.GetAllPrepods(razdel, selectedPhone.Prepods, vel);
 
                     OnPropertyChanged("TeacherMas");
                     OnPropertyChanged("ChangesMas");
                 }
                 else
                 {
-                    OfficeMas = prepods.GetMas(razdel, vel, selectedPhone.OfficeLesson);
-                    OfficeMas.Add(" ");
+                    OfficeMas = prepods.GetMas(razdel, vel, selectedPhone.Prepods, selectedPhone.OfficeLesson);
 
                     OnPropertyChanged("OfficeMas");
                 }
@@ -209,25 +201,41 @@ namespace Sasha_Project.ViewModels
                     WorkExcel a = new WorkExcel();
                     a.CreateExcel(weekStr, Para + 1, Day + 1);
 
-                    Process.Start(CreatePathExcel(), "Преподаватели.xlsx");
+                    try
+                    {
+                        Process.Start(CreatePathExcel(), "Преподаватели.xlsx");
+                    } catch
+                    {
+                        MessageBox.Show("Файл запуска Excel не найден. Проверьте путь в файле!");
+                    }
                 }
                 else if (val == "1")
                 {
                     CreateRoomWord a = new CreateRoomWord();
                     a.CreateWord(weekStr, (Para + 1).ToString());
 
-                    Process.Start(CreatePathWord(), "Комнаты.docx");
-                }
+                    try
+                    {
+                        Process.Start(CreatePathWord(), "Комнаты.docx");
+                    } catch
+                    {
+                        MessageBox.Show("Файл запуска Word не найден. Проверьте путь в файле!");
+                    }
+            }
                 else
                 {
                     WorkWord a = new WorkWord();
                     a.MainDocument(Day + 1, weekStr);
-
-                    Process.Start(CreatePathWord(), "Учащиеся.docx");
+                    try
+                    {
+                        Process.Start(CreatePathWord(), "Учащиеся.docx");
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Файл запуска Word не найден. Проверьте путь в файле!");
+                    }
                 }
             }));
-
-
 
         private string CreatePathExcel()
         {

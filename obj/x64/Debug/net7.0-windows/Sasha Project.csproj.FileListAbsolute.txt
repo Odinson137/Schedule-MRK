@@ -39,15 +39,6 @@ C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\x64\Debug\n
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\x64\Debug\net7.0-windows\Sasha Project.pdb
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\x64\Debug\net7.0-windows\Sasha Project.genruntimeconfig.cache
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\x64\Debug\net7.0-windows\ref\Sasha Project.dll
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.csproj.AssemblyReference.cache
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\MainView.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\MainWindow.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsView.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\TableView.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\App.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\GeneratedInternalTypeHelper.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project_MarkupCompile.cache
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project_MarkupCompile.lref
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\Sasha Project.exe
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\Sasha Project.deps.json
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\Sasha Project.runtimeconfig.json
@@ -72,6 +63,15 @@ C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\runtimes\osx-x64\native\SQLite.Interop.dll
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\runtimes\win-x64\native\SQLite.Interop.dll
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\runtimes\win-x86\native\SQLite.Interop.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.csproj.AssemblyReference.cache
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\MainView.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\MainWindow.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsView.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\TableView.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\App.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project_MarkupCompile.cache
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project_MarkupCompile.lref
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\App.baml
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\MainView.baml
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\MainWindow.baml

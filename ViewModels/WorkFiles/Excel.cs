@@ -118,18 +118,20 @@ namespace Sasha_Project.Excel
 
                 foreach (string[] s in masMain)
                 {
-                    if (v != s[10])
-                    {
-                        num = num + 1;
-                        CreateHeader(ref sheet, ref num, days, week[0], ++para);
-                        num = num + 1;
-
-                        v = s[10];
-                    }
                     if (s[1].Length > 1)
                     {
+                        if (v != s[10])
+                        {
+                            num = num + 1;
+                            CreateHeader(ref sheet, ref num, days, week[0], ++para);
+                            num = num + 1;
+
+                            v = s[10];
+                        }
+                     
                         Zapol(ref sheet, ref num, s);
                     }
+
                 }
 
                 BeatufulTable(ref sheet, num-1);

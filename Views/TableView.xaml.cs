@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace Sasha_Project.Views
 {
@@ -11,5 +12,9 @@ namespace Sasha_Project.Views
         {
             InitializeComponent();
         }
+
+        private void LessonBox_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e) { VisibilityPanel.Visibility = Visibility.Visible; }
+
+        private void VisibilityPanel_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e) { VisibilityPanel.Visibility = Visibility.Collapsed; }
     }
 }

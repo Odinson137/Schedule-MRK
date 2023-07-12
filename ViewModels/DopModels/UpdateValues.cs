@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using DocumentFormat.OpenXml.Wordprocessing;
 using MainTable;
 
 namespace Sasha_Project
@@ -24,7 +25,7 @@ namespace Sasha_Project
 
         public void DopFunc(string value, int i)
         {
-            string[] mas = value.Split(" ");
+            string[] mas = value.Split("\n");
 
             if (value.Length > 0)
             {
@@ -73,7 +74,7 @@ namespace Sasha_Project
                 }
                 else
                 {
-                    string[] mas = room.Split(" ");
+                    string[] mas = room.Split("\n");
 
                     if (mas.Length > 0)
                     {
@@ -94,7 +95,6 @@ namespace Sasha_Project
         public void GetValues(Tables table, out bool razdel, out bool val)
         {
             razdel = table.RazdelPara;
-            //if (table.Index / 2 == 0)
             if (table.Link != null)
             {
                 val = false;
@@ -103,9 +103,24 @@ namespace Sasha_Project
 
         }
 
-        public virtual List<string> GetMas(bool razdel, bool val, string lesson = "")
+        private protected void KnowingValue(List<string> values, string rooms)
         {
+            string[] roomMas = rooms.Split("\n");
+            if (roomMas.Length > 0)
+            {
+                foreach (string s in rooms.Split("\n"))
+                {
+                    values.Add(s);
+                }
+            }
+            else
+            {
+                values.Add(rooms);
+            }
+        }
 
+        public virtual List<string> GetMas(bool razdel, bool val, string rooms, string lesson = "")
+        {
             IEnumerable<string> mas;
             if (razdel == false)
             {
@@ -124,7 +139,10 @@ namespace Sasha_Project
                                 where i.Value[1] == true
                                 select i.Key;
             }
-            List<string> values = new List<string>(mas);
+
+            List<string> values = new List<string>(mas) { "" };
+
+            KnowingValue(values, rooms);
 
             return values;
         }
@@ -193,7 +211,7 @@ namespace Sasha_Project
                 }
                 else
                 {
-                    string[] mas = prepod.Split(" ");
+                    string[] mas = prepod.Split("\n");
 
                     if (mas.Length > 1)
                     {
@@ -207,7 +225,7 @@ namespace Sasha_Project
                         FuncWithout(prepod);
                     }
 
-                    string[] mas1 = prepodZamena.Split(" ");
+                    string[] mas1 = prepodZamena.Split("\n");
 
                     if (mas1.Length > 1)
                     {
@@ -221,7 +239,7 @@ namespace Sasha_Project
                         FuncWithout(prepodZamena);
                     }
 
-                    string[] mas2 = prepodCadefra.Split(" ");
+                    string[] mas2 = prepodCadefra.Split("\n");
 
                     if (mas1.Length > 1)
                     {
@@ -238,7 +256,7 @@ namespace Sasha_Project
             }
         }
 
-        public List<string> GetAllPrepods(bool razdel, bool val)
+        public List<string> GetAllPrepods(bool razdel, string strPrepods, bool val)
         {
             IEnumerable<string> mas;
             if (razdel == false)
@@ -263,12 +281,14 @@ namespace Sasha_Project
                       select i.Key;
             }
 
-            List<string> values = new List<string>(mas);
+            List<string> values = new List<string>(mas) { "" };
+
+            KnowingValue(values, strPrepods);
 
             return values;
         }
 
-        public override List<string> GetMas(bool razdel, bool val, string lesson)
+        public override List<string> GetMas(bool razdel, bool val, string strPrepods, string lesson)
         {
             if (lesson.Length > 1)
             {
@@ -292,6 +312,9 @@ namespace Sasha_Project
                           select i;
                 }
                 List<string> values = new List<string>(mas);
+
+                KnowingValue(values, strPrepods);
+
                 return values;
             }
             return new List<string>();

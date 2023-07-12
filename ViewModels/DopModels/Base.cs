@@ -684,10 +684,7 @@ class DataBase
                         bool razdelPara = reader.GetBoolean(8);
                         string titleGroup = reader.GetString(1);
 
-                        if (razdelPara)
-                        {
-                            titleGroup = titleGroup + " (1 час)";
-                        }
+                        if (razdelPara) titleGroup += " (1 час)";
 
                         Tables firstTable = new Tables
                         {
@@ -730,7 +727,6 @@ class DataBase
         {
             MessageBox.Show("Базы данных нет");
         }
-
 
         rooms.ZapolDict(phonesList);
         prepods.ZapolDict(phonesList);
