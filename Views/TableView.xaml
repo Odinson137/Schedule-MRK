@@ -608,12 +608,16 @@
                 </StackPanel>
             </Grid>
 
-            <StackPanel MouseLeave="VisibilityPanel_MouseLeave"  Visibility="Collapsed" x:Name="VisibilityPanel" Grid.Column="1" Background="{StaticResource MainBlueColorMiddle}" Opacity="0.9">
-                <TextBlock FontSize="16" TextAlignment="Center" Margin="10 0" TextWrapping="Wrap" Foreground="{StaticResource FontColor}" Text="{Binding SelectedPhone.Lesson}"/>
-                <ListBox Background="{x:Null}" BorderBrush="{x:Null}">
-                    <ListBoxItem FontSize="14" Foreground="{StaticResource FontColor}">Hello</ListBoxItem>
-                    <ListBoxItem FontSize="24" Foreground="{StaticResource FontColor}">Hello</ListBoxItem>
-                    <ListBoxItem FontSize="24" Foreground="{StaticResource FontColor}">Hello</ListBoxItem>
+            <StackPanel MouseLeave="VisibilityPanel_MouseLeave"  Visibility="Collapsed" x:Name="VisibilityPanel" Grid.Column="1" 
+                        Background="{StaticResource MainBlueColorMiddle}" Opacity="0.9">
+                <TextBlock FontSize="16" TextAlignment="Center" Margin="10 0" TextWrapping="Wrap" 
+                           Foreground="{StaticResource FontColor}" Text="{Binding SelectedPhone.Lesson}"/>
+                <ListBox ItemsSource="{Binding Lessons}" SelectedItem="{Binding SelectedPhone.Lesson}" Background="{x:Null}" BorderBrush="{x:Null}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Foreground="{StaticResource FontColor}" Text="{Binding}" TextWrapping="Wrap"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
             </StackPanel>
         </Grid>

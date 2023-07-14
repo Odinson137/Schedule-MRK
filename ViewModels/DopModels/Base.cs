@@ -822,6 +822,23 @@ class DataBase
         }
     }
 
+    public void InsertLessons(string lesson, int kurs)
+    {
+        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+        {
+            connection.Open();
+            using (SQLiteCommand command = new SQLiteCommand($"INSERT INTO Lessons (Lessons, Kurs) VALUES (@lesson, @kurs", connection))
+            {
+                command.Parameters.AddWithValue("@lesson", lesson);
+                command.Parameters.AddWithValue("@kurs", kurs);
+                command.ExecuteNonQuery();
+            }
+
+            connection.Close();
+        }
+    }
+
+
     //public void GeneraltBase()
     //{
     //    using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
