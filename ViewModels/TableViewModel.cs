@@ -3,16 +3,11 @@ using Sasha_Project.Commands;
 using Sasha_Project.Excel;
 using Sasha_Project.ViewModels.DopModels;
 using Sasha_Project.Word;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -94,7 +89,6 @@ namespace Sasha_Project.ViewModels
 
         private void UpdateValues()
         {
-            DataBase a = new DataBase();
             DataBase.SelectLessons(prepods);
             DataBase.SelectRooms(rooms);
 
@@ -132,7 +126,18 @@ namespace Sasha_Project.ViewModels
                 //    prepods.ChangeValue(SelectedPhone.Groups, selectedPhone.Changes);
                 //}
 
-                int kurs = GetKurs(value);
+                char letterGroup = value.Groups.First();
+
+                int kurs = 1;
+                foreach (string charachter in firstCharacters)
+                {
+                    if (charachter.First() == letterGroup)
+                    {
+                        break;
+                    }
+                    kurs++;
+                }
+
                 prepods.Kurs = kurs;
                 Lessons = prepods.GetLessons();
 

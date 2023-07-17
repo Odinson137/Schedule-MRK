@@ -71,22 +71,4 @@ namespace Sasha_Project.Views.Converters
             return null;
         }
     }
-
-    class RazdelChange : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (((bool)value) == true)
-            {
-                return 1;
-            }
-            return 0;
-        }
-
-        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
 }

@@ -1,11 +1,10 @@
-﻿using Base;
-using DocumentFormat.OpenXml;
+﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Collections.Generic;
 using System.Linq;
 using MainTable;
-using DopFiles;
+using Sasha_Project.ViewModels.DopModels;
 
 namespace Sasha_Project.Word
 {
@@ -62,6 +61,13 @@ namespace Sasha_Project.Word
             cell2.Append(cellVerticalProperties2);
         }
 
+        private void AddToRow(ref TableRow[] rows, TableCell cell, int i)
+        {
+            TableRow row = new TableRow();
+            row.Append(cell);
+            rows[i] = row;
+        }
+
         private void CreateTable(List<string> mas, Body body, Dictionary<string, Dictionary<string, string>> dict)
         {
             Table table = new Table();
@@ -69,34 +75,19 @@ namespace Sasha_Project.Word
             TableCell mainCell = CreateCell("");
             TableRow main = new TableRow();
             main.Append(mainCell);
-            
-            TableRow first = new TableRow();
-            TableRow firstDop = new TableRow();
-            TableRow second = new TableRow();
-            TableRow secondDop = new TableRow();
-            TableRow third = new TableRow();
-            TableRow thirdDop = new TableRow();
-            TableRow fourth = new TableRow();
-            TableRow fourthDop = new TableRow();
-            TableRow fifth = new TableRow();
-            TableRow fifthDop = new TableRow();
-            TableRow sixth = new TableRow();
-            TableRow sixthDop = new TableRow();
-            TableRow seventh = new TableRow();
-            TableRow seventhDop = new TableRow();
 
-            TableRow[] rows = new TableRow[] { first, firstDop, second, secondDop, third, thirdDop, fourth, fourthDop, fifth, fifthDop, sixth, sixthDop, seventh, seventhDop };
+            TableRow[] rows = new TableRow[14];
+
             int strNumer = 1;
             int numer = 1;
-            for (int i = 0; i < rows.Length; i += 2, strNumer += 2)
+            for (int i = 0; i < rows.Length; i += 2, strNumer += 2, numer++)
             {
                 TableCell a = CreateCell(numer.ToString());
-                numer++;
                 TableCell b = CreateCell("");
                 MergeHorizont(ref a, ref b);
-
-                rows[i].Append(a);
-                rows[strNumer].Append(b);
+            
+                AddToRow(ref rows, a, i);
+                AddToRow(ref rows, b, strNumer);
             }
 
             foreach (string item in mas)
@@ -149,12 +140,11 @@ namespace Sasha_Project.Word
             {
                 table.Append(i);
             }
-            //table.Append(main, first, firstDop, second, secondDop, third, thirdDop, fourth, fourthDop, fifth, fifthDop, sixth, sixthDop, seventh, seventhDop);
             body.Append(table);
             Paragraph para = new Paragraph();
             body.AppendChild(para);
-
         }
+
         public void CreateWord(string week, string day)
         {
             using (WordprocessingDocument document = WordprocessingDocument.Create("Комнаты.docx", WordprocessingDocumentType.Document))
@@ -589,8 +579,8 @@ namespace Sasha_Project.Word
                 DataBase a = new DataBase();
                 Dictionary<string, Dictionary<int, Tables[]>> groups = a.SelectForWord(week, day);
 
-                Dictionary<string, List<Group>> mas = a.SelectGroups();
-                Dictionary<string, List<string>> departMas = a.SelectSpec();
+                Dictionary<string, List<Group>> mas = DataBase.SelectGroups();
+                Dictionary<string, List<string>> departMas = DataBase.SelectSpec();
 
                 int sum = 0;
 

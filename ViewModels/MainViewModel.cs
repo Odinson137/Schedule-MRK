@@ -1,5 +1,4 @@
 ﻿using Sasha_Project.Commands;
-using Sasha_Project.Excel;
 
 namespace Sasha_Project.ViewModels
 {
@@ -20,7 +19,8 @@ namespace Sasha_Project.ViewModels
 
         public ViewModel()
         {
-            SelectedViewModel = new TableViewModel();
+            //SelectedViewModel = new TableViewModel();
+            SelectedViewModel = new SettingsViewModel();
         }
 
         RelayCommand? newPage;

@@ -8,7 +8,6 @@
              xmlns:converters="clr-namespace:Sasha_Project.Views.Converters" xmlns:viewmodels="clr-namespace:Sasha_Project.ViewModels"
              mc:Ignorable="d">
 
-
     <UserControl.DataContext>
         <viewmodels:TableViewModel/>
     </UserControl.DataContext>
@@ -18,7 +17,6 @@
         <converters:BoolConvertSecond x:Key="BoolToStringSecond"/>
         <converters:CafedraChange x:Key="CafedraChange"/>
         <converters:MainChange x:Key="MainChange"/>
-        <converters:RazdelChange x:Key="RazdelChange"/>
 
         <Style TargetType="{x:Type Button}">
             <Setter Property="Background" Value="White"/>
@@ -259,7 +257,7 @@
             </Grid.ColumnDefinitions>
 
             <DataGrid CanUserAddRows="False" Margin="0 0" ColumnWidth="*" Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False" ItemsSource="{Binding Phones}"
-                 SelectedItem="{Binding SelectedPhone}" IsSynchronizedWithCurrentItem="True" x:Name="Table"
+                 SelectedItem="{Binding SelectedPhone}" IsSynchronizedWithCurrentItem="False" x:Name="Table"
                           BorderBrush="{x:Null}" SelectionUnit="FullRow" Padding="1,1,1,1" 
                           FontSize="20" FontFamily="Calibri" Foreground="White" 
                           HorizontalAlignment="Center" Background="{x:Null}" 
@@ -400,7 +398,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Foreground="{StaticResource FontColor}"  Grid.Column="0" Text="Предмет:"
                                        HorizontalAlignment="Center" FontSize="18"/>
-                        <!--<ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToString}}" 
+                        <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToString}}" 
                                       ItemsSource="{Binding Lessons}" SelectedItem="{Binding SelectedPhone.Lesson}" Grid.Column="1">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="SelectionChanged">
@@ -409,24 +407,19 @@
                                                             CommandParameter="1" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
-                        </ComboBox>-->
-                        <!--<ToggleButton Grid.Column="1" Name="button">
-                            <ToggleButton.Template>
-                                <ControlTemplate TargetType="ToggleButton">
-                                    <Border x:Name="LessonBox" BorderBrush="White" BorderThickness="1 0 0 0" Style="{StaticResource BorderAdd}" Grid.Column="1">
-                                        <TextBlock Foreground="{StaticResource FontColor}" HorizontalAlignment="Center" 
-                                           VerticalAlignment="Center" Text="{Binding SelectedPhone.Lesson}"/>
-                                    </Border>
-                                </ControlTemplate>
-                            </ToggleButton.Template>
-                        </ToggleButton>-->
+                        </ComboBox>
+          
+                        <!--<Border x:Name="LessonBox" BorderBrush="White" BorderThickness="1 0 0 0" Style="{StaticResource BorderAdd}" Grid.Column="1">
+                            <TextBlock Foreground="{StaticResource FontColor}" HorizontalAlignment="Center" 
+                                VerticalAlignment="Center" Text="{Binding SelectedPhone.Lesson}"/>
+                        </Border>-->
                         
-                        <Border MouseDown="LessonBox_MouseDown" x:Name="LessonBox" BorderBrush="White" BorderThickness="1 0 0 0" Style="{StaticResource BorderAdd}" Grid.Column="1">
+                        <!--<Border MouseDown="LessonBox_MouseDown" x:Name="LessonBox" BorderBrush="White" BorderThickness="1 0 0 0" Style="{StaticResource BorderAdd}" Grid.Column="1">
                             <TextBlock Foreground="{StaticResource FontColor}" HorizontalAlignment="Center" 
                                            VerticalAlignment="Center" Text="{Binding SelectedPhone.Lesson}"/>
-                        </Border>
+                        </Border>-->
                         
-                        <!--<ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToStringSecond}}" 
+                        <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToStringSecond}}" 
                                   ItemsSource="{Binding Lessons}" SelectedItem="{Binding SelectedPhone.OfficeLesson}" Grid.Column="1">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="SelectionChanged">
@@ -435,7 +428,7 @@
                                                             CommandParameter="2" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
-                        </ComboBox>-->
+                        </ComboBox>
                     </Grid>
 
                     
@@ -447,7 +440,9 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Foreground="{StaticResource FontColor}" Grid.Column="0"  Text="Преподаватель:" HorizontalAlignment="Center" FontSize="18"/>
                             <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToString}}" 
-                                          ItemsSource="{Binding TeacherMas}" SelectedItem="{Binding SelectedPhone.Prepod1}" Grid.Column="1"/>
+                                          ItemsSource="{Binding TeacherMas}" SelectedItem="{Binding SelectedPhone.Prepod1}" Grid.Column="1">
+            
+                            </ComboBox>
                             <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToStringSecond}}" 
                                           ItemsSource="{Binding OfficeMas}" SelectedItem="{Binding SelectedPhone.Office1}" Grid.Column="1"/>
                         </Grid>
@@ -458,7 +453,15 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Foreground="{StaticResource FontColor}" Text="Кабинет:" HorizontalAlignment="Center" FontSize="18" Margin="0,0,0,0"/>
-                            <ComboBox ItemsSource="{Binding RoomsMas}" SelectedItem="{Binding SelectedPhone.Room1}" Grid.Column="1"/>
+                            <ComboBox ItemsSource="{Binding RoomsMas}" SelectedItem="{Binding SelectedPhone.Room1}" Grid.Column="1">
+                                <!--<i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction 
+                                                            Command="{Binding ClickRoom}"
+                                                            CommandParameter="2" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>-->
+                            </ComboBox>
                         </Grid>
 
 

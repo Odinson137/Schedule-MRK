@@ -12,5 +12,12 @@
         <DataTemplate DataType="{x:Type viewsmodel:SettingsViewModel}">
             <views:SettingsView/>
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewsmodel:SettingRoomsViewModel}">
+            <views:SettingsRoomView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewsmodel:SettingPrepodsViewModel}">
+            <views:SettingPrepodsView/>
+        </DataTemplate>
     </Application.Resources>
 </Application>
