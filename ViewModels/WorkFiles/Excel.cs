@@ -1,11 +1,10 @@
 ﻿using System.IO;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
-using Base;
 using System.Collections.Generic;
 using System;
-using DopFiles;
 using System.Linq;
+using Sasha_Project.ViewModels.DopModels;
 
 namespace Sasha_Project.Excel;
 
@@ -93,7 +92,7 @@ internal class WorkExcel
     {
         DataBase basa = new DataBase();
         WorkDate date = new WorkDate();
-        List<string[]> masMain = basa.SelectBaseSelecter(week, days);
+        List<string[]> masMain = DataBase.SelectBaseSelecter(week, days);
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 
@@ -206,12 +205,16 @@ class ReadBook
 
                         object k = worksheet.Cells[$"AS{num}"].Value;
 
+                        l = l.Trim();
+
+                        string group = (string)worksheet.Cells[$"A{num}"].Value;
+
                         Double kurs;
                         if (k != null)
                         {
                             kurs = (Double)k;
 
-                            les.Add(new Lessons(l, firstName, lastName, kurs));
+                            les.Add(new Lessons(l, firstName, lastName, group, kurs));
                         }
 
                     }
@@ -221,7 +224,83 @@ class ReadBook
         return les;
     }
 
-    void SelectOpenendFile()
+    private List<T> removeDuplicates<T>(List<T> list)
+    {
+        return new HashSet<T>(list).ToList();
+    }
+
+    private List<IOnlyPrepods> removeDuplicatesTwo(List<IOnlyPrepods> list)
+    {
+        List<Tuple<string, string>> checkMas = new List<Tuple<string, string>>();
+        List<IOnlyPrepods> mas = new List<IOnlyPrepods>();
+        foreach (IOnlyPrepods l in list)
+        {
+            Tuple<string, string> tuple = Tuple.Create(l.Lesson, l.FirstName);
+            if (!checkMas.Contains(tuple))
+            {
+                mas.Add(l);
+                checkMas.Add(tuple);
+            }
+        }
+        return mas;
+    }
+
+    private void CreateBasePrepods(List<Lessons> list)
+    {
+        DataBase.CLeanTable("Prepods");
+
+        List<IOnlyPrepods> interfaceList = list.ConvertAll(s => (IOnlyPrepods)s);
+        List<IOnlyPrepods> listTwo = removeDuplicatesTwo(interfaceList);
+
+        int num = 0;
+        foreach (IOnlyPrepods l in listTwo)
+        {
+            DataBase.InserPrepods(num++, l.Lesson, l.FirstName, l.LastName);
+        }
+    }
+
+    private void CreateBaseLessons(List<Lessons> list)
+    {
+        DataBase.CLeanTable("Lessons");
+
+        List<string> mas = new List<string>();
+
+        int num = 0;
+        foreach (Lessons l in list)
+        {
+            if (!mas.Contains(l.Lesson))
+            {
+                DataBase.InsertLessons(num++, l.Lesson, (int)l.Kurs);
+                mas.Add(l.Lesson);
+            }
+        }
+    }
+
+    private void CreateBaseTables(List<string> listGroups)
+    {
+        DataBase.CLeanTable("Tables");
+
+        DataBase.InsertGeneraltBase(listGroups);
+    }
+
+    private void CreateBaseGroups(List<Lessons> list)
+    {
+        DataBase.CLeanTable("Groups");
+
+        Dictionary<string, string> spec = DataBase.SelectSpecCode();
+        List<string> interfaceGroupd = list.ConvertAll(s => s.Group);
+        List<string> listGroups = removeDuplicates(interfaceGroupd);
+
+        foreach (string group in listGroups)
+        {
+            string code = group.Substring(2, 2);
+            DataBase.InsertGroups(group, spec[code]);
+        }
+
+        CreateBaseTables(listGroups);
+    }
+
+    public void SelectOpenendFile()
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -231,50 +310,37 @@ class ReadBook
             ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
 
             List<Lessons> les = CreateMas(worksheet);
+            List<Lessons> list = removeDuplicates(les);
+            //var iList = list.OrderBy(x => x.Lesson);
 
-            List<T> removeDuplicates<T>(List<T> list)
-            {
-                return new HashSet<T>(list).ToList();
-            }
-
-            List<Lessons> list = removeDuplicates<Lessons>(les);
-            var iList = list.OrderBy(x => x.Lesson);
-
-            DataBase a = new DataBase();
-
-            List<string> mas = new List<string>();
-            foreach (Lessons l in list)
-            {
-                if (mas.Contains(l.Lesson))
-                {
-                    a.InsertLessons(l.Lesson, Convert.ToInt32(l.Kurs));
-                }
-            }
-
-            foreach (Lessons l in list)
-            {
-                a.InserPrepods(l.Lesson, l.FirstName, l.LastName);
-            }
-
-            //foreach (Lessons l in iList)
-            //{
-            //    Console.WriteLine($"{l.Lesson}  - {l.Kurs}");
-            //}
+            //CreateBaseLessons(list);
+            CreateBasePrepods(list);
+            //CreateBaseGroups(list);
         }
     }
 
-    struct Lessons
+
+    interface IOnlyPrepods
     {
         public string Lesson { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+    }
+
+    struct Lessons : IOnlyPrepods
+    {
+        public string Lesson { get; set; }
+        public string Group { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public double Kurs { get; set; }
 
-        public Lessons(string lesson, string firstName, string lastName, double kurs)
+        public Lessons(string lesson, string firstName, string lastName, string group, double kurs)
         {
             Lesson = lesson;
             FirstName = firstName;
             LastName = lastName;
+            Group = group;
             Kurs = kurs;
         }
     }

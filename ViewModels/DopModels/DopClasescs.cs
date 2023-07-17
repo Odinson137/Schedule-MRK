@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DopFiles
+namespace Sasha_Project.ViewModels.DopModels
 {
     class CreateRoom
     {
@@ -16,10 +16,10 @@ namespace DopFiles
 
     struct Group
     {
-        public Group() {}
+        public Group() { }
         public string Gr { get; set; } = "";
         public bool Distant { get; set; } = false;
-    
+
         public override string ToString()
         {
             return Gr;
@@ -38,7 +38,7 @@ namespace DopFiles
 
     struct WorkDate
     {
-        public WorkDate() {}
+        public WorkDate() { }
 
         private Dictionary<int, string[]> daier = new Dictionary<int, string[]>()
         {

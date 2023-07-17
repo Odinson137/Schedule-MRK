@@ -1,7 +1,7 @@
-﻿using Base;
-using MainTable;
+﻿using MainTable;
 using Sasha_Project.Commands;
 using Sasha_Project.Excel;
+using Sasha_Project.ViewModels.DopModels;
 using Sasha_Project.Word;
 using System;
 using System.Collections.Generic;
@@ -70,31 +70,53 @@ namespace Sasha_Project.ViewModels
             }
         }
 
-        public List<string> Lessons { get; set; }
+        public IEnumerable<string> Lessons { get; set; }
         public string Lesson { get; set; }
         private readonly UpdateValuesPrepods prepods = new UpdateValuesPrepods();
-        private readonly UpdateValues rooms = new UpdateValues();
+        private readonly UpdateValuesRooms rooms = new UpdateValuesRooms();
 
+        private IEnumerable<string> firstCharacters;
         public TableViewModel()
         {
-            DataBase a = new DataBase();
-            a.SelectLessons(prepods);
-            a.SelectRooms(rooms);
+            //ReadBook r = new ReadBook();
+            //r.SelectOpenendFile();
 
-            Lessons = prepods.GetLessons();
+            DataBase.SelectLessons(prepods);
+            DataBase.SelectRooms(rooms);
 
-            Phones = a.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
+            firstCharacters = DataBase.SelectFirstLetterGroup();
+            //Lessons = prepods.GetLessons();
+
+            Phones = DataBase.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
+
+            selectedPhone = Phones[0];
         }
 
         private void UpdateValues()
         {
             DataBase a = new DataBase();
-            a.SelectLessons(prepods);
-            a.SelectRooms(rooms);
+            DataBase.SelectLessons(prepods);
+            DataBase.SelectRooms(rooms);
 
-            Phones = a.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
+            Phones = DataBase.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
 
             OnPropertyChanged("Phones");
+        }
+
+        private int GetKurs(Tables value)
+        {
+            char letterGroup = value.Groups.First();
+
+            int kurs = 1;
+            foreach (string charachter in firstCharacters)
+            {
+                if (charachter.First() == letterGroup)
+                {
+                    break;
+                }
+                kurs++;
+            }
+            return kurs;
         }
 
         public Tables SelectedPhone
@@ -102,19 +124,32 @@ namespace Sasha_Project.ViewModels
             get { return selectedPhone; }
             set
             {
-                rooms.GetValues(value, out bool razdel, out bool vel);
-                RoomsMas = rooms.GetMas(razdel, vel, value.Rooms);
+                //if (selectedPhone != null)
+                //{
+                //    rooms.ChangeValue(SelectedPhone.Groups, selectedPhone.Rooms);
+                //    prepods.ChangeValue(SelectedPhone.Groups, selectedPhone.Prepods);
+                //    prepods.ChangeValue(SelectedPhone.Groups, selectedPhone.Office);
+                //    prepods.ChangeValue(SelectedPhone.Groups, selectedPhone.Changes);
+                //}
 
-                TeacherMas = prepods.GetMas(razdel, vel, value.Prepods, value.Lesson);
+                int kurs = GetKurs(value);
+                prepods.Kurs = kurs;
+                Lessons = prepods.GetLessons();
 
-                OfficeMas = prepods.GetMas(razdel, vel, value.Office, value.OfficeLesson);
+                RoomsMas = rooms.GetMas(value.Groups, value.Rooms);
 
-                ChangesMas = prepods.GetAllPrepods(razdel, value.Prepods, vel);
+                prepods.Lesson = value.Lesson;
+                TeacherMas = prepods.GetMas(value.Groups, value.Prepods);
+
+                prepods.Lesson = value.OfficeLesson;
+                OfficeMas = prepods.GetMas(value.Groups, value.Office);
+
+                ChangesMas = prepods.GetAllPrepods(value.Groups, value.Changes);
 
                 Lesson = value.Lesson;
-
                 selectedPhone = value;
 
+                OnPropertyChanged("Lessons");
                 OnPropertyChanged("RoomsMas");
                 OnPropertyChanged("TeacherMas");
                 OnPropertyChanged("ChangesMas");
@@ -163,19 +198,20 @@ namespace Sasha_Project.ViewModels
         {
             if (Lesson != selectedPhone.Lesson)
             {
-                prepods.GetValues(selectedPhone, out bool razdel, out bool vel);
                 if (commandParameter as string == "1")
                 {
-                    TeacherMas = prepods.GetMas(razdel, vel, selectedPhone.Prepods, selectedPhone.Lesson);
+                    prepods.Lesson = SelectedPhone.Lesson;
+                    TeacherMas = prepods.GetMas(SelectedPhone.Groups, selectedPhone.Prepods);
 
-                    ChangesMas = prepods.GetAllPrepods(razdel, selectedPhone.Prepods, vel);
+                    ChangesMas = prepods.GetAllPrepods(SelectedPhone.Groups, selectedPhone.Prepods);
 
                     OnPropertyChanged("TeacherMas");
                     OnPropertyChanged("ChangesMas");
                 }
                 else
                 {
-                    OfficeMas = prepods.GetMas(razdel, vel, selectedPhone.Prepods, selectedPhone.OfficeLesson);
+                    prepods.Lesson = SelectedPhone.OfficeLesson;
+                    OfficeMas = prepods.GetMas(SelectedPhone.Groups, selectedPhone.Prepods);
 
                     OnPropertyChanged("OfficeMas");
                 }
@@ -186,9 +222,9 @@ namespace Sasha_Project.ViewModels
         public RelayCommand ClickSave => clickSave ??
             (clickSave = new RelayCommand(obj =>
             {
-                DataBase dataBase = new DataBase();
-                dataBase.UpdateValueInTableFull(selectedPhone.Id, selectedPhone, selectedPhone.RazdelPara, selectedPhone.Link);
+                DataBase.UpdateValueInTableFull(selectedPhone.Id, selectedPhone, selectedPhone.RazdelPara, selectedPhone.Link);
                 MessageBox.Show("Good");
+                UpdateValues();
             }));
 
         private RelayCommand? selectFile;

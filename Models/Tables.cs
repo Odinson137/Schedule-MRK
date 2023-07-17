@@ -532,7 +532,7 @@ namespace MainTable
             }
         }
 
-        public bool RazdelPara { get; set; } = false;
+        public bool RazdelPara { get; set; }
 
         private bool officeValue = false;
 

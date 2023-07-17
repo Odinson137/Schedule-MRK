@@ -1,26 +1,32 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
-using DocumentFormat.OpenXml.Wordprocessing;
+using DocumentFormat.OpenXml.Presentation;
 using MainTable;
 
-namespace Sasha_Project
+namespace Sasha_Project.ViewModels.DopModels
 {
-    public class UpdateValues
+    public abstract class UpdateValues
     {
-        private protected Dictionary<string, bool[]> dict = new Dictionary<string, bool[]> ();
+        public Dictionary<string, bool[]> dict = new Dictionary<string, bool[]>();
 
-        public UpdateValues() { }
+        public abstract void ZapolDict(ObservableCollection<Tables> tables);
 
-        public void InsertNewValue(string room)
+        private protected void KnowingValue(List<string> values, string rooms)
         {
-            dict.Add(room, new bool[2] { true, true });
-        }
-
-        public void DeleteValues()
-        {
-            dict.Clear();
+            string[] roomMas = rooms.Split("\n");
+            if (roomMas.Length > 0)
+            {
+                foreach (string s in rooms.Split("\n"))
+                {
+                    values.Add(s);
+                }
+            }
+            else
+            {
+                values.Add(rooms);
+            }
         }
 
         public void DopFunc(string value, int i)
@@ -31,31 +37,67 @@ namespace Sasha_Project
             {
                 foreach (string m in mas)
                 {
-                    if (dict.ContainsKey(m))
-                    {
-                        dict[m][i] = false;
-                    }
+                    if (dict.ContainsKey(m)) dict[m][i] = false;
                 }
             }
             else
             {
-                if (dict.ContainsKey(value))
-                {
-                    dict[value][i] = false;
-                }
+                if (dict.ContainsKey(value)) dict[value][i] = false;
             }
         }
 
-        private protected void FuncWithout(string m)
+        public void FuncWithout(string key)
         {
-            if (dict.ContainsKey(m))
+            if (dict.ContainsKey(key))
             {
-                dict[m][0] = false;
-                dict[m][1] = false;
+                dict[key][0] = false;
+                dict[key][1] = false;
             }
         }
 
-        public virtual void ZapolDict(ObservableCollection<Tables> tables)
+
+        private protected void GetValues(string group, out bool razdel, out bool val)
+        {
+            if (group.Contains("1 час"))
+            {
+                razdel = true;
+                val = true;
+            }
+            else if (group.Contains("2 час"))
+            {
+                razdel = true;
+                val = false;
+            }
+            else
+            {
+                razdel = false;
+                val = false;
+            }
+        }
+
+        public abstract List<string> GetMas(string group, string rooms);
+        //public abstract List<string> GetMas(string group, string rooms, string lesson, int kurs);
+        public abstract void DeleteValues();
+
+        public abstract void InsertNewValue(string value);
+    }
+
+    public class UpdateValuesRooms : UpdateValues
+    {
+
+        public UpdateValuesRooms() { }
+
+        public override void InsertNewValue(string value)
+        {
+            dict.Add(value, new bool[2] { true, true });
+        }
+
+        public override void DeleteValues()
+        {
+            dict.Clear();
+        }
+
+        public override void ZapolDict(ObservableCollection<Tables> tables)
         {
             for (int i = 0; i < tables.Count; i++)
             {
@@ -87,57 +129,29 @@ namespace Sasha_Project
                     {
                         FuncWithout(room);
                     }
-
                 }
             }
         }
 
-        public void GetValues(Tables table, out bool razdel, out bool val)
+        public override List<string> GetMas(string group, string rooms)
         {
-            razdel = table.RazdelPara;
-            if (table.Link != null)
-            {
-                val = false;
-            }
-            else val = true;
+            GetValues(group, out bool razdel, out bool value);
 
-        }
-
-        private protected void KnowingValue(List<string> values, string rooms)
-        {
-            string[] roomMas = rooms.Split("\n");
-            if (roomMas.Length > 0)
-            {
-                foreach (string s in rooms.Split("\n"))
-                {
-                    values.Add(s);
-                }
-            }
-            else
-            {
-                values.Add(rooms);
-            }
-        }
-
-        public virtual List<string> GetMas(bool razdel, bool val, string rooms, string lesson = "")
-        {
             IEnumerable<string> mas;
             if (razdel == false)
             {
                 mas = from i in dict
-                                where i.Value[0] == true && i.Value[1] == true
-                                select i.Key;
+                      where i.Value[0] == true && i.Value[1] == true
+                      select i.Key;
 
-            } else if (val == true)
+            }
+            else
             {
+                int num = 1;
+                if (value == true) num = 0;
                 mas = from i in dict
-                                where i.Value[0] == true
-                                select i.Key;
-            } else
-            {
-                mas = from i in dict
-                                where i.Value[1] == true
-                                select i.Key;
+                      where i.Value[num] == true
+                      select i.Key;
             }
 
             List<string> values = new List<string>(mas) { "" };
@@ -146,42 +160,47 @@ namespace Sasha_Project
 
             return values;
         }
-
-        public void DeleteValue(string deletePerson, bool razdel, bool value)
-        {
-            if (razdel)
-            {
-                if (value)
-                {
-                    dict[deletePerson][0] = false;
-                } else
-                {
-                    dict[deletePerson][1] = false;
-                }
-            } else
-            {
-                dict[deletePerson][0] = false;
-                dict[deletePerson][1] = false;
-            }
-        }
     }
 
-    
+    public struct Lessons
+    {
+        public string Lesson { get; set; }
+        public string Prepod { get; set; }
+        public int Kurs { get; set; }
+    }
+
     public class UpdateValuesPrepods : UpdateValues
     {
+        public string Lesson { get; set; }
+        public int Kurs { get; set; }
+
         public UpdateValuesPrepods() { }
 
-        Dictionary<string, List<string>> prepods = new Dictionary<string, List<string>>();
 
-        public void NewDict(Dictionary<string, List<string>> preps)
+        private List<Lessons> lessons = new List<Lessons>();
+        public void NewMas(List<Lessons> mas)
         {
-            prepods = preps;
+            lessons = mas;
+        }
+        public override void DeleteValues()
+        {
+            lessons.Clear();
         }
 
-        public List<string> GetLessons()
+        public override void InsertNewValue(string value)
         {
-            List<string> values = new List<string>(prepods.Keys) { " ", "" };
-            return values;
+            dict.TryAdd(value, new bool[2] { true, true });
+        }
+
+        public void InsertNewStruct(Lessons value)
+        {
+            lessons.Add(value);
+        }
+
+        public IEnumerable<string> GetLessons()
+        {
+            IEnumerable<string> uniqueList = lessons.Where(x => x.Kurs == Kurs).Select(x => x.Lesson).Distinct();
+            return uniqueList;
         }
 
         public override void ZapolDict(ObservableCollection<Tables> tables)
@@ -199,7 +218,7 @@ namespace Sasha_Project
                 {
                     Tables tableNext = tables[++i];
                     string prepodNext = tableNext.Prepods;
-                    string prepodNextZamena = tableNext.Office;
+                    string prepodNextZamena = tableNext.Changes;
                     string prepodNextCafedra = tableNext.Office;
 
                     DopFunc(prepod, 0);
@@ -256,60 +275,54 @@ namespace Sasha_Project
             }
         }
 
-        public List<string> GetAllPrepods(bool razdel, string strPrepods, bool val)
+        public List<string> GetAllPrepods(string group, string strPrepods)
         {
+            GetValues(group, out bool razdel, out bool value);
             IEnumerable<string> mas;
             if (razdel == false)
             {
-                mas = from i in dict
-                      where i.Value[0] == true && i.Value[1] == true
-                      orderby i.Key
-                      select i.Key;
-            }
-            else if (val == true)
-            {
-                mas = from i in dict
-                      where i.Value[0] == true
-                      orderby i.Key
-                      select i.Key;
+                mas = from i in lessons
+                      where dict[i.Prepod][0] == true && dict[i.Prepod][1] == true
+                      select i.Prepod;
             }
             else
             {
-                mas = from i in dict
-                      where i.Value[1] == true
-                      orderby i.Key
-                      select i.Key;
+                int num = 1;
+                if (value) num = 0;
+                mas = from i in lessons
+                      where dict[i.Prepod][num] == true
+                      select i.Prepod;
             }
-
-            List<string> values = new List<string>(mas) { "" };
+            Console.WriteLine(mas.Count());
+            List<string> values = new List<string>(mas) { "asf" };
 
             KnowingValue(values, strPrepods);
 
             return values;
         }
 
-        public override List<string> GetMas(bool razdel, bool val, string strPrepods, string lesson)
+        public override List<string> GetMas(string group, string strPrepods)
         {
-            if (lesson.Length > 1)
+            GetValues(group, out bool razdel, out bool value);
+
+            if (Lesson.Length > 1)
             {
                 IEnumerable<string> mas;
                 if (razdel == false)
                 {
-                    mas = from i in prepods[lesson]
-                          where dict[i][0] == true && dict[i][1] == true
-                          select i;
-                }
-                else if (val == true)
-                {
-                    mas = from i in prepods[lesson]
-                          where dict[i][0] == true
-                          select i;
+                    mas = from i in lessons
+                          where i.Lesson == Lesson
+                          where dict[i.Prepod][0] == true && dict[i.Prepod][1] == true
+                          select i.Prepod;
                 }
                 else
                 {
-                    mas = from i in prepods[lesson]
-                          where dict[i][1] == true
-                          select i;
+                    int num = 1;
+                    if (value) num = 0;
+                    mas = from i in lessons
+                          where i.Lesson == Lesson
+                          where dict[i.Prepod][num] == true
+                          select i.Prepod;
                 }
                 List<string> values = new List<string>(mas);
 
