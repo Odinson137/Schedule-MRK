@@ -39,8 +39,4 @@
     <Resource Include="Views\timetable.png" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\SettingsModels\" />
-  </ItemGroup>
-
 </Project>

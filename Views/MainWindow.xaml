@@ -16,17 +16,17 @@
         <viewmodels:ViewModel/>
     </Window.DataContext>
 
-    <Window.Resources>
-        <LinearGradientBrush x:Key="BorderGradientColor" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#3F888F" Offset="0"/>
-            <GradientStop Color="#3E5F8A" Offset="0.50"/>
-            <GradientStop Color="#002F55" Offset="1"/>
-        </LinearGradientBrush>
-    </Window.Resources>
-    
     <Grid>
         <Border CornerRadius="15"
-            BorderThickness="5" BorderBrush="{StaticResource BorderGradientColor}">
+            BorderThickness="5">
+            <Border.BorderBrush>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#3F888F" Offset="0"/>
+                    <GradientStop Color="#3E5F8A" Offset="0.50"/>
+                    <GradientStop Color="#002F55" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.BorderBrush>
+
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
                     <GradientStop Color="#003153" Offset="0"/>
@@ -154,6 +154,8 @@
                         </Button>
                     </Grid>
                 </Grid>
+
+
             </Grid>
         </Border>
     </Grid>

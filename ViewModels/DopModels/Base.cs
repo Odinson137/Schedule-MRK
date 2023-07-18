@@ -740,12 +740,12 @@ class DataBase
                     while (reader.Read())
                     {
                         int id = reader.GetInt32(0);
-                        string room = reader.GetString(2) ?? "";
-                        string room2 = reader.GetString(9) ?? "";
-                        string prepod = reader.GetString(3) ?? "";
-                        string prepod2 = reader.GetString(10) ?? "";
+                        string room = reader.GetString(2);
+                        string room2 = reader.GetString(9);
+                        string prepod = reader.GetString(3);
+                        string prepod2 = reader.GetString(10);
                         bool razdelPara = reader.GetBoolean(8);
-                        string titleGroup = reader.GetString(1) ?? "";
+                        string titleGroup = reader.GetString(1);
 
                         if (razdelPara) titleGroup += " (1 час)";
 
@@ -755,11 +755,11 @@ class DataBase
                             Groups = titleGroup,
                             Rooms = room,
                             Prepods = prepod,
-                            Changes = reader.GetString(4) ?? "",
-                            Office = reader.GetString(5) ?? "",
-                            OfficeLesson = reader.GetString(16) ?? "",
+                            Changes = reader.GetString(4),
+                            Office = reader.GetString(5),
+                            OfficeLesson = reader.GetString(16),
                             RazdelPara = razdelPara,
-                            Lesson = reader.GetString(14) ?? "",
+                            Lesson = reader.GetString(14),
                         };
 
                         phonesList.Add(firstTable);
@@ -772,11 +772,11 @@ class DataBase
                                 Groups = reader.GetString(1) + " (2 час)",
                                 Rooms = room2,
                                 Prepods = prepod2,
-                                Changes = reader.GetString(11) ?? "",
-                                OfficeLesson = reader.GetString(17) ?? "",
-                                Office = reader.GetString(12) ?? "",
+                                Changes = reader.GetString(11),
+                                OfficeLesson = reader.GetString(17),
+                                Office = reader.GetString(12),
                                 RazdelPara = true,
-                                Lesson = reader.GetString(15) ?? "",
+                                Lesson = reader.GetString(15),
                                 Link = firstTable
                             };
                             phonesList.Add(secondTable);

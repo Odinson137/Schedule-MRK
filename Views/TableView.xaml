@@ -45,6 +45,13 @@
             </Style.Triggers>
         </Style>
 
+        <SolidColorBrush x:Key="FontColor" Color="White"/>
+        <SolidColorBrush x:Key="FontColorBlack" Color="Black"/>
+        <SolidColorBrush x:Key="MainBlueColorBlack" Color="#FF0C2A4C"/>
+        <SolidColorBrush x:Key="MainBlueColorWhite" Color="#278BEF"/>
+        <SolidColorBrush x:Key="MainBlueColorMiddle" Color="#FF183C65"/>
+        <SolidColorBrush x:Key="MainBlueColorDop" Color="#FF013052"/>
+
         <Style x:Key="BorderAdd" TargetType="Border">
             <Setter Property="Background" Value="{StaticResource MainBlueColorMiddle}"/>
             <Style.Triggers>
@@ -102,13 +109,10 @@
 
                 </Popup>
 
-                <ToggleButton x:Name="toggleButton" BorderThickness="{TemplateBinding BorderThickness}" Grid.ColumnSpan="2" 
-                              IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"  Style="{StaticResource ComboBoxToggleButton}">
+                <ToggleButton x:Name="toggleButton" BorderThickness="{TemplateBinding BorderThickness}" Grid.ColumnSpan="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"  Style="{StaticResource ComboBoxToggleButton}">
 
                 </ToggleButton>
-                <ContentPresenter x:Name="contentPresenter" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" Content="{TemplateBinding SelectionBoxItem}" 
-                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
-                                  HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ContentPresenter x:Name="contentPresenter" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" Content="{TemplateBinding SelectionBoxItem}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Center" VerticalAlignment="Center">
                 </ContentPresenter>
             </Grid>
             <ControlTemplate.Triggers>
@@ -262,7 +266,8 @@
                           CanUserDeleteRows="False" CanUserResizeRows="False" 
                           RowDetailsVisibilityMode="Collapsed" AreRowDetailsFrozen="True" RowBackground="#FF183C65" 
                           VerticalScrollBarVisibility="Hidden" HeadersVisibility="Column"
-                          HorizontalScrollBarVisibility="Hidden" MinRowHeight="30" AlternatingRowBackground="#FF092D56">
+                          HorizontalScrollBarVisibility="Hidden" MinRowHeight="30" AlternatingRowBackground="#FF092D56"
+                          >
                 <DataGrid.ColumnHeaderStyle>
                     <Style TargetType="{x:Type DataGridColumnHeader}" >
                         <Setter Property="Background" Value="#FF0C2A4C"/>

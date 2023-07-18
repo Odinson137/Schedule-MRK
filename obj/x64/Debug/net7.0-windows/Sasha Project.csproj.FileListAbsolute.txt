@@ -39,20 +39,6 @@ C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\x64\Debug\n
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\x64\Debug\net7.0-windows\Sasha Project.pdb
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\x64\Debug\net7.0-windows\Sasha Project.genruntimeconfig.cache
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\x64\Debug\net7.0-windows\ref\Sasha Project.dll
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.csproj.AssemblyReference.cache
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\MainWindow.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingBaseView.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\TableView.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\App.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\GeneratedInternalTypeHelper.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project_MarkupCompile.cache
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project_MarkupCompile.lref
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\MainWindow.baml
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingBaseView.baml
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\TableView.baml
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.dll
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\refint\Sasha Project.dll
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.pdb
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\Sasha Project.exe
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\Sasha Project.deps.json
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\Sasha Project.runtimeconfig.json
@@ -77,26 +63,32 @@ C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\runtimes\osx-x64\native\SQLite.Interop.dll
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\runtimes\win-x64\native\SQLite.Interop.dll
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\runtimes\win-x86\native\SQLite.Interop.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.csproj.AssemblyReference.cache
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\MainWindow.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsView.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\TableView.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\App.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project_MarkupCompile.cache
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project_MarkupCompile.lref
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\App.baml
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\MainWindow.baml
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsView.baml
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\TableView.baml
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.g.resources
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.AssemblyInfoInputs.cache
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.AssemblyInfo.cs
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.csproj.CoreCompileInputs.cache
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.csproj.CopyComplete
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\refint\Sasha Project.dll
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.pdb
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.genruntimeconfig.cache
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\ref\Sasha Project.dll
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsViews\SettingsView.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsViews\SettingsView.baml
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsViews\SettingsGroupsViewl.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsViews\SettingsRoomsView.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsViews\SettingsScheduleView.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsViews\SettingsSpecialityView.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsViews\SettingsLessonsView.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsViews\SettingsPrepodsView.g.cs
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsViews\SettingsGroupsViewl.baml
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsViews\SettingsLessonsView.baml
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsViews\SettingsPrepodsView.baml
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsViews\SettingsRoomsView.baml
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsViews\SettingsScheduleView.baml
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsViews\SettingsSpecialityView.baml
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingBaseView.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsRoomView.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingBaseView.baml
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingsRoomView.baml
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingPrepodsView.g.cs
+C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Views\SettingPrepodsView.baml

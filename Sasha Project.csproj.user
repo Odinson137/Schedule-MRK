@@ -10,25 +10,13 @@
     <Compile Update="Views\SettingBaseView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\SettingsViews\SettingsGroupsViewl.xaml.cs">
+    <Compile Update="Views\SettingPrepodsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\SettingsViews\SettingsLessonsView.xaml.cs">
+    <Compile Update="Views\SettingsRoomView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\SettingsViews\SettingsPrepodsView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\SettingsViews\SettingsRoomsView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\SettingsViews\SettingsScheduleView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\SettingsViews\SettingsSpecialityView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\SettingsViews\SettingsView.xaml.cs">
+    <Compile Update="Views\SettingsView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\TableView.xaml.cs">
@@ -42,25 +30,13 @@
     <Page Update="Views\SettingBaseView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\SettingsViews\SettingsGroupsViewl.xaml">
+    <Page Update="Views\SettingPrepodsView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\SettingsViews\SettingsLessonsView.xaml">
+    <Page Update="Views\SettingsRoomView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\SettingsViews\SettingsPrepodsView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\SettingsViews\SettingsRoomsView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\SettingsViews\SettingsScheduleView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\SettingsViews\SettingsSpecialityView.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\SettingsViews\SettingsView.xaml">
+    <Page Update="Views\SettingsView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\TableView.xaml">

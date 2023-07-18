@@ -4,43 +4,20 @@
              xmlns:local="clr-namespace:Sasha_Project"
              StartupUri="Views\MainWindow.xaml"
              xmlns:views="clr-namespace:Sasha_Project.Views"
-             xmlns:viewsmodel="clr-namespace:Sasha_Project.ViewModels"
-             xmlns:settingsviews="clr-namespace:Sasha_Project.Views.SettingsViews"
-             xmlns:settingsviewsmodel="clr-namespace:Sasha_Project.ViewModels.SettingsPages">
+             xmlns:viewsmodel="clr-namespace:Sasha_Project.ViewModels">
     <Application.Resources>
         <DataTemplate DataType="{x:Type viewsmodel:TableViewModel}">
             <views:TableView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type settingsviewsmodel:SettingsViewModel}">
-            <settingsviews:SettingsView/>
+        <DataTemplate DataType="{x:Type viewsmodel:SettingsViewModel}">
+            <views:SettingsView/>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type settingsviewsmodel:SettingRoomsViewModel}">
-            <settingsviews:SettingsRoomsView/>
+        <DataTemplate DataType="{x:Type viewsmodel:SettingRoomsViewModel}">
+            <views:SettingsRoomView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type settingsviewsmodel:SettingPrepodsViewModel}">
-            <settingsviews:SettingsPrepodsView/>
+        <DataTemplate DataType="{x:Type viewsmodel:SettingPrepodsViewModel}">
+            <views:SettingPrepodsView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type settingsviewsmodel:SettingLessonsViewModel}">
-            <settingsviews:SettingsLessonsView/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type settingsviewsmodel:SettingsGroupsViewModel}">
-            <settingsviews:SettingsGroupsView/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type settingsviewsmodel:SettingSpecialtyViewModel}">
-            <settingsviews:SettingsSpecialityView/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type settingsviewsmodel:SettingsScheduleViewModel}">
-            <settingsviews:SettingsScheduleView/>
-        </DataTemplate>
-        
-        <SolidColorBrush x:Key="FontColor" Color="White"/>
-        <SolidColorBrush x:Key="FontColorBlack" Color="Black"/>
-        <SolidColorBrush x:Key="MainBlueColorBlack" Color="#FF0C2A4C"/>
-        <SolidColorBrush x:Key="MainBlueColorWhite" Color="#278BEF"/>
-        <SolidColorBrush x:Key="MainBlueColorMiddle" Color="#FF183C65"/>
-        <SolidColorBrush x:Key="MainBlueColorDop" Color="#FF013052"/>
-        <SolidColorBrush x:Key="MainBlueGentleColor" Color="#3F888F"/>
-        <SolidColorBrush x:Key="MainBlueMiddleGentleColor" Color="#3E5F8A"/>
     </Application.Resources>
 </Application>
