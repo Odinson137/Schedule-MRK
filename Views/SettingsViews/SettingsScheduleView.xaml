@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="Sasha_Project.Views.SettingsViews.SettingsScheduleView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Sasha_Project.Views.SettingsViews"
+        mc:Ignorable="d"
+        xmlns:viewmodels="clr-namespace:Sasha_Project.ViewModels.SettingsPages">
+
+    <UserControl.DataContext>
+        <viewmodels:SettingsScheduleViewModel/>
+    </UserControl.DataContext>
+    <Grid>
+        <TextBlock FontSize="102">Ths is Schedule</TextBlock>
+    </Grid>
+</UserControl>

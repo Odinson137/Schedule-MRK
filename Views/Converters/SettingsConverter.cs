@@ -1,0 +1,30 @@
+﻿using Sasha_Project.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+
+namespace Sasha_Project.Views.Converters
+{
+    class SettingsButtonConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((string)value == (string)parameter)
+            {
+                return "#3F888F";
+            }
+            return "";
+        }
+
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+}
