@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET7_0;NETCOREAPP
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\App.xaml
-6727341439
+3110323580
 
-2573915857
+18-1800512649
 214541834883
-Views\MainWindow.xaml;Views\SettingBaseView.xaml;Views\SettingPrepodsView.xaml;Views\SettingsRoomView.xaml;Views\SettingsView.xaml;Views\TableView.xaml;
+Views\MainWindow.xaml;Views\SettingBaseView.xaml;Views\TableView.xaml;
 
-True
+False
 
