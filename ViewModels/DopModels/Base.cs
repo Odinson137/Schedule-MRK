@@ -11,26 +11,189 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using System.Reflection;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Office2013.Excel;
+using Sasha_Project.Models.SettingsModels;
 
 namespace Sasha_Project.ViewModels.DopModels;
 
 interface IBase
 {
     public List<CreateRoom> SelectValues();
-    public void InsertValue(string value);
-    public void InsertValue(string value, string value2, string firstColumn, string secondColumn);
+    public void DeleteValue(int id);
+    public void PutValue(int id);
+    public void InsertValue(string v0);
 }
 
-class WorkBase : IBase
+class WorkBase
 {
-    private protected string titleTable;
-    private protected string column;
-    public WorkBase(string titleTable, string column)
+    public delegate void Select(SQLiteDataReader reader);
+    public static void SelectValues(string request, Select select)
     {
-        this.titleTable = titleTable;
-        this.column = column;
+        try
+        {
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+            {
+                connection.Open();
+
+                using (SQLiteCommand command = new SQLiteCommand(request, connection))
+                {
+                    SQLiteDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        select(reader);
+                    }
+                }
+                connection.Close();
+            }
+        } catch
+        {
+            MessageBox.Show("Ошибка при чтении таблицы: " + request);
+        }
+
     }
 
+    public static void InsertValue(string request, Dictionary<string, string> mas)
+    {
+        try
+        {
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+            {
+                connection.Open();
+
+                using (SQLiteCommand command = new SQLiteCommand(request, connection))
+                {
+                    foreach (var s in mas)
+                    {
+                        command.Parameters.AddWithValue(s.Key, s.Value);
+                    }
+                    command.ExecuteNonQuery();
+                }
+
+                connection.Close();
+            }
+        }
+        catch
+        {
+            MessageBox.Show("Ошибка при добавлении записи в базу: " + request);
+        }
+    }
+
+    public static void PutValue(string request, Dictionary<string, string> mas)
+    {
+        try
+        {
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+            {
+                connection.Open();
+
+                using (SQLiteCommand command = new SQLiteCommand(request, connection))
+                {
+                    foreach (var s in mas)
+                    {
+                        command.Parameters.AddWithValue(s.Key, s.Value);
+                    }
+                    command.ExecuteNonQuery();
+                }
+            }
+        } 
+        catch
+        {
+            MessageBox.Show("Ошибка при обновлении записи в базе: " + request);
+        }
+
+    }
+}
+
+
+
+//class WorkBase : IBase
+//{
+//    private protected string titleTable;
+//    private protected string column;
+//    public WorkBase(string titleTable, string column)
+//    {
+//        this.titleTable = titleTable;
+//        this.column = column;
+//    }
+
+
+//    public List<CreateRoom> SelectValues()
+//    {
+//        List<CreateRoom> mas = new List<CreateRoom>();
+
+//        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+//        {
+//            connection.Open();
+
+//            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM {titleTable} ORDER BY {column} ASC", connection))
+//            {
+//                SQLiteDataReader reader = command.ExecuteReader();
+
+//                while (reader.Read())
+//                {
+//                    int id = reader.GetInt32(0);
+//                    string value = reader.GetString(1);
+//                    mas.Add(new CreateRoom() { Id = id, Value = value });
+//                }
+//            }
+//            connection.Close();
+//        }
+//        return mas;
+//    }
+
+//    public void DeleteValue(int id)
+//    {
+
+//        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+//        {
+//            connection.Open();
+
+//            using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM {titleTable} WHERE ID = @Id", connection))
+//            {
+//                command.Parameters.AddWithValue("Id", id);
+//                command.ExecuteNonQuery();
+//            }
+
+//            connection.Close();
+//        }
+//    }
+
+//    public void InsertValue(string value)
+//    {
+//        try
+//        {
+//            using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+//            {
+//                connection.Open();
+
+//                using (SQLiteCommand command = new SQLiteCommand($"INSERT INTO {titleTable} ({column}) VALUES (@room)", connection))
+//                {
+//                    command.Parameters.AddWithValue("room", value);
+//                    command.ExecuteNonQuery();
+//                }
+
+//                connection.Close();
+//            }
+//        }
+//        catch
+//        {
+//            MessageBox.Show("Error!");
+//        }
+//    }
+
+//    public void InsertValue(string prepod, string lesson, string firstColumn, string secondColumn) { }
+
+//}
+
+class WorkRoom
+{
+    private string val1;
+    private string val2;
+    public WorkRoom(string value1, string value2)
+    {
+        val1 = value1;
+        val2 = value2;
+    }
 
     public List<CreateRoom> SelectValues()
     {
@@ -40,7 +203,7 @@ class WorkBase : IBase
         {
             connection.Open();
 
-            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM {titleTable} ORDER BY {column} ASC", connection))
+            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM {val1} ORDER BY {val2} ASC", connection))
             {
                 SQLiteDataReader reader = command.ExecuteReader();
 
@@ -56,53 +219,6 @@ class WorkBase : IBase
         return mas;
     }
 
-    public void DeleteValue(int id)
-    {
-
-        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
-        {
-            connection.Open();
-
-            using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM {titleTable} WHERE ID = @Id", connection))
-            {
-                command.Parameters.AddWithValue("Id", id);
-                command.ExecuteNonQuery();
-            }
-
-            connection.Close();
-        }
-    }
-
-    public void InsertValue(string value)
-    {
-        try
-        {
-            using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
-            {
-                connection.Open();
-
-                using (SQLiteCommand command = new SQLiteCommand($"INSERT INTO {titleTable} ({column}) VALUES (@room)", connection))
-                {
-                    command.Parameters.AddWithValue("room", value);
-                    command.ExecuteNonQuery();
-                }
-
-                connection.Close();
-            }
-        }
-        catch
-        {
-            MessageBox.Show("Error!");
-        }
-    }
-
-    public void InsertValue(string prepod, string lesson, string firstColumn, string secondColumn) { }
-
-}
-
-class WorkRoom : WorkBase
-{
-    public WorkRoom(string value1, string value2) : base(value1, value2) { }
     public Dictionary<string, Dictionary<string, string>> SelectAllRooms(string week, string days, List<CreateRoom> mas)
     {
         Dictionary<string, Dictionary<string, string>> dict = new Dictionary<string, Dictionary<string, string>> {
@@ -187,206 +303,206 @@ class WorkRoom : WorkBase
     }
 }
 
-class LessonsTab : WorkBase
-{
-    public LessonsTab(string value1, string value2) : base(value1, value2) { }
-    public new List<CreateRoom> SelectValues()
-    {
-        List<CreateRoom> mas = new List<CreateRoom>();
+//class LessonsTab : WorkBase
+//{
+//    public LessonsTab(string value1, string value2) : base(value1, value2) { }
+//    public new List<CreateRoom> SelectValues()
+//    {
+//        List<CreateRoom> mas = new List<CreateRoom>();
 
-        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
-        {
-            connection.Open();
+//        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+//        {
+//            connection.Open();
 
-            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM {titleTable} ORDER BY {column} ASC", connection))
-            {
-                SQLiteDataReader reader = command.ExecuteReader();
+//            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM {titleTable} ORDER BY {column} ASC", connection))
+//            {
+//                SQLiteDataReader reader = command.ExecuteReader();
 
-                while (reader.Read())
-                {
-                    int id = reader.GetInt32(0);
-                    string lesson = reader.GetString(1);
-                    string prepod = reader.GetString(2);
-                    mas.Add(new CreatePrepods() { Id = id, Value = prepod, ValueTwo = lesson });
-                }
-            }
-            connection.Close();
-        }
-        return mas;
-    }
+//                while (reader.Read())
+//                {
+//                    int id = reader.GetInt32(0);
+//                    string lesson = reader.GetString(1);
+//                    string prepod = reader.GetString(2);
+//                    mas.Add(new CreatePrepods() { Id = id, Value = prepod, ValueTwo = lesson });
+//                }
+//            }
+//            connection.Close();
+//        }
+//        return mas;
+//    }
 
-    public new void InsertValue(string prepod, string lesson, string firstColumn, string secondColumn)
-    {
-        try
-        {
-            using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
-            {
-                connection.Open();
+//    public new void InsertValue(string prepod, string lesson, string firstColumn, string secondColumn)
+//    {
+//        try
+//        {
+//            using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+//            {
+//                connection.Open();
 
-                using (SQLiteCommand command = new SQLiteCommand($"INSERT INTO {titleTable} ({firstColumn}, {secondColumn}) VALUES (@les, @pred)", connection))
-                {
-                    command.Parameters.AddWithValue("les", lesson);
-                    command.Parameters.AddWithValue("pred", prepod);
-                    command.ExecuteNonQuery();
-                }
+//                using (SQLiteCommand command = new SQLiteCommand($"INSERT INTO {titleTable} ({firstColumn}, {secondColumn}) VALUES (@les, @pred)", connection))
+//                {
+//                    command.Parameters.AddWithValue("les", lesson);
+//                    command.Parameters.AddWithValue("pred", prepod);
+//                    command.ExecuteNonQuery();
+//                }
 
-                connection.Close();
-            }
-        }
-        catch
-        {
-            MessageBox.Show("Error!");
-        }
-    }
-}
+//                connection.Close();
+//            }
+//        }
+//        catch
+//        {
+//            MessageBox.Show("Error!");
+//        }
+//    }
+//}
 
-// потом наследовать этот класс от прошлого и просто передать значения
-class GroupTab : WorkBase
-{
-    public GroupTab(string a, string b) : base(a, b) { }
+//// потом наследовать этот класс от прошлого и просто передать значения
+//class GroupTab : WorkBase
+//{
+//    public GroupTab(string a, string b) : base(a, b) { }
 
-    private static string GetTypeLearning(string distant)
-    {
-        string valueThree;
-        if (distant == "0") valueThree = "дневная";
-        else if (distant == "1") valueThree = "заочная";
-        else valueThree = "дистанционная";
-        return valueThree;
-    }
+//    private static string GetTypeLearning(string distant)
+//    {
+//        string valueThree;
+//        if (distant == "0") valueThree = "дневная";
+//        else if (distant == "1") valueThree = "заочная";
+//        else valueThree = "дистанционная";
+//        return valueThree;
+//    }
 
-    public new List<CreateRoom> SelectValues()
-    {
-        List<CreateRoom> mas = new List<CreateRoom>();
+//    public new List<CreateRoom> SelectValues()
+//    {
+//        List<CreateRoom> mas = new List<CreateRoom>();
 
-        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
-        {
-            connection.Open();
+//        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+//        {
+//            connection.Open();
 
-            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM Groups ORDER BY groups ASC", connection))
-            {
-                SQLiteDataReader reader = command.ExecuteReader();
+//            using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM Groups ORDER BY groups ASC", connection))
+//            {
+//                SQLiteDataReader reader = command.ExecuteReader();
 
-                while (reader.Read())
-                {
-                    int id = reader.GetInt32(0);
-                    string group = reader.GetString(1);
-                    string office = reader.GetString(2);
-                    string distant = reader.GetString(3);
+//                while (reader.Read())
+//                {
+//                    int id = reader.GetInt32(0);
+//                    string group = reader.GetString(1);
+//                    string office = reader.GetString(2);
+//                    string distant = reader.GetString(3);
 
-                    mas.Add(new CreateNewPrepods() { Id = id, Value = group, ValueTwo = office, ValueThree = GetTypeLearning(distant) });
-                }
-            }
-            connection.Close();
-        }
-        return mas;
-    }
+//                    mas.Add(new CreateNewPrepods() { Id = id, Value = group, ValueTwo = office, ValueThree = GetTypeLearning(distant) });
+//                }
+//            }
+//            connection.Close();
+//        }
+//        return mas;
+//    }
 
-    public static void InsertValue(string groups, string office, int dist)
-    {
-        try
-        {
-            using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
-            {
-                connection.Open();
+//    public static void InsertValue(string groups, string office, int dist)
+//    {
+//        try
+//        {
+//            using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+//            {
+//                connection.Open();
 
-                using (SQLiteCommand command = new SQLiteCommand($"INSERT INTO Groups (groups, offices, Distants) VALUES (@les, @pred, @dist)", connection))
-                {
-                    command.Parameters.AddWithValue("les", groups);
-                    command.Parameters.AddWithValue("pred", office);
-                    command.Parameters.AddWithValue("dist", dist);
-                    command.ExecuteNonQuery();
-                }
+//                using (SQLiteCommand command = new SQLiteCommand($"INSERT INTO Groups (groups, offices, Distants) VALUES (@les, @pred, @dist)", connection))
+//                {
+//                    command.Parameters.AddWithValue("les", groups);
+//                    command.Parameters.AddWithValue("pred", office);
+//                    command.Parameters.AddWithValue("dist", dist);
+//                    command.ExecuteNonQuery();
+//                }
 
-                connection.Close();
-            }
-            WordGroup a = new WordGroup(groups);
-            a.AddInfoGroup();
-        }
-        catch
-        {
-            MessageBox.Show("Error!");
-        }
-    }
-    public static void DeleteAllValue(string group)
-    {
+//                connection.Close();
+//            }
+//            WordGroup a = new WordGroup(groups);
+//            a.AddInfoGroup();
+//        }
+//        catch
+//        {
+//            MessageBox.Show("Error!");
+//        }
+//    }
+//    public static void DeleteAllValue(string group)
+//    {
 
-        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
-        {
-            connection.Open();
+//        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+//        {
+//            connection.Open();
 
-            using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM Groups WHERE groups = @group", connection))
-            {
-                command.Parameters.AddWithValue("group", group);
-                command.ExecuteNonQuery();
-            }
+//            using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM Groups WHERE groups = @group", connection))
+//            {
+//                command.Parameters.AddWithValue("group", group);
+//                command.ExecuteNonQuery();
+//            }
 
-            connection.Close();
-        }
-        WordGroup a = new WordGroup(group);
-        a.DeleteInfoGroup();
-    }
-}
+//            connection.Close();
+//        }
+//        WordGroup a = new WordGroup(group);
+//        a.DeleteInfoGroup();
+//    }
+//}
 
-class WordGroup
-{
-    public string group { get; set; }
+//class WordGroup
+//{
+//    public string group { get; set; }
 
-    public WordGroup(string group_)
-    {
-        group = group_;
-    }
+//    public WordGroup(string group_)
+//    {
+//        group = group_;
+//    }
 
-    public void DeleteInfoGroup()
-    {
-        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
-        {
-            connection.Open();
+//    public void DeleteInfoGroup()
+//    {
+//        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+//        {
+//            connection.Open();
 
-            using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM Tables WHERE groups = @group", connection))
-            {
-                command.Parameters.AddWithValue("group", group);
-                command.ExecuteNonQuery();
-            }
+//            using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM Tables WHERE groups = @group", connection))
+//            {
+//                command.Parameters.AddWithValue("group", group);
+//                command.ExecuteNonQuery();
+//            }
 
-            connection.Close();
-        }
-    }
+//            connection.Close();
+//        }
+//    }
 
-    public void AddInfoGroup()
-    {
-        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
-        {
-            connection.Open();
+//    public void AddInfoGroup()
+//    {
+//        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+//        {
+//            connection.Open();
 
-            List<string> weak = new List<string> { "ч", "з" };
+//            List<string> weak = new List<string> { "ч", "з" };
 
-            List<int> para = new List<int> { 1, 2, 3, 4, 5, 6, 7 };
+//            List<int> para = new List<int> { 1, 2, 3, 4, 5, 6, 7 };
 
-            List<int> days = new List<int> { 1, 2, 3, 4, 5, 6 };
+//            List<int> days = new List<int> { 1, 2, 3, 4, 5, 6 };
 
-            foreach (string w in weak)
-            {
-                foreach (int d in days)
-                {
-                    foreach (int p in para)
-                    {
-                        using (SQLiteCommand command = new SQLiteCommand($"INSERT INTO Tables (groups, week, para, days) VALUES (@group, @week, @para, @day)", connection))
-                        {
-                            command.Parameters.AddWithValue("@group", group);
-                            command.Parameters.AddWithValue("@week", w);
-                            command.Parameters.AddWithValue("@para", p);
-                            command.Parameters.AddWithValue("@day", d);
-                            command.ExecuteNonQuery();
-                        }
-                    }
+//            foreach (string w in weak)
+//            {
+//                foreach (int d in days)
+//                {
+//                    foreach (int p in para)
+//                    {
+//                        using (SQLiteCommand command = new SQLiteCommand($"INSERT INTO Tables (groups, week, para, days) VALUES (@group, @week, @para, @day)", connection))
+//                        {
+//                            command.Parameters.AddWithValue("@group", group);
+//                            command.Parameters.AddWithValue("@week", w);
+//                            command.Parameters.AddWithValue("@para", p);
+//                            command.Parameters.AddWithValue("@day", d);
+//                            command.ExecuteNonQuery();
+//                        }
+//                    }
 
-                }
-            }
-            connection.Close();
-        }
-    }
+//                }
+//            }
+//            connection.Close();
+//        }
+//    }
 
-}
+//}
 
 class DataBase
 {
@@ -740,12 +856,12 @@ class DataBase
                     while (reader.Read())
                     {
                         int id = reader.GetInt32(0);
-                        string room = reader.GetString(2);
-                        string room2 = reader.GetString(9);
-                        string prepod = reader.GetString(3);
-                        string prepod2 = reader.GetString(10);
+                        string room = reader.GetString(2) ?? "";
+                        string room2 = reader.GetString(9) ?? "";
+                        string prepod = reader.GetString(3) ?? "";
+                        string prepod2 = reader.GetString(10) ?? "";
                         bool razdelPara = reader.GetBoolean(8);
-                        string titleGroup = reader.GetString(1);
+                        string titleGroup = reader.GetString(1) ?? "";
 
                         if (razdelPara) titleGroup += " (1 час)";
 
@@ -755,11 +871,11 @@ class DataBase
                             Groups = titleGroup,
                             Rooms = room,
                             Prepods = prepod,
-                            Changes = reader.GetString(4),
-                            Office = reader.GetString(5),
-                            OfficeLesson = reader.GetString(16),
+                            Changes = reader.GetString(4) ?? "",
+                            Office = reader.GetString(5) ?? "",
+                            OfficeLesson = reader.GetString(16) ?? "",
                             RazdelPara = razdelPara,
-                            Lesson = reader.GetString(14),
+                            Lesson = reader.GetString(14) ?? "",
                         };
 
                         phonesList.Add(firstTable);
@@ -772,11 +888,11 @@ class DataBase
                                 Groups = reader.GetString(1) + " (2 час)",
                                 Rooms = room2,
                                 Prepods = prepod2,
-                                Changes = reader.GetString(11),
-                                OfficeLesson = reader.GetString(17),
-                                Office = reader.GetString(12),
+                                Changes = reader.GetString(11) ?? "",
+                                OfficeLesson = reader.GetString(17) ?? "",
+                                Office = reader.GetString(12) ?? "",
                                 RazdelPara = true,
-                                Lesson = reader.GetString(15),
+                                Lesson = reader.GetString(15) ?? "",
                                 Link = firstTable
                             };
                             phonesList.Add(secondTable);

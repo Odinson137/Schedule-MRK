@@ -54,7 +54,7 @@ namespace Sasha_Project.Views.SettingsViews {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Sasha Project;V1.0.0.0;component/views/settingsviews/settingsgroupsviewl.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Sasha Project;component/views/settingsviews/settingsgroupsviewl.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\..\..\Views\SettingsViews\SettingsGroupsViewl.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

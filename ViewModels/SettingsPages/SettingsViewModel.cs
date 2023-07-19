@@ -21,7 +21,7 @@ namespace Sasha_Project.ViewModels.SettingsPages
 
         public SettingsViewModel()
         {
-            SelectedSettingsBaseViewModel = new SettingRoomsViewModel();
+            SelectedSettingsBaseViewModel = new SettingsRoomsViewModel();
         }
 
         RelayCommand? newSettingsPage;
@@ -30,7 +30,7 @@ namespace Sasha_Project.ViewModels.SettingsPages
             {
                 Index = obj as string ?? "1";
                 if (Index == "1")
-                    SelectedSettingsBaseViewModel = new SettingRoomsViewModel();
+                    SelectedSettingsBaseViewModel = new SettingsRoomsViewModel();
                 else if (Index == "2")
                     SelectedSettingsBaseViewModel = new SettingPrepodsViewModel();
                 else if (Index == "3")

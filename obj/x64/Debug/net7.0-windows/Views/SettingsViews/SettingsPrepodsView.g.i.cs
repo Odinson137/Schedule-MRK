@@ -54,7 +54,7 @@ namespace Sasha_Project.Views.SettingsViews {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Sasha Project;V1.0.0.0;component/views/settingsviews/settingsprepodsview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Sasha Project;component/views/settingsviews/settingsprepodsview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\..\..\Views\SettingsViews\SettingsPrepodsView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

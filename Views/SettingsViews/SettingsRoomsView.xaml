@@ -5,14 +5,139 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sasha_Project.Views.SettingsViews"
         mc:Ignorable="d"
-        xmlns:viewmodels="clr-namespace:Sasha_Project.ViewModels.SettingsPages">
+        xmlns:viewmodels="clr-namespace:Sasha_Project.ViewModels.SettingsPages" xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
 
     <UserControl.DataContext>
-        <viewmodels:SettingRoomsViewModel/>
+        <viewmodels:SettingsRoomsViewModel/>
     </UserControl.DataContext>
 
     <Grid>
-        <TextBlock FontSize="40" Padding="10 2" Foreground="{StaticResource FontColor}">Комнаты</TextBlock>
+        <Border Padding="50">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="90*"/>
+                    <RowDefinition Height="5*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="60*"/>
+                </Grid.ColumnDefinitions>
+
+                <!--<ListView HorizontalContentAlignment="Stretch" ItemsSource="{Binding List}" 
+                          SelectedItem="{Binding SelectedItem}" Grid.Row="1" Grid.Column="0">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn DisplayMemberBinding="{Binding Path=Value}" Width="Auto" Header="Кабинеты"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>-->
+
+                <DataGrid Width="250" SelectedIndex="0" CanUserAddRows="False" Margin="0 0" ColumnWidth="*" Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False"
+                 ItemsSource="{Binding List, Mode=OneWay}" SelectedItem="{Binding SelectedItem}" IsSynchronizedWithCurrentItem="False" x:Name="Table"
+                          BorderBrush="{x:Null}" SelectionUnit="FullRow" Padding="1,1,1,1" IsReadOnly="True"
+                          FontSize="20" FontFamily="Calibri" Foreground="White" 
+                          HorizontalAlignment="Center" Background="{x:Null}" 
+                          SelectionMode="Single" 
+                          CanUserDeleteRows="False" CanUserResizeRows="False" 
+                          RowDetailsVisibilityMode="Collapsed" AreRowDetailsFrozen="True" 
+                          VerticalScrollBarVisibility="Hidden" HeadersVisibility="Column"
+                          HorizontalScrollBarVisibility="Hidden" MinRowHeight="30" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="White" VerticalAlignment="Center">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}" >
+                            <Setter Property="Background" Value="#FF0C2A4C"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontSize" Value="30"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Кабинеты:" Binding="{Binding Path=Value}"/>
+                        <!--<DataGridTextColumn Header="Колледж?" Binding="{Binding Path=MainLesson}"/>-->
+                    </DataGrid.Columns>
+
+                    <DataGrid.RowStyle>
+                        <Style TargetType="{x:Type DataGridRow}" >
+                            <Setter Property="Background" Value="#FF0C2A4C"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="BorderBrush" Value="White"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="24"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource MainBlueGentleColor}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+
+                    <DataGrid.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}">
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Padding" Value="5 5"/>
+                                    <Setter Property="BorderBrush" Value="White"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Background" Value="{StaticResource MainBlueMiddleGentleColor}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.CellStyle>
+
+                </DataGrid>
+                
+                <StackPanel Width="300" Grid.Row="1" Grid.Column="1" 
+                             Margin="50 5" HorizontalAlignment="Center">
+                    <TextBlock FontSize="26" Foreground="{StaticResource FontColor}" Text="Кабинет:" HorizontalAlignment="Center"/>
+                    <TextBox FontSize="22"
+                        Text="{Binding SelectedItem.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, TargetNullValue=Пусто}" 
+                        UndoLimit="20" SelectionBrush="{DynamicResource MainBlueGentleColor}" Background="{DynamicResource MainBlueGentleColor}" BorderBrush="{DynamicResource FontColor}" Foreground="{DynamicResource FontColor}" Height="30" Margin="0,10,0,0" />
+
+                    <Grid Margin="0 20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Height="30" Style="{StaticResource BorderAdd}">
+                            <TextBlock FontSize="16" Foreground="{StaticResource FontColor}" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" Text="Удалить"/>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseDown">
+                                    <i:InvokeCommandAction 
+                                                Command="{Binding DeleteRoom}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Border>
+
+                        <Border Grid.Column="1" Style="{StaticResource BorderAdd}" Height="30">
+                            <TextBlock FontSize="16" Foreground="{StaticResource FontColor}" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" Text="Добавить"/>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseDown">
+                                    <i:InvokeCommandAction 
+                                                Command="{Binding AddRoom}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Border>
+
+                        <Border Grid.Column="2" Style="{StaticResource BorderAdd}" Height="30">
+                            <TextBlock FontSize="16" Foreground="{StaticResource FontColor}" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" Text="Сохранить"/>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseDown">
+                                    <i:InvokeCommandAction 
+                                                Command="{Binding SaveRoom}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 
 </UserControl>

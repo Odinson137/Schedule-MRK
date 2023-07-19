@@ -15,7 +15,6 @@ namespace Sasha_Project.ViewModels
 {
     public class TableViewModel : BaseViewModel
     {
-        private Tables selectedPhone;
         public ObservableCollection<Tables> Phones { get; set; }
         public List<string> RoomsMas { get; set; }
         public List<string> TeacherMas { get; set; }
@@ -71,48 +70,8 @@ namespace Sasha_Project.ViewModels
         private readonly UpdateValuesRooms rooms = new UpdateValuesRooms();
 
         private IEnumerable<string> firstCharacters;
-        public TableViewModel()
-        {
-            //ReadBook r = new ReadBook();
-            //r.SelectOpenendFile();
 
-            DataBase.SelectLessons(prepods);
-            DataBase.SelectRooms(rooms);
-
-            firstCharacters = DataBase.SelectFirstLetterGroup();
-            //Lessons = prepods.GetLessons();
-
-            Phones = DataBase.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
-
-            selectedPhone = Phones[0];
-        }
-
-        private void UpdateValues()
-        {
-            DataBase.SelectLessons(prepods);
-            DataBase.SelectRooms(rooms);
-
-            Phones = DataBase.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
-
-            OnPropertyChanged("Phones");
-        }
-
-        private int GetKurs(Tables value)
-        {
-            char letterGroup = value.Groups.First();
-
-            int kurs = 1;
-            foreach (string charachter in firstCharacters)
-            {
-                if (charachter.First() == letterGroup)
-                {
-                    break;
-                }
-                kurs++;
-            }
-            return kurs;
-        }
-
+        private Tables selectedPhone;
         public Tables SelectedPhone
         {
             get { return selectedPhone; }
@@ -162,6 +121,50 @@ namespace Sasha_Project.ViewModels
                 OnPropertyChanged("SelectedPhone");
             }
         }
+
+        public TableViewModel()
+        {
+            //ReadBook r = new ReadBook();
+            //r.SelectOpenendFile();
+
+            DataBase.SelectLessons(prepods);
+            DataBase.SelectRooms(rooms);
+
+            firstCharacters = DataBase.SelectFirstLetterGroup();
+            //Lessons = prepods.GetLessons();
+
+            Phones = DataBase.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
+
+            selectedPhone = Phones[0];
+        }
+
+        private void UpdateValues()
+        {
+            DataBase.SelectLessons(prepods);
+            DataBase.SelectRooms(rooms);
+
+            Phones = DataBase.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
+
+            OnPropertyChanged("Phones");
+        }
+
+        //private int GetKurs(Tables value)
+        //{
+        //    char letterGroup = value.Groups.First();
+
+        //    int kurs = 1;
+        //    foreach (string charachter in firstCharacters)
+        //    {
+        //        if (charachter.First() == letterGroup)
+        //        {
+        //            break;
+        //        }
+        //        kurs++;
+        //    }
+        //    return kurs;
+        //}
+
+
 
         RelayCommand? getWeek;
         public RelayCommand GetWeek => getWeek ??
