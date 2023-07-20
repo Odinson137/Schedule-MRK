@@ -12,6 +12,7 @@ using System.Reflection;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Office2013.Excel;
 using Sasha_Project.Models.SettingsModels;
+using DocumentFormat.OpenXml.Office2016.Excel;
 
 namespace Sasha_Project.ViewModels.DopModels;
 
@@ -26,7 +27,7 @@ interface IBase
 class WorkBase
 {
     public delegate void Select(SQLiteDataReader reader);
-    public static void SelectValues(string request, Select select)
+    public static bool SelectValues(string request, Select select)
     {
         try
         {
@@ -45,14 +46,16 @@ class WorkBase
                 }
                 connection.Close();
             }
-        } catch
+        } catch (Exception e)
         {
-            MessageBox.Show("Ошибка при чтении таблицы: " + request);
+            MessageBox.Show("Ошибка при чтении таблицы: " + request + " Тип ошибки: " + e.Message);
+            return false;
         }
+        return true;
 
     }
 
-    public static void InsertValue(string request, Dictionary<string, string> mas)
+    public static bool RequestValue(string request, Dictionary<string, object> mas)
     {
         try
         {
@@ -72,36 +75,94 @@ class WorkBase
                 connection.Close();
             }
         }
-        catch
+        catch (Exception e)
         {
-            MessageBox.Show("Ошибка при добавлении записи в базу: " + request);
+            MessageBox.Show("Ошибка при работе с базой данных: " + request + " Тип ошибки: " + e.Message);
+            return false;
         }
+        return true;
     }
 
-    public static void PutValue(string request, Dictionary<string, string> mas)
-    {
-        try
-        {
-            using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
-            {
-                connection.Open();
+    //public static bool InsertValue(string request, Dictionary<string, object> mas)
+    //{
+    //    try
+    //    {
+    //        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+    //        {
+    //            connection.Open();
 
-                using (SQLiteCommand command = new SQLiteCommand(request, connection))
-                {
-                    foreach (var s in mas)
-                    {
-                        command.Parameters.AddWithValue(s.Key, s.Value);
-                    }
-                    command.ExecuteNonQuery();
-                }
-            }
-        } 
-        catch
-        {
-            MessageBox.Show("Ошибка при обновлении записи в базе: " + request);
-        }
+    //            using (SQLiteCommand command = new SQLiteCommand(request, connection))
+    //            {
+    //                foreach (var s in mas)
+    //                {
+    //                    command.Parameters.AddWithValue(s.Key, s.Value);
+    //                }
+    //                command.ExecuteNonQuery();
+    //            }
 
-    }
+    //            connection.Close();
+    //        }
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        MessageBox.Show("Ошибка при добавлении записи в базу: " + request + " Тип ошибки: " + e.Message);
+    //        return false;
+    //    }
+    //    return true;
+    //}
+
+    //public static bool PutValue(string request, Dictionary<string, object> mas)
+    //{
+    //    try
+    //    {
+    //        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+    //        {
+    //            connection.Open();
+
+    //            using (SQLiteCommand command = new SQLiteCommand(request, connection))
+    //            {
+    //                foreach (var s in mas)
+    //                {
+    //                    command.Parameters.AddWithValue(s.Key, s.Value);
+    //                }
+    //                command.ExecuteNonQuery();
+    //            }
+    //        }
+    //    } 
+    //    catch (Exception e)
+    //    {
+    //        MessageBox.Show("Ошибка при обновлении записи в базе: " + request + " Тип ошибки: " + e.Message);
+    //        return false;
+    //    }
+    //    return true;
+    //}
+
+    //public void DeleteValue(string request, Dictionary<string, object> mas)
+    //{
+    //    try
+    //    {
+    //        using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
+    //        {
+    //            connection.Open();
+
+    //            using (SQLiteCommand command = new SQLiteCommand(request, connection))
+    //            {
+    //                foreach (var s in mas)
+    //                {
+    //                    command.Parameters.AddWithValue(s.Key, s.Value);
+    //                }
+    //                command.ExecuteNonQuery();
+    //            }
+
+    //            connection.Close();
+    //        }
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        MessageBox.Show("Ошибка при удалении записи из базы: " + request + " Тип ошибки: " + e.Message);
+    //        return false;
+    //    }
+    //}
 }
 
 

@@ -13,11 +13,10 @@ using System.Windows.Controls;
 
 namespace Sasha_Project.ViewModels.SettingsPages
 {
-    public class SettingsRoomsViewModel : SettingBaseViewModel, IBase
+    public class SettingsRoomsViewModel : SettingBaseViewModel, IBase<RoomModel>
     {
         public ObservableCollection<RoomModel> List { get; set; }
 
-        private string selectedModel;
         private RoomModel selectedItem;
         public RoomModel SelectedItem
         {
@@ -28,7 +27,6 @@ namespace Sasha_Project.ViewModels.SettingsPages
             set
             {
                 selectedItem = value;
-                selectedModel = value.Value;
                 OnPropertyChanged("SelectedItem");
             }
         }
@@ -39,21 +37,24 @@ namespace Sasha_Project.ViewModels.SettingsPages
             SelectValues();
         }
 
-        public void DeleteValue(int id)
+        public bool InsertValue(RoomModel model)
         {
-            throw new NotImplementedException();
+            string request = $"INSERT INTO FreeRooms (ID, rooms) VALUES (@id, @value1)";
+            return WorkBase.RequestValue(request, new Dictionary<string, object>()
+            {
+                { "id", model.ID },
+                { "value1", model.Value }
+            });
         }
 
-        public void InsertValue()
+        public bool PutValue()
         {
-            string request = $"INSERT INTO FreeRooms (rooms) VALUES (@value1)";
-
-            WorkBase.InsertValue(request);
-        }
-
-        public void PutValue(int id, string value)
-        {
-            WorkBase.PutValue(request);
+            string request = $"UPDATE FreeRooms SET (rooms) = (@value1) WHERE ID = @ID";
+            return WorkBase.RequestValue(request, new Dictionary<string, object>()
+            {
+                { "value1", selectedItem.Value }, 
+                { "ID", selectedItem.ID }
+            });
         }
 
         private void AddToList(SQLiteDataReader reader)
@@ -65,42 +66,60 @@ namespace Sasha_Project.ViewModels.SettingsPages
             });
         }
 
-        public void SelectValues()
+        public bool SelectValues()
         {
             string request = $"SELECT * FROM FreeRooms ORDER BY rooms ASC";
-            WorkBase.SelectValues(request, AddToList);
+            return WorkBase.SelectValues(request, AddToList);
+        }
+
+        public bool DeleteValue()
+        {
+            string request = $"DELETE FROM FreeRooms WHERE ID = @Id";
+            return WorkBase.RequestValue(request, new Dictionary<string, object>()
+            {
+                { "Id", selectedItem.ID }
+            });
         }
 
         RelayCommand? deleteRoom;
         public RelayCommand DeleteRoom => deleteRoom ??
             (deleteRoom = new RelayCommand(obj =>
             {
-                List.Remove(SelectedItem);
-                OnPropertyChanged("List");
-                OnPropertyChanged("SelectedItem");
+                if (DeleteValue())
+                {
+                    List.Remove(SelectedItem);
+                    OnPropertyChanged("List");
+                    OnPropertyChanged("SelectedItem");
+
+                    SelectedItem = List[0];
+                    MessageBox.Show("Удалено");
+                }
             }));
 
         RelayCommand? addRoom;
         public RelayCommand AddRoom => addRoom ??
             (addRoom = new RelayCommand(obj =>
             {
-                if (List.Contains(new RoomModel() { Value = selectedModel }))
+                string text = obj as string ?? "";
+                if (List.Contains(new RoomModel() { Value = text }))
                     MessageBox.Show("Уже есть");
                 else
                 {
-                    List.Insert(0, new RoomModel()
+                    int maxId = List.Max(x => x.ID);
+                    RoomModel newRoom = new RoomModel()
                     {
-                        ID = -1,
-                        Value = SelectedItem.Value
-                    });
-                    SelectedItem.Value = selectedModel;
-                    SelectedItem = List[0];
+                        ID = ++maxId,
+                        Value = text
+                    };
 
-                    PutValue(SelectedItem.Value);
+                    if (InsertValue(newRoom))
+                    {
+                        List.Insert(0, newRoom);
+                        SelectedItem = List[0];
 
-                    OnPropertyChanged("List");
-
-                    MessageBox.Show("Add");
+                        OnPropertyChanged("List");
+                        MessageBox.Show("Добавлено");
+                    }
                 }
             }));
 
@@ -108,10 +127,12 @@ namespace Sasha_Project.ViewModels.SettingsPages
         public RelayCommand SaveRoom => saveRoom ??
             (saveRoom = new RelayCommand(obj =>
             {
-
-
-                OnPropertyChanged("List");
-                MessageBox.Show("Save");
+                selectedItem.Value = obj as string ?? "Пустое значение";
+                if (PutValue())
+                {
+                    OnPropertyChanged("List");
+                    MessageBox.Show("Сохранено");
+                }
             }));
     }
 }

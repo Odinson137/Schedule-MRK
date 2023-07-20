@@ -21,7 +21,8 @@ namespace Sasha_Project.ViewModels.SettingsPages
 
         public SettingsViewModel()
         {
-            SelectedSettingsBaseViewModel = new SettingsRoomsViewModel();
+            //SelectedSettingsBaseViewModel = new SettingsRoomsViewModel();
+            SelectedSettingsBaseViewModel = new SettingPrepodsViewModel();
         }
 
         RelayCommand? newSettingsPage;

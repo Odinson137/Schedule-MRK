@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Sasha_Project.ViewModels.SettingsPages
 {
-    interface IBase
+    interface IBase<T>
     {
-        public void SelectValues();
-        public void DeleteValue(int id);
-        public void PutValue(int id);
-        public void InsertValue(string request);
+        public bool SelectValues();
+        public bool DeleteValue();
+        public bool PutValue();
+        public bool InsertValue(T newValue);
     }
 }

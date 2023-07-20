@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Sasha_Project.Models.SettingsModels
 {
-    public class RoomModel : INotifyPropertyChanged
+    public class RoomModel : INotifyPropertyChanged, IModel
     {
         public int ID { get; set; }
 

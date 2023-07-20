@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sasha_Project.Views.SettingsViews"
         mc:Ignorable="d"
-        xmlns:viewmodels="clr-namespace:Sasha_Project.ViewModels.SettingsPages" xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
+        xmlns:viewmodels="clr-namespace:Sasha_Project.ViewModels.SettingsPages" 
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
 
     <UserControl.DataContext>
         <viewmodels:SettingsRoomsViewModel/>
@@ -24,17 +25,10 @@
                     <ColumnDefinition Width="60*"/>
                 </Grid.ColumnDefinitions>
 
-                <!--<ListView HorizontalContentAlignment="Stretch" ItemsSource="{Binding List}" 
-                          SelectedItem="{Binding SelectedItem}" Grid.Row="1" Grid.Column="0">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn DisplayMemberBinding="{Binding Path=Value}" Width="Auto" Header="Кабинеты"/>
-                        </GridView>
-                    </ListView.View>
-                </ListView>-->
-
-                <DataGrid Width="250" SelectedIndex="0" CanUserAddRows="False" Margin="0 0" ColumnWidth="*" Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False"
-                 ItemsSource="{Binding List, Mode=OneWay}" SelectedItem="{Binding SelectedItem}" IsSynchronizedWithCurrentItem="False" x:Name="Table"
+                <DataGrid Width="250" SelectedIndex="0" CanUserAddRows="False" Margin="0 0" ColumnWidth="*" 
+                          Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False"
+                          ItemsSource="{Binding List, Mode=OneWay}" SelectedItem="{Binding SelectedItem}" 
+                          IsSynchronizedWithCurrentItem="False" x:Name="Table"
                           BorderBrush="{x:Null}" SelectionUnit="FullRow" Padding="1,1,1,1" IsReadOnly="True"
                           FontSize="20" FontFamily="Calibri" Foreground="White" 
                           HorizontalAlignment="Center" Background="{x:Null}" 
@@ -42,7 +36,8 @@
                           CanUserDeleteRows="False" CanUserResizeRows="False" 
                           RowDetailsVisibilityMode="Collapsed" AreRowDetailsFrozen="True" 
                           VerticalScrollBarVisibility="Hidden" HeadersVisibility="Column"
-                          HorizontalScrollBarVisibility="Hidden" MinRowHeight="30" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="White" VerticalAlignment="Center">
+                          HorizontalScrollBarVisibility="Hidden" MinRowHeight="30" GridLinesVisibility="Horizontal" 
+                          HorizontalGridLinesBrush="White" VerticalAlignment="Center">
                     <DataGrid.ColumnHeaderStyle>
                         <Style TargetType="{x:Type DataGridColumnHeader}" >
                             <Setter Property="Background" Value="#FF0C2A4C"/>
@@ -89,11 +84,13 @@
 
                 </DataGrid>
                 
+                <TextBlock Grid.Row="2" Foreground="{StaticResource FontColor}" FontSize="20" Text="{Binding List.Count, StringFormat=Количество: {0}}"/>
+                
                 <StackPanel Width="300" Grid.Row="1" Grid.Column="1" 
                              Margin="50 5" HorizontalAlignment="Center">
                     <TextBlock FontSize="26" Foreground="{StaticResource FontColor}" Text="Кабинет:" HorizontalAlignment="Center"/>
-                    <TextBox FontSize="22"
-                        Text="{Binding SelectedItem.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, TargetNullValue=Пусто}" 
+                    <TextBox FontSize="22" x:Name="TextBoxRoom"
+                        Text="{Binding SelectedItem.Value}" 
                         UndoLimit="20" SelectionBrush="{DynamicResource MainBlueGentleColor}" Background="{DynamicResource MainBlueGentleColor}" BorderBrush="{DynamicResource FontColor}" Foreground="{DynamicResource FontColor}" Height="30" Margin="0,10,0,0" />
 
                     <Grid Margin="0 20">
@@ -119,18 +116,20 @@
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseDown">
                                     <i:InvokeCommandAction 
-                                                Command="{Binding AddRoom}"/>
+                                        Command="{Binding AddRoom}"
+                                        CommandParameter="{Binding ElementName=TextBoxRoom, Path=Text}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Border>
 
                         <Border Grid.Column="2" Style="{StaticResource BorderAdd}" Height="30">
                             <TextBlock FontSize="16" Foreground="{StaticResource FontColor}" 
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" Text="Сохранить"/>
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" Text="Изменить"/>
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseDown">
                                     <i:InvokeCommandAction 
-                                                Command="{Binding SaveRoom}"/>
+                                        Command="{Binding SaveRoom}"
+                                        CommandParameter="{Binding ElementName=TextBoxRoom, Path=Text}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Border>
@@ -138,6 +137,7 @@
                 </StackPanel>
             </Grid>
         </Border>
+    
     </Grid>
 
 </UserControl>
