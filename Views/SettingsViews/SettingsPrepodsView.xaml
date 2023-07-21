@@ -15,7 +15,7 @@
         <Border Padding="50">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="0"/>
                     <RowDefinition Height="90*"/>
                     <RowDefinition Height="5*"/>
                 </Grid.RowDefinitions>
@@ -24,7 +24,7 @@
                     <ColumnDefinition Width="60*"/>
                 </Grid.ColumnDefinitions>
 
-                <DataGrid SelectedIndex="0" CanUserAddRows="False" ColumnWidth="*" 
+                <DataGrid MinWidth="200" SelectedIndex="0" CanUserAddRows="False" ColumnWidth="*" 
                           Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False"
                           ItemsSource="{Binding List, Mode=OneWay}" SelectedItem="{Binding SelectedItem}" 
                           IsSynchronizedWithCurrentItem="False" x:Name="Table"
@@ -47,10 +47,8 @@
                     </DataGrid.ColumnHeaderStyle>
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Преподаватели" Binding="{Binding Path=Name}"/>
+                        <DataGridTextColumn Width="*" Header="Фамилии" Binding="{Binding Path=Name}"/>
                         <DataGridTextColumn Width="50" Header="И.О." Binding="{Binding Path=LastName}"/>
-                        <!--<DataGridTextColumn Header="Предмет" Binding="{Binding Path=Lesson}"/>-->
-                        <!--<DataGridTextColumn Header="Колледж?" Binding="{Binding Path=MainLesson}"/>-->
                     </DataGrid.Columns>
 
                     <DataGrid.RowStyle>
@@ -85,15 +83,48 @@
 
                 </DataGrid>
 
-                <TextBlock Grid.Row="2" Foreground="{StaticResource FontColor}" FontSize="20" Text="{Binding List.Count, StringFormat=Количество: {0}}"/>
+                <TextBlock Grid.Row="2" Foreground="{StaticResource FontColor}" 
+                           FontSize="20" Text="{Binding List.Count, StringFormat=Количество: {0}}"/>
+                <StackPanel Margin="30 0" Grid.Row="1" Grid.Column="1">
+                    <TextBlock FontSize="26" Foreground="{StaticResource FontColor}" Text="Преподаватели:" HorizontalAlignment="Center"/>
+                    <Grid  Margin="0,10,0,0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="70"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox FontSize="22" x:Name="TextBoxRoom" 
+                            Text="{Binding SelectedItem.Name}" 
+                            UndoLimit="20" SelectionBrush="{DynamicResource MainBlueGentleColor}" 
+                            Background="{DynamicResource MainBlueGentleColor}" 
+                            BorderBrush="{DynamicResource FontColor}" Foreground="{DynamicResource FontColor}" Height="30"/>
+                        
+                        <TextBox TextAlignment="Center" Margin="10 0 0 0" Grid.Column="1" FontSize="22"
+                            Text="{Binding SelectedItem.LastName}" 
+                            UndoLimit="20" SelectionBrush="{DynamicResource MainBlueGentleColor}" Background="{DynamicResource MainBlueGentleColor}" 
+                            BorderBrush="{DynamicResource FontColor}" Foreground="{DynamicResource FontColor}" Height="30"/>
 
-                <StackPanel Grid.Row="1" Grid.Column="1" 
-                             Margin="50 5" HorizontalAlignment="Center">
-                    <TextBlock FontSize="26" Foreground="{StaticResource FontColor}" Text="Кабинет:" HorizontalAlignment="Center"/>
-                    <TextBox FontSize="22" x:Name="TextBoxRoom"
-                        Text="{Binding SelectedItem.Name}" 
-                        UndoLimit="20" SelectionBrush="{DynamicResource MainBlueGentleColor}" Background="{DynamicResource MainBlueGentleColor}" 
-                             BorderBrush="{DynamicResource FontColor}" Foreground="{DynamicResource FontColor}" Height="30" Margin="0,10,0,0" />
+                    </Grid>
+
+                    <TextBlock Margin="0 20 0 0" Foreground="{StaticResource FontColor}" HorizontalAlignment="Center" 
+                               VerticalAlignment="Center" FontSize="22" Text="Список предметов:"/>
+                    <ListView  HorizontalContentAlignment="Stretch" 
+                              Background="{x:Null}" ItemsSource="{Binding Lessons}" BorderBrush="{x:Null}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="90*"/>
+                                        <ColumnDefinition Width="20*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Width="Auto" FontSize="18" TextWrapping="Wrap" Foreground="{StaticResource FontColor}" Text="{Binding}"/>
+                                    <TextBlock Grid.Column="1" Width="10" FontSize="18" TextWrapping="Wrap" Foreground="{StaticResource FontColor}"/>
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
 
                     <Grid Margin="0 20">
                         <Grid.ColumnDefinitions>

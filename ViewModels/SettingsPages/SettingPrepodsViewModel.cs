@@ -10,8 +10,9 @@ namespace Sasha_Project.ViewModels.SettingsPages
 {
     public class SettingPrepodsViewModel : SettingBaseViewModel, IBase<PrepodModel>
     {
-        public List<PrepodModel> BigLIst { get; set; }
-        public ObservableCollection<PrepodModel> List { get; set; }
+        public List<PrepodModel> BigList { get; set; }
+        public IEnumerable<PrepodModel> List { get; set; }
+        public List<string> Lessons { get; set; }
 
         private PrepodModel selectedItem;
         public PrepodModel SelectedItem
@@ -24,19 +25,19 @@ namespace Sasha_Project.ViewModels.SettingsPages
             {
                 selectedItem = value;
 
+                Lessons = BigList.Where(x => x.Name == value.Name).Select(x => x.Lesson).Order().Distinct().ToList();
+
+
+                OnPropertyChanged("Lessons");
                 OnPropertyChanged("SelectedItem");
             }
         }
 
         public SettingPrepodsViewModel()
         {
-            BigLIst = new List<PrepodModel>(410);
-
-            List = new ObservableCollection<PrepodModel>(BigLIst.DistinctBy(p => p.Name));
-
-            OnPropertyChanged("List");
-            //List = BigLIst.DistinctBy(p => p.Name);
+            BigList = new List<PrepodModel>(410);
             SelectValues();
+            List = BigList.DistinctBy(p => p.Name);
         }
 
         public bool InsertValue(PrepodModel model)
@@ -63,7 +64,7 @@ namespace Sasha_Project.ViewModels.SettingsPages
 
         private void AddToList(SQLiteDataReader reader)
         {
-            BigLIst.Add(new PrepodModel()
+            BigList.Add(new PrepodModel()
             {
                 ID = reader.GetInt32(0),
                 Lesson = reader.GetString(1),
