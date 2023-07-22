@@ -5,14 +5,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.SQLite;
 using System.Linq;
+using System.Windows;
 
 namespace Sasha_Project.ViewModels.SettingsPages
 {
     public class SettingPrepodsViewModel : SettingBaseViewModel, IBase<PrepodModel>
     {
         public List<PrepodModel> BigList { get; set; }
-        public IEnumerable<PrepodModel> List { get; set; }
-        public List<string> Lessons { get; set; }
+        public List<PrepodModel> List { get; set; }
+        public List<string> TeacherLessons { get; set; }
+        public List<LessonModel> Lessons { get; set; }
 
         private PrepodModel selectedItem;
         public PrepodModel SelectedItem
@@ -25,10 +27,9 @@ namespace Sasha_Project.ViewModels.SettingsPages
             {
                 selectedItem = value;
 
-                Lessons = BigList.Where(x => x.Name == value.Name).Select(x => x.Lesson).Order().Distinct().ToList();
+                TeacherLessons = BigList.Where(x => x.Name == value.Name).Select(x => x.Lesson).Order().Distinct().ToList();
 
-
-                OnPropertyChanged("Lessons");
+                OnPropertyChanged("TeacherLessons");
                 OnPropertyChanged("SelectedItem");
             }
         }
@@ -37,7 +38,9 @@ namespace Sasha_Project.ViewModels.SettingsPages
         {
             BigList = new List<PrepodModel>(410);
             SelectValues();
-            List = BigList.DistinctBy(p => p.Name);
+            List = BigList.DistinctBy(p => p.Name).ToList();
+            Lessons = new List<LessonModel>() { new LessonModel() };
+            SelectLessons();
         }
 
         public bool InsertValue(PrepodModel model)
@@ -79,6 +82,21 @@ namespace Sasha_Project.ViewModels.SettingsPages
             return WorkBase.SelectValues(request, AddToList);
         }
 
+
+        private void AddToLessons(SQLiteDataReader reader)
+        {
+            Lessons.Add(new LessonModel()
+            {
+                ID = reader.GetInt32(0),
+                Lesson = reader.GetString(1)
+            });
+        }
+        public bool SelectLessons()
+        {
+            string request = $"SELECT ID, Lessons FROM Lessons ORDER BY Lessons ASC";
+            return WorkBase.SelectValues(request, AddToLessons);
+        }
+
         public bool DeleteValue()
         {
             //string request = $"DELETE FROM FreeRooms WHERE ID = @Id";
@@ -89,10 +107,13 @@ namespace Sasha_Project.ViewModels.SettingsPages
             return false;
         }
 
-        RelayCommand? deleteRoom;
-        public RelayCommand DeleteRoom => deleteRoom ??
-            (deleteRoom = new RelayCommand(obj =>
+        RelayCommand? deletePrepod;
+        public RelayCommand DeletePrepod => deletePrepod ??
+            (deletePrepod = new RelayCommand(obj =>
             {
+                List.Remove(SelectedItem);
+                OnPropertyChanged("List");
+                SelectedItem = List[0];
                 //if (DeleteValue())
                 //{
                 //    List.Remove(SelectedItem);
@@ -104,10 +125,26 @@ namespace Sasha_Project.ViewModels.SettingsPages
                 //}
             }));
 
-        RelayCommand? addRoom;
-        public RelayCommand AddRoom => addRoom ??
-            (addRoom = new RelayCommand(obj =>
+        RelayCommand? addPrepod;
+        public RelayCommand AddPrepod => addPrepod ??
+            (addPrepod = new RelayCommand(obj =>
             {
+                
+                //BigList.Insert(0, new PrepodModel()
+                //{
+                //    ID = -1
+                //});
+
+                List.Insert(0, new PrepodModel()
+                {
+                    ID = -1
+                });
+
+                OnPropertyChanged("List");
+                //OnPropertyChanged("BigList");
+
+                SelectedItem = List[0];
+
                 //string text = obj as string ?? "";
                 //if (List.Contains(new RoomModel() { Value = text }))
                 //    MessageBox.Show("Уже есть");
@@ -131,16 +168,16 @@ namespace Sasha_Project.ViewModels.SettingsPages
                 //}
             }));
 
-        RelayCommand? saveRoom;
-        public RelayCommand SaveRoom => saveRoom ??
-            (saveRoom = new RelayCommand(obj =>
-            {
-                //selectedItem.Value = obj as string ?? "Пустое значение";
-                //if (PutValue())
-                //{
-                //    OnPropertyChanged("List");
-                //    MessageBox.Show("Сохранено");
-                //}
-            }));
+        //RelayCommand? saveRoom;
+        //public RelayCommand SaveRoom => saveRoom ??
+        //    (saveRoom = new RelayCommand(obj =>
+        //    {
+        //        //selectedItem.Value = obj as string ?? "Пустое значение";
+        //        //if (PutValue())
+        //        //{
+        //        //    OnPropertyChanged("List");
+        //        //    MessageBox.Show("Сохранено");
+        //        //}
+        //    }));
     }
 }

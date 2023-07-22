@@ -150,15 +150,15 @@
                             <ColumnDefinition Width="10*"/>
                             <ColumnDefinition Width="30*"/>
                         </Grid.ColumnDefinitions>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="50"/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <Border Grid.Column="1" BorderThickness="1" CornerRadius="0" Background="{StaticResource MainBlueColorMiddle}">
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Расписание на"/>
-                        </Border>
-                    </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="1" BorderThickness="1" CornerRadius="0" Background="{StaticResource MainBlueColorMiddle}">
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Расписание на"/>
+                            </Border>
+                        </Grid>
                         <ComboBox SelectedIndex="{Binding Day}" Grid.Column="1" Template="{DynamicResource ComboBoxTemplate1}" FontSize="20" Foreground="White" BorderBrush="{x:Null}" Cursor="Hand">
                             <TextBlock Text="Понедельник"/>
                             <TextBlock Text="Вторник"/>

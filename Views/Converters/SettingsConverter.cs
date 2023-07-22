@@ -27,4 +27,21 @@ namespace Sasha_Project.Views.Converters
             return null;
         }
     }
+
+    class ChangeToSaveTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((int)value == -1)
+            {
+                return "Добавить";
+            }
+            return "Сохранить";
+        }
+
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
 }

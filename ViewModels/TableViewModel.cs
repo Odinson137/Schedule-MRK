@@ -84,13 +84,12 @@ namespace Sasha_Project.ViewModels
                 //    prepods.ChangeValue(SelectedPhone.Groups, selectedPhone.Office);
                 //    prepods.ChangeValue(SelectedPhone.Groups, selectedPhone.Changes);
                 //}
-
-                char letterGroup = value.Groups.First();
+                string letterGroup = value.Groups;
 
                 int kurs = 1;
                 foreach (string charachter in firstCharacters)
                 {
-                    if (charachter.First() == letterGroup)
+                    if (charachter[0] == letterGroup[0])
                     {
                         break;
                     }

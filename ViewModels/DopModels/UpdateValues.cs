@@ -165,6 +165,15 @@ namespace Sasha_Project.ViewModels.DopModels
     public struct Lessons
     {
         public string Lesson { get; set; }
+        public string ShortLesson { get; set; }
+        public string ViewLesson
+        {
+            get
+            {
+                if (ShortLesson != null) return ShortLesson;
+                else return Lesson;
+            }
+        }
         public string Prepod { get; set; }
         public int Kurs { get; set; }
     }
