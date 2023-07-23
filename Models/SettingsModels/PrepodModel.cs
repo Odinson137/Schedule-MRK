@@ -10,7 +10,19 @@ namespace Sasha_Project.Models.SettingsModels
 {
     public class PrepodModel : INotifyPropertyChanged, IModel
     {
-        public int ID { get; set; }
+        private int id;
+        public int ID
+        {
+            get
+            {
+                return id;
+            }
+            set
+            {
+                id = value;
+                OnPropertyChanged("ID");
+            }
+        }
 
         private string lesson;
         public string Lesson

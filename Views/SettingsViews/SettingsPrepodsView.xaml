@@ -14,6 +14,7 @@
 
     <UserControl.Resources>
         <converters:ChangeToSaveTextConverter x:Key="ButtonClickText"/>
+        <converters:NewPrepodAddItemVisible x:Key="Visible"/>
         
         <ControlTemplate TargetType="ToggleButton" x:Key="ComboBoxToggleButtonTemplate">
             <Grid>
@@ -138,7 +139,7 @@
 
                 <DataGrid MinWidth="200" SelectedIndex="0" CanUserAddRows="False" ColumnWidth="*" 
                           Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False"
-                          ItemsSource="{Binding List, Mode=OneWay}" SelectedItem="{Binding SelectedItem}" 
+                          ItemsSource="{Binding List}" SelectedItem="{Binding SelectedItem}" 
                           IsSynchronizedWithCurrentItem="False" x:Name="Table"
                           BorderBrush="{x:Null}" SelectionUnit="FullRow" Padding="1,1,1,1" IsReadOnly="True"
                           FontSize="20" FontFamily="Calibri" Foreground="White" 
@@ -207,8 +208,6 @@
                     </i:Interaction.Triggers>
                 </Border>
 
-                <!--<TextBlock Grid.Row="2" Foreground="{StaticResource FontColor}" 
-                           FontSize="20" Text="{Binding List.Count, StringFormat=Количество: {0}}"/>-->
                 <StackPanel Margin="30 0" Grid.Row="1" Grid.Column="1">
                     <TextBlock FontSize="26" Foreground="{StaticResource FontColor}" Text="Преподаватели:" HorizontalAlignment="Center"/>
                     <Grid  Margin="0,10,0,0" >
@@ -226,34 +225,7 @@
                             Text="{Binding SelectedItem.LastName, UpdateSourceTrigger=PropertyChanged}" 
                             UndoLimit="20" SelectionBrush="{DynamicResource MainBlueGentleColor}" Background="{DynamicResource MainBlueGentleColor}" 
                             BorderBrush="{DynamicResource FontColor}" Foreground="{DynamicResource FontColor}" Height="30"/>
-
                     </Grid>
-
-                    <TextBlock Margin="0 20 0 0" Foreground="{StaticResource FontColor}" HorizontalAlignment="Center" 
-                               VerticalAlignment="Center" FontSize="22" Text="Список предметов:"/>
-                    <ListView  HorizontalContentAlignment="Stretch" 
-                              Background="{x:Null}" ItemsSource="{Binding TeacherLessons}" BorderBrush="{x:Null}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="90*"/>
-                                        <ColumnDefinition Width="20*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Width="Auto" FontSize="18" TextWrapping="Wrap" Foreground="{StaticResource FontColor}" Text="{Binding}"/>
-                                    <TextBlock Grid.Column="1" Width="10" FontSize="18" TextWrapping="Wrap" Foreground="{StaticResource FontColor}"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-
-                    <ComboBox Margin="0 10" ItemsSource="{Binding Lessons}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock FontSize="16" Text="{Binding Lesson}"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
 
                     <Grid Margin="0 20">
                         <Grid.ColumnDefinitions>
@@ -278,12 +250,59 @@
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseDown">
                                     <i:InvokeCommandAction 
-                                        Command="{Binding SaveRoom}"
-                                        CommandParameter="{Binding ElementName=TextBoxRoom, Path=Text}"/>
+                                        Command="{Binding PutLesson}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Border>
                     </Grid>
+
+                    <StackPanel Visibility="{Binding SelectedItem.ID, Converter={StaticResource Visible}}">
+                        <TextBlock Margin="0 20 0 0" Foreground="{StaticResource FontColor}" HorizontalAlignment="Center" 
+                               VerticalAlignment="Center" FontSize="22" Text="Список предметов:"/>
+                        <ListView  HorizontalContentAlignment="Stretch" Background="{x:Null}" 
+                                   ItemsSource="{Binding TeacherLessons}" 
+                                   BorderBrush="{x:Null}" x:Name="ListTeacherLessons">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                     <TextBlock Width="Auto" FontSize="18" TextWrapping="Wrap" Foreground="{StaticResource FontColor}" Text="{Binding Lesson}"/>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+
+                        <Border Grid.Column="1" Style="{StaticResource BorderAdd}" Height="30">
+                            <TextBlock FontSize="16" Foreground="{StaticResource FontColor}" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                       Text="Удалить предмет"/>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseDown">
+                                    <i:InvokeCommandAction 
+                                        Command="{Binding DeleteLesson}"
+                                        CommandParameter="{Binding ElementName=ListTeacherLessons, Path=SelectedItem}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Border>
+
+                        <ComboBox Margin="0 10" Name="LessonsComboBox" ItemsSource="{Binding Lessons}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock FontSize="16" Text="{Binding Lesson}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <Border Grid.Column="1" Style="{StaticResource BorderAdd}" Height="30">
+                            <TextBlock FontSize="16" Foreground="{StaticResource FontColor}" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                       Text="Добавить предмет"/>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseDown">
+                                    <i:InvokeCommandAction 
+                                        Command="{Binding AddLesson}"
+                                        CommandParameter="{Binding ElementName=LessonsComboBox, Path=SelectedItem}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </Border>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </Border>
