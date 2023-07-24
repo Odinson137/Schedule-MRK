@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using MainTable;
 using Sasha_Project.ViewModels.DopModels;
+using System.Data.SQLite;
+using DocumentFormat.OpenXml.Bibliography;
 
 namespace Sasha_Project.Word
 {
@@ -206,6 +208,13 @@ namespace Sasha_Project.Word
     }
     class WorkWord
     {
+
+        Dictionary<string, List<Group>> mas;
+
+        Dictionary<string, Dictionary<int, Tables[]>> groups;
+
+        Dictionary<string, List<string>> departMas;
+
         public WorkWord() { }
         private Paragraph CreateParagraph(string text, bool textBold, string textFont)
         {
@@ -547,8 +556,116 @@ namespace Sasha_Project.Word
             //CreateText(ref body, "");
         }
 
+        private void SelecterGroup(SQLiteDataReader reader)
+        {
+            string group = reader.GetString(1);
+            string office = reader.GetString(2);
+            string dist = reader.GetString(3);
+            bool distant = false;
+            if (dist == "1") distant = true;
 
-    public void MainDocument(int day, string week)
+            if (mas.ContainsKey(office))
+                mas[office].Add(new Group() { Gr = group, Distant = distant });
+            else
+                mas.Add(office, new List<Group>() { new Group() { Gr = group, Distant = distant } });
+        }
+
+        private void SelectGroups()
+        {
+            mas = new Dictionary<string, List<Group>>();
+            string request = "SELECT * FROM Groups ORDER BY offices ASC";
+            WorkBase.SelectValues(request, SelecterGroup);
+        }
+
+        private void SelecterWord(SQLiteDataReader reader)
+        {
+            string titleGroup = reader.GetString(1);
+            string para = reader.GetString(7);
+
+            Tables[] tables;
+
+            bool RazdelPara = reader.GetBoolean(8);
+
+            Tables table = new Tables()
+            {
+                Groups = titleGroup,
+                Rooms = reader.GetString(2),
+                Prepods = reader.GetString(3),
+                Changes = reader.GetString(4),
+                Office = reader.GetString(5),
+                Lesson = reader.GetString(14),
+                OfficeLesson = reader.GetString(16),
+            };
+
+            if (RazdelPara)
+            {
+                tables = new Tables[2];
+
+                Tables tableTwo = new Tables()
+                {
+                    Groups = "Вторая половина",
+                    Rooms = reader.GetString(9),
+                    Prepods = reader.GetString(10),
+                    Changes = reader.GetString(11),
+                    Office = reader.GetString(12),
+                    Lesson = reader.GetString(15),
+                    OfficeLesson = reader.GetString(17),
+                };
+
+                tables[0] = table;
+                tables[1] = tableTwo;
+
+            }
+            else
+            {
+                tables = new Tables[1];
+                tables[0] = table;
+            }
+
+            int paraInt = int.Parse(para);
+            if (groups.ContainsKey(titleGroup))
+            {
+                groups[titleGroup].Add(paraInt, tables);
+            }
+            else
+            {
+                groups.Add(titleGroup, new Dictionary<int, Tables[]> { { paraInt, tables } });
+            }
+        }
+
+        private void SelectForWord(string week, int day)
+        {
+            groups = new Dictionary<string, Dictionary<int, Tables[]>>();
+            mas = new Dictionary<string, List<Group>>();
+            string request = $"SELECT * FROM Tables WHERE week = '{week}' AND days = {day} ORDER BY groups ASC";
+            WorkBase.SelectValues(request, SelecterWord);
+        }
+
+        Dictionary<string, List<string>> groupsDict = new Dictionary<string, List<string>>() {
+            { "1", new List<string>()},
+            { "2", new List<string>()},
+            { "3", new List<string>()},
+            { "4", new List<string>()},
+            { "5", new List<string>()},
+            { "6", new List<string>()},
+        };
+
+        private void SelecterSpec(SQLiteDataReader reader)
+        {
+            string spec = reader.GetString(0);
+            string page = reader.GetString(1);
+
+            groupsDict[page].Add(spec);
+        }
+
+        private void SelectSpec()
+        {
+            departMas = new Dictionary<string, List<string>>();
+            string request = "SELECT Spec, Pages FROM Scep ORDER BY Departments ASC";
+            WorkBase.SelectValues(request, SelecterSpec);
+        }
+
+        public void MainDocument(int day, string week)
         {
             using (WordprocessingDocument document = WordprocessingDocument.Create("Учащиеся.docx", WordprocessingDocumentType.Document))
             {
@@ -576,11 +693,10 @@ namespace Sasha_Project.Word
 
                 Table table = new Table();
 
-                DataBase a = new DataBase();
-                Dictionary<string, Dictionary<int, Tables[]>> groups = a.SelectForWord(week, day);
+                SelectForWord(week, day);
 
-                Dictionary<string, List<Group>> mas = DataBase.SelectGroups();
-                Dictionary<string, List<string>> departMas = DataBase.SelectSpec();
+                SelectGroups();
+                SelectSpec();
 
                 int sum = 0;
 

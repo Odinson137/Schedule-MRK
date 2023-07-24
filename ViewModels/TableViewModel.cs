@@ -1,10 +1,12 @@
-﻿using MainTable;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using MainTable;
 using Sasha_Project.Commands;
 using Sasha_Project.Excel;
 using Sasha_Project.ViewModels.DopModels;
 using Sasha_Project.Word;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.SQLite;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -125,44 +127,50 @@ namespace Sasha_Project.ViewModels
         {
             //ReadBook r = new ReadBook();
             //r.SelectOpenendFile();
-
-            DataBase.SelectLessons(prepods);
-            DataBase.SelectRooms(rooms);
-
+            SelectLessons();
+            SelectRooms();
             firstCharacters = DataBase.SelectFirstLetterGroup();
-            //Lessons = prepods.GetLessons();
-
             Phones = DataBase.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
-
             selectedPhone = Phones[0];
         }
 
         private void UpdateValues()
         {
-            DataBase.SelectLessons(prepods);
-            DataBase.SelectRooms(rooms);
-
+            SelectLessons();
+            SelectRooms();
             Phones = DataBase.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
-
             OnPropertyChanged("Phones");
         }
 
-        //private int GetKurs(Tables value)
-        //{
-        //    char letterGroup = value.Groups.First();
+        private void SelectRoom(SQLiteDataReader reader)
+        {
+            string freeRoom = reader.GetString(0);
+            rooms.InsertNewValue(freeRoom);
+        }
+        private void SelectRooms()
+        {
+            rooms.DeleteValues();
+            string request = "SELECT rooms FROM FreeRooms ORDER BY rooms ASC";
+            WorkBase.SelectValues(request, SelectRoom);
+        }
 
-        //    int kurs = 1;
-        //    foreach (string charachter in firstCharacters)
-        //    {
-        //        if (charachter.First() == letterGroup)
-        //        {
-        //            break;
-        //        }
-        //        kurs++;
-        //    }
-        //    return kurs;
-        //}
+        private void SelectTable(SQLiteDataReader reader)
+        {
+            string prepod = reader.GetString(1);
+            prepods.InsertNewStruct(new Lessons()
+            {
+                Lesson = reader.GetString(0),
+                Prepod = prepod,
+                Kurs = reader.GetInt32(2)
+            });
+            prepods.InsertNewValue(prepod);
+        }
 
+        private void SelectLessons()
+        {
+            string request = "SELECT Lessons.Lessons, Prepods.Prepods, Lessons.Kurs FROM Lessons INNER JOIN Prepods ON Lessons.Lessons = Prepods.Lessons ORDER BY Lessons.Lessons;";
+            WorkBase.SelectValues(request, SelectTable);
+        }
 
 
         RelayCommand? getWeek;

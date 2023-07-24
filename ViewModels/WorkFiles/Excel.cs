@@ -5,11 +5,16 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using Sasha_Project.ViewModels.DopModels;
+using System.Windows;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using Microsoft.VisualBasic;
+using System.Data.SQLite;
 
 namespace Sasha_Project.Excel;
 
 internal class WorkExcel
 {
+    static List<string[]> masMain = new List<string[]>();
 
     private bool IsWorksheetExist(string sheetName, ExcelPackage package)
     {
@@ -88,11 +93,36 @@ internal class WorkExcel
         return todayStr;
     }
 
+    private static void Selecter(SQLiteDataReader reader)
+    {
+        string[] mas = new string[11];
+
+        mas[0] = reader.GetString(1);
+        mas[1] = reader.GetString(2);
+        mas[2] = reader.GetString(3);
+        mas[3] = reader.GetBoolean(8).ToString();
+        mas[4] = reader.GetString(4);
+        mas[5] = reader.GetString(5);
+
+        mas[6] = reader.GetString(9);
+        mas[7] = reader.GetString(10);
+        mas[8] = reader.GetString(11);
+        mas[9] = reader.GetString(12);
+        mas[10] = reader.GetString(7);
+
+        masMain.Add(mas);
+    }
+
+    private static void SelectBaseSelecter(string week, int days)
+    {
+        string request = $"SELECT * FROM Tables WHERE week = '{week}' AND days = {days} ORDER BY para ASC";
+        WorkBase.SelectValues(request, Selecter);
+    }
+
     public void CreateExcel(string week, int para, int days)
     {
-        DataBase basa = new DataBase();
         WorkDate date = new WorkDate();
-        List<string[]> masMain = DataBase.SelectBaseSelecter(week, days);
+        SelectBaseSelecter(week, days);
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 
@@ -291,10 +321,11 @@ class ReadBook
         List<string> interfaceGroupd = list.ConvertAll(s => s.Group);
         List<string> listGroups = removeDuplicates(interfaceGroupd);
 
+        int id = 1;
         foreach (string group in listGroups)
         {
             string code = group.Substring(2, 2);
-            DataBase.InsertGroups(group, spec[code]);
+            DataBase.InsertGroups(group, spec[code], id++);
         }
 
         CreateBaseTables(listGroups);
@@ -314,8 +345,10 @@ class ReadBook
             //var iList = list.OrderBy(x => x.Lesson);
 
             //CreateBaseLessons(list);
-            CreateBasePrepods(list);
-            //CreateBaseGroups(list);
+            //CreateBasePrepods(list);
+            CreateBaseGroups(list);
+
+            MessageBox.Show("good");
         }
     }
 

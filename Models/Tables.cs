@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace MainTable
@@ -8,7 +9,7 @@ namespace MainTable
     {
         public int Id { get; set; }
 
-        string group = "";
+        private string group;
         public string Groups
         {
             get
@@ -21,24 +22,26 @@ namespace MainTable
                 OnPropertyChanged("Groups");
             }
         }
-        private string rooms = "";
+        private string[] rooms = new string[3] { "", "", "" };
         public string Rooms
         {
             set
             {
-                if (value == "0")
-                {
-                    rooms = "";
-                }
+                string[] mas = value.Split('\n');
+                if (mas.Length <= 1)
+                    rooms[0] = value;
                 else
-                {
-                    rooms = value;
-                }
+                    for (int i = 0; i < mas.Length; i++)
+                        rooms[i] = mas[i];
                 OnPropertyChanged("Rooms");
             }
             get
             {
-                return rooms;
+                string str;
+                if (rooms[2] != "") str = rooms[0] + "\n" + rooms[1] + "\n" + rooms[2];
+                else if (rooms[1] != "") str = rooms[0] + "\n" + rooms[1];
+                else str = rooms[0];
+                return str;
             }
         }
 
@@ -46,29 +49,12 @@ namespace MainTable
         {
             set
             {
-                string[] mas = rooms.Split("\n");
-                if (mas.Length > 0)
-                {
-                    mas[0] = value;
-                    rooms = String.Join('\n', mas);
-                }
-                else
-                {
-                    rooms = value;
-                }
+                rooms[0] = value;
                 OnPropertyChanged("Rooms");
             }
             get
             {
-                string[] mas = rooms.Split("\n");
-                if (mas.Length > 0)
-                {
-                    return mas[0];
-                }
-                else
-                {
-                    return rooms;
-                }
+                return rooms[0];
             }
         }
 
@@ -76,80 +62,47 @@ namespace MainTable
         {
             set
             {
-                string[] mas = rooms.Split("\n");
-                if (mas.Length > 1)
-                {
-                    mas[1] = value;
-                    rooms = String.Join('\n', mas);
-                }
-                else
-                {
-                    rooms += "\n" + value;
-                }
+                rooms[1] = value;
                 OnPropertyChanged("Rooms");
             }
             get
             {
-                string[] mas = rooms.Split("\n");
-                if (mas.Length > 1)
-                {
-                    return mas[1];
-                }
-                else
-                {
-                    return "";
-                }
+                return rooms[1];
             }
         }
-
         public string Room3
         {
             set
             {
-                string[] mas = rooms.Split("\n");
-                if (mas.Length > 2)
-                {
-                    mas[2] = value;
-                    rooms = String.Join('\n', mas);
-                }
-                else
-                {
-                    rooms += "\n" + value;
-                }
+                rooms[2] = value;
                 OnPropertyChanged("Rooms");
             }
             get
             {
-                string[] mas = rooms.Split("\n");
-                if (mas.Length > 2)
-                {
-                    return mas[2];
-                }
-                else
-                {
-                    return "";
-                }
+                return rooms[2];
             }
         }
 
-        private string prepods = "";
+        private string[] prepods = new string[3] { "", "", "" };
         public string Prepods
         {
             set
             {
-                if (value == "0")
-                {
-                    prepods = "";
-                }
+                string[] mas = value.Split('\n');
+                if (mas.Length <= 1)
+                    prepods[0] = value;
                 else
-                {
-                    prepods = value;
-                }
+                    for (int i = 0; i < mas.Length; i++)
+                        prepods[i] = mas[i];
                 OnPropertyChanged("Prepods");
             }
             get
             {
-                return prepods;
+                string str;
+                if (prepods[2] != "") str = Prepod1 + "\n" + Prepod2 + "\n" + Prepod3;
+                else if (prepods[1] != "") str = Prepod1 + "\n" + Prepod2;
+                else str = Prepod1;
+                return str;
             }
         }
 
@@ -157,30 +110,13 @@ namespace MainTable
         {
             set
             {
-                string[] mas = prepods.Split("\n");
-                if (mas.Length > 0)
-                {
-                    mas[0] = value;
-                    prepods = String.Join('\n', mas);
-                }
-                else
-                {
-                    prepods = value;
-                }
+                prepods[0] = value;
                 OnPropertyChanged("Prepods");
 
             }
             get
             {
-                string[] mas = prepods.Split("\n");
-                if (mas.Length > 0)
-                {
-                    return mas[0];
-                }
-                else
-                {
-                    return prepods;
-                }
+                return prepods[0];
             }
         }
 
@@ -188,28 +124,12 @@ namespace MainTable
         {
             set
             {
-                string[] mas = prepods.Split("\n");
-                if (mas.Length > 1)
-                {
-                    mas[1] = value;
-                    prepods = String.Join('\n', mas);
-                }
-                else {
-                    prepods += "\n" + value;
-                }
+                prepods[1] = value;
                 OnPropertyChanged("Prepods");
             }
             get
             {
-                string[] mas = prepods.Split("\n");
-                if (mas.Length > 1)
-                {
-                    return mas[1];
-                }
-                else
-                {
-                    return " ";
-                }
+                return prepods[1];
             }
         }
 
@@ -217,50 +137,36 @@ namespace MainTable
         {
             set
             {
-                string[] mas = prepods.Split("\n");
-                if (mas.Length > 2)
-                {
-                    mas[2] = value;
-                    prepods = String.Join('\n', mas);
-                }
-                else {
-                    prepods += "\n" + value;
-                }
+                prepods[2] = value;
                 OnPropertyChanged("Prepods");
             }
             get
             {
-                string[] mas = prepods.Split("\n");
-                if (mas.Length > 2)
-                {
-                    return mas[2];
-                }
-                else
-                {
-                    return " ";
-                }
+                return prepods[2];
             }
         }
 
-        private string changes = "";
+        private string[] changes = new string[3] { "", "", "" };
 
         public string Changes
         {
             set
             {
-                if (value == "0")
-                {
-                    changes = "";
-                }
+                string[] mas = value.Split('\n');
+                if (mas.Length <= 1)
+                    changes[0] = value;
                 else
-                {
-                    changes = value;
-                }
+                    for (int i = 0; i < mas.Length; i++)
+                        changes[i] = mas[i];
                 OnPropertyChanged("Changes");
             }
             get
             {
-                return changes;
+                string str;
+                if (changes[2] != "") str = Changes1 + "\n" + Changes2 + "\n" + Changes3;
+                else if (changes[1] != "") str = Changes1 + "\n" + Changes2;
+                else str = Changes1;
+                return str;
             }
         }
 
@@ -268,29 +174,12 @@ namespace MainTable
         {
             set
             {
-                string[] mas = changes.Split("\n");
-                if (mas.Length > 0)
-                {
-                    mas[0] = value;
-                    changes = String.Join('\n', mas);
-                }
-                else
-                {
-                    changes = value;
-                }
+                changes[0] = value;
                 OnPropertyChanged("Changes");
             }
             get
             {
-                string[] mas = changes.Split("\n");
-                if (mas.Length > 0)
-                {
-                    return mas[0];
-                }
-                else
-                {
-                    return changes;
-                }
+                return changes[0];
             }
         }
 
@@ -298,29 +187,12 @@ namespace MainTable
         {
             set
             {
-                string[] mas = changes.Split("\n");
-                if (mas.Length > 1)
-                {
-                    mas[1] = value;
-                    changes = String.Join('\n', mas);
-                }
-                else
-                {
-                    changes += "\n" + value;
-                }
+                changes[1] = value;
                 OnPropertyChanged("Changes");
             }
             get
             {
-                string[] mas = changes.Split("\n");
-                if (mas.Length > 1)
-                {
-                    return mas[1];
-                }
-                else
-                {
-                    return " ";
-                }
+                return changes[1];
             }
         }
 
@@ -328,51 +200,36 @@ namespace MainTable
         {
             set
             {
-                string[] mas = changes.Split("\n");
-                if (mas.Length > 2)
-                {
-                    mas[2] = value;
-                    changes = String.Join('\n', mas);
-                }
-                else
-                {
-                    changes += "\n" + value;
-                }
+                changes[2] = value;
                 OnPropertyChanged("Changes");
             }
             get
             {
-                string[] mas = changes.Split("\n");
-                if (mas.Length > 2)
-                {
-                    return mas[2];
-                }
-                else
-                {
-                    return " ";
-                }
+                return changes[2];
             }
         }
 
-        private string office = "";
+        private string[] office = new string[3] { "", "", "" };
 
         public string Office
         {
             set
             {
-                if (value == "0")
-                {
-                    office = "";
-                }
+                string[] mas = value.Split('\n');
+                if (mas.Length <= 1)
+                    office[0] = value;
                 else
-                {
-                    office = value;
-                }
+                    for (int i = 0; i < mas.Length; i++)
+                        office[i] = mas[i];
                 OnPropertyChanged("Office");
             }
             get
             {
-                return office;
+                string str;
+                if (office[2] != "") str = Office1 + "\n" + Office2 + "\n" + Office3;
+                else if (office[1] != "") str = Office1 + "\n" + Office2;
+                else str = Office1;
+                return str;
             }
         }
 
@@ -380,29 +237,12 @@ namespace MainTable
         {
             set
             {
-                string[] mas = office.Split("\n");
-                if (mas.Length > 0)
-                {
-                    mas[0] = value;
-                    office = String.Join('\n', mas);
-                }
-                else
-                {
-                    office = value;
-                }
+                office[0] = value;
                 OnPropertyChanged("Office");
             }
             get
             {
-                string[] mas = office.Split("\n");
-                if (mas.Length > 0)
-                {
-                    return mas[0];
-                }
-                else
-                {
-                    return office;
-                }
+                return office[0];
             }
         }
 
@@ -410,29 +250,12 @@ namespace MainTable
         {
             set
             {
-                string[] mas = office.Split("\n");
-                if (mas.Length > 1)
-                {
-                    mas[1] = value;
-                    office = String.Join('\n', mas);
-                }
-                else
-                {
-                    office += "\n" + value;
-                }
+                office[1] = value;
                 OnPropertyChanged("Office");
             }
             get
             {
-                string[] mas = office.Split("\n");
-                if (mas.Length > 1)
-                {
-                    return mas[1];
-                }
-                else
-                {
-                    return " ";
-                }
+                return office[1];
             }
         }
 
@@ -440,29 +263,12 @@ namespace MainTable
         {
             set
             {
-                string[] mas = office.Split("\n");
-                if (mas.Length > 2)
-                {
-                    mas[2] = value;
-                    office = String.Join('\n', mas);
-                }
-                else
-                {
-                    office += "\n" + value;
-                }
+                office[2] = value;
                 OnPropertyChanged("Office");
             }
             get
             {
-                string[] mas = office.Split("\n");
-                if (mas.Length > 2)
-                {
-                    return mas[2];
-                }
-                else
-                {
-                    return " ";
-                }
+                return office[2];
             }
         }
 
@@ -486,7 +292,7 @@ namespace MainTable
         {
             set
             {
-                if (value == "0")
+                if (value == "")
                 {
                     officeLesson = "";
                 }
@@ -500,7 +306,6 @@ namespace MainTable
             }
             get
             {
-
                 return officeLesson;
             }
         }
@@ -509,19 +314,13 @@ namespace MainTable
         public string Lesson {
             set
             {
-                if (value == "0")
+                if (lesson != "")
                 {
-                    lesson = "";
+                    Prepods = " ";
+                    Changes = "";
                 }
-                else
-                {
-                    if (lesson != "")
-                    {
-                        Prepods = " ";
-                        Changes = "";
-                    }
-                    lesson = value;
-                }
+                lesson = value;
+                //}
                 OnPropertyChanged("Lesson");
                 OnPropertyChanged("Changes");
                 OnPropertyChanged("MainLesson");
@@ -565,8 +364,8 @@ namespace MainTable
             }
             set
             {
-                Rooms = Room1;
-                Prepods = Prepod1;
+                Room2 = "";
+                Prepod2 = "";
                 second = value;
 
                 OnPropertyChanged("Second");
@@ -587,8 +386,8 @@ namespace MainTable
             }
             set
             {
-                Rooms = Room1 + "\n" + Room2;
-                Prepods = Prepod1 + "\n" + Prepod2;
+                Room3 = "";
+                Prepod3 = "";
                 third = value;
 
                 OnPropertyChanged("Third");
@@ -603,7 +402,5 @@ namespace MainTable
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
-
     }
-
 }
