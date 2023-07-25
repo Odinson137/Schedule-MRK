@@ -54,19 +54,6 @@ namespace Sasha_Project.ViewModels.SettingsPages
                 { "value3", model.LastName }
             });
         }
-
-        //public static bool InsertPrepodsLesson(PrepodModel model)
-        //{
-        //    string request = $"INSERT INTO Prepods (ID, Lessons, Prepods, DopNamePrepods) VALUES (@id, @value1, @value2, @value3)";
-        //    return WorkBase.RequestValue(request, new Dictionary<string, object>()
-        //    {
-        //        { "id", model.ID },
-        //        { "value1", model.Lesson },
-        //        { "value2", model.Name },
-        //        { "value3", model.LastName }
-        //    });
-        //}
-
         public bool PutValue()
         {
             string request = $"UPDATE Prepods SET (Lessons, Prepods, DopNamePrepods) = (@value1, @value2, @value3) WHERE ID = @id";
