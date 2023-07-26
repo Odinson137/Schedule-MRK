@@ -16,8 +16,8 @@ namespace Sasha_Project.ViewModels.SettingsPages
     {
         public ObservableCollection<LessonModel> List { get; set; }
 
-        private PrepodModel selectedItem;
-        public PrepodModel SelectedItem
+        private LessonModel selectedItem;
+        public LessonModel SelectedItem
         {
             get { return selectedItem; }
             set
@@ -30,6 +30,8 @@ namespace Sasha_Project.ViewModels.SettingsPages
         public SettingLessonsViewModel()
         {
             List = new ObservableCollection<LessonModel>();
+            SelectLessons();
+            SelectedItem = List[0];
         }
 
         public bool DeleteValue()
@@ -47,6 +49,22 @@ namespace Sasha_Project.ViewModels.SettingsPages
             throw new NotImplementedException();
         }
 
+        private void AddToLessons(SQLiteDataReader reader)
+        {
+            List.Add(new LessonModel()
+            {
+                ID = reader.GetInt32(0),
+                Lesson = reader.GetString(1),
+                Shorts = reader.GetString(2),
+                Kurs = reader.GetInt32(3)
+            });
+        }
+        public bool SelectLessons()
+        {
+            string request = $"SELECT ID, Lessons, Shorts, Kurs FROM Lessons ORDER BY Lessons ASC";
+            return WorkBase.SelectValues(request, AddToLessons);
+        }
+
         public bool SelectValues()
         {
             throw new NotImplementedException();
@@ -56,14 +74,14 @@ namespace Sasha_Project.ViewModels.SettingsPages
         public RelayCommand PutLesson => putLesson ??
             (putLesson = new RelayCommand(obj =>
             {
-
+                PutValue();
             }));
 
         RelayCommand? deleteLesson;
         public RelayCommand DeleteLesson => deleteLesson ??
             (deleteLesson = new RelayCommand(obj =>
             {
-                
+                DeleteValue();
             }));
 
 
@@ -71,7 +89,26 @@ namespace Sasha_Project.ViewModels.SettingsPages
         public RelayCommand AddLesson => addLesson ??
             (addLesson = new RelayCommand(obj =>
             {
-                List.Add(new LessonModel() { ID = -1 });
+                if (List[0].ID != -1)
+                {
+                    List.Insert(0, new LessonModel() { ID = -1 });
+                    SelectedItem = List[0];
+                } else
+                    MessageBox.Show("Заполните предыдущее значение!");
+            }));
+
+        RelayCommand? addLessonToBase;
+        public RelayCommand AddLessonToBase => addLessonToBase ??
+            (addLessonToBase = new RelayCommand(obj =>
+            {
+                InsertValue(new LessonModel());
+                //if (List[0].ID != -1)
+                //{
+                //    List.Insert(0, new LessonModel() { ID = -1 });
+                //    SelectedItem = List[0];
+                //}
+                //else
+                //    MessageBox.Show("Заполните предыдущее значение!");
             }));
 
         RelayCommand? saveLesson;

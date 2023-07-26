@@ -23,7 +23,7 @@
                     <ColumnDefinition Width="60*"/>
                 </Grid.ColumnDefinitions>
 
-                <DataGrid Width="250" SelectedIndex="0" CanUserAddRows="False" Margin="0 0" ColumnWidth="*" 
+                <DataGrid SelectedIndex="0" CanUserAddRows="False" Margin="0 0" ColumnWidth="*" 
                           Grid.Row="1" Grid.Column="0" AutoGenerateColumns="False"
                           ItemsSource="{Binding List, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedItem}" 
                           IsSynchronizedWithCurrentItem="False" x:Name="Table"
@@ -46,7 +46,7 @@
                     </DataGrid.ColumnHeaderStyle>
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Предметы:" Binding="{Binding Path=Value}"/>
+                        <DataGridTextColumn Header="Предметы:" Binding="{Binding Path=Lesson}"/>
                         <!--<DataGridTextColumn Header="Курс" Binding="{Binding Path=MainLesson}"/>-->
                     </DataGrid.Columns>
 
@@ -94,16 +94,16 @@
                     </i:Interaction.Triggers>
                 </Border>
 
-                <StackPanel Width="300" Grid.Row="1" Grid.Column="1" 
-                             Margin="50 5" HorizontalAlignment="Center">
+                <StackPanel  Grid.Row="1" Grid.Column="1" 
+                             Margin="50 5" >
                     <TextBlock FontSize="26" Foreground="{StaticResource FontColor}" Text="Кабинет:" HorizontalAlignment="Center"/>
                     <TextBox FontSize="22" x:Name="TextBoxRoom"
-                        Text="{Binding SelectedItem.Lesson}" 
-                        UndoLimit="20" SelectionBrush="{DynamicResource MainBlueGentleColor}" Background="{DynamicResource MainBlueGentleColor}" BorderBrush="{DynamicResource FontColor}" Foreground="{DynamicResource FontColor}" Height="30" Margin="0,10,0,0" />
+                        Text="{Binding SelectedItem.Lesson, UpdateSourceTrigger=PropertyChanged}" 
+                        UndoLimit="30" SelectionBrush="{DynamicResource MainBlueGentleColor}" Background="{DynamicResource MainBlueGentleColor}" 
+                             BorderBrush="{DynamicResource FontColor}" Foreground="{DynamicResource FontColor}" Height="30" Margin="0,10,0,0" />
 
                     <Grid Margin="0 20">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
@@ -113,24 +113,12 @@
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseDown">
                                     <i:InvokeCommandAction 
-                                                Command="{Binding DeleteRoom}"/>
+                                                Command="{Binding DeleteLesson}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Border>
 
                         <Border Grid.Column="1" Style="{StaticResource BorderAdd}" Height="30">
-                            <TextBlock FontSize="16" Foreground="{StaticResource FontColor}" 
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" Text="Добавить"/>
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseDown">
-                                    <i:InvokeCommandAction 
-                                        Command="{Binding AddLesson}"
-                                        CommandParameter="{Binding ElementName=TextBoxRoom, Path=Text}"/>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </Border>
-
-                        <Border Grid.Column="2" Style="{StaticResource BorderAdd}" Height="30">
                             <TextBlock FontSize="16" Foreground="{StaticResource FontColor}" 
                                            HorizontalAlignment="Center" VerticalAlignment="Center" Text="Изменить"/>
                             <i:Interaction.Triggers>

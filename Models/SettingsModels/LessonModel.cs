@@ -23,6 +23,28 @@ namespace Sasha_Project.Models.SettingsModels
             }
         }
 
+        private string shorts;
+        public string Shorts
+        {
+            get { return shorts; }
+            set
+            {
+                shorts = value;
+                OnPropertyChanged("Shorts");
+            }
+        }
+
+        private int kurs;
+        public int Kurs
+        {
+            get { return kurs; }
+            set
+            {
+                kurs = value;
+                OnPropertyChanged("Kurs");
+            }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
