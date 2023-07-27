@@ -5,11 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sasha_Project.Views.SettingsViews"
         mc:Ignorable="d"
-        xmlns:viewmodels="clr-namespace:Sasha_Project.ViewModels.SettingsPages" xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
+        xmlns:viewmodels="clr-namespace:Sasha_Project.ViewModels.SettingsPages" xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:converters="clr-namespace:Sasha_Project.Views.Converters">
 
     <UserControl.DataContext>
         <viewmodels:SettingLessonsViewModel/>
     </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <converters:ChangeToSaveTextConverter x:Key="ButtonClickText"/>
+    </UserControl.Resources>
+    
     <Grid>
         <Border Padding="50">
             <Grid>
@@ -100,8 +105,23 @@
                     <TextBox FontSize="22" x:Name="TextBoxRoom"
                         Text="{Binding SelectedItem.Lesson, UpdateSourceTrigger=PropertyChanged}" 
                         UndoLimit="30" SelectionBrush="{DynamicResource MainBlueGentleColor}" Background="{DynamicResource MainBlueGentleColor}" 
-                             BorderBrush="{DynamicResource FontColor}" Foreground="{DynamicResource FontColor}" Height="30" Margin="0,10,0,0" />
+                        BorderBrush="{DynamicResource FontColor}" Foreground="{DynamicResource FontColor}" Height="30" Margin="0,10,0,0" />
 
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox FontSize="22"
+                        Text="{Binding SelectedItem.Shorts, UpdateSourceTrigger=PropertyChanged}" 
+                        UndoLimit="10" SelectionBrush="{DynamicResource MainBlueGentleColor}" Background="{DynamicResource MainBlueGentleColor}" 
+                             BorderBrush="{DynamicResource FontColor}" Foreground="{DynamicResource FontColor}"  />
+                        <TextBlock Grid.Column="1" FontSize="22" Foreground="{StaticResource FontColor}" 
+                                   TextAlignment="Center" HorizontalAlignment="Center" Text="Сокращение"/>
+
+                    </Grid>
+                    
                     <Grid Margin="0 20">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
@@ -120,11 +140,12 @@
 
                         <Border Grid.Column="1" Style="{StaticResource BorderAdd}" Height="30">
                             <TextBlock FontSize="16" Foreground="{StaticResource FontColor}" 
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" Text="Изменить"/>
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                       Text="{Binding SelectedItem.ID, Converter={StaticResource ButtonClickText}}"/>
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseDown">
                                     <i:InvokeCommandAction 
-                                        Command="{Binding SaveLesson}"
+                                        Command="{Binding PutLesson}"
                                         CommandParameter="{Binding ElementName=TextBoxRoom, Path=Text}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>

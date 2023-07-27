@@ -1,4 +1,6 @@
-﻿using Sasha_Project.Commands;
+﻿using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using Sasha_Project.Commands;
 using Sasha_Project.Models.SettingsModels;
 using Sasha_Project.ViewModels.DopModels;
 using System;
@@ -36,17 +38,35 @@ namespace Sasha_Project.ViewModels.SettingsPages
 
         public bool DeleteValue()
         {
-            throw new NotImplementedException();
+            string request = $"DELETE FROM Lessons WHERE ID = @ID";
+            return WorkBase.RequestValue(request, new Dictionary<string, object>()
+            {
+                { "ID", SelectedItem.ID}
+            });
         }
 
         public bool InsertValue(LessonModel newValue)
         {
-            throw new NotImplementedException();
+            string request = $"INSERT INTO Lessons (ID, Lessons, Shorts, Kurs) VALUES (@id, @value1, @value2, @value3)";
+            return WorkBase.RequestValue(request, new Dictionary<string, object>()
+            {
+                { "id", newValue.ID },
+                { "value1", newValue.Lesson },
+                { "value2", newValue.Shorts },
+                { "value3", newValue.Kurs }
+            });
         }
 
         public bool PutValue()
         {
-            throw new NotImplementedException();
+            string request = $"UPDATE Lessons SET (Lessons, Shorts, Kurs) = (@value1, @value2, @value3) WHERE ID = @id";
+            return WorkBase.RequestValue(request, new Dictionary<string, object>()
+            {
+                { "id", SelectedItem.ID },
+                { "value1", SelectedItem.Lesson },
+                { "value2", SelectedItem.Shorts },
+                { "value3", SelectedItem.Kurs }
+            });
         }
 
         private void AddToLessons(SQLiteDataReader reader)
@@ -74,14 +94,32 @@ namespace Sasha_Project.ViewModels.SettingsPages
         public RelayCommand PutLesson => putLesson ??
             (putLesson = new RelayCommand(obj =>
             {
-                PutValue();
+                if (SelectedItem.Lesson != null)
+                {
+                    if (SelectedItem.ID == -1)
+                    {
+                        SelectedItem.ID = List.Max(x => x.ID) + 1;
+                        if (InsertValue(SelectedItem))
+                            MessageBox.Show("Предмет добавлен");
+                    }
+                    else
+                        if (PutValue())
+                            MessageBox.Show("Данные успешно изменены");
+                }
+                else
+                    MessageBox.Show("Поля пустые!");
             }));
 
         RelayCommand? deleteLesson;
         public RelayCommand DeleteLesson => deleteLesson ??
             (deleteLesson = new RelayCommand(obj =>
             {
-                DeleteValue();
+                if (DeleteValue())
+                {
+                    MessageBox.Show("Удалено");
+                    List.Remove(SelectedItem);
+                    SelectedItem = List[0];
+                }
             }));
 
 
@@ -95,27 +133,6 @@ namespace Sasha_Project.ViewModels.SettingsPages
                     SelectedItem = List[0];
                 } else
                     MessageBox.Show("Заполните предыдущее значение!");
-            }));
-
-        RelayCommand? addLessonToBase;
-        public RelayCommand AddLessonToBase => addLessonToBase ??
-            (addLessonToBase = new RelayCommand(obj =>
-            {
-                InsertValue(new LessonModel());
-                //if (List[0].ID != -1)
-                //{
-                //    List.Insert(0, new LessonModel() { ID = -1 });
-                //    SelectedItem = List[0];
-                //}
-                //else
-                //    MessageBox.Show("Заполните предыдущее значение!");
-            }));
-
-        RelayCommand? saveLesson;
-        public RelayCommand SaveLesson => saveLesson ??
-            (saveLesson = new RelayCommand(obj =>
-            {
-
             }));
     }
 }
