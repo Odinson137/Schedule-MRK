@@ -40,10 +40,6 @@ C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\x64\Debug\n
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\x64\Debug\net7.0-windows\Sasha Project.genruntimeconfig.cache
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Sasha Project\obj\x64\Debug\net7.0-windows\ref\Sasha Project.dll
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\Sasha Project.exe
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\Sasha Project.deps.json
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\Sasha Project.runtimeconfig.json
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\Sasha Project.dll
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\Sasha Project.pdb
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\DocumentFormat.OpenXml.dll
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\EPPlus.dll
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\bin\x64\Debug\net7.0-windows\EPPlus.Interfaces.dll
@@ -96,5 +92,3 @@ C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.dll
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\refint\Sasha Project.dll
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.pdb
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\Sasha Project.genruntimeconfig.cache
-C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Debug\net7.0-windows\ref\Sasha Project.dll

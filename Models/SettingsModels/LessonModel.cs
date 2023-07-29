@@ -34,17 +34,49 @@ namespace Sasha_Project.Models.SettingsModels
             }
         }
 
-        private int kurs;
-        public int Kurs
+        private bool kurs1;
+        public bool Kurs1
         {
-            get { return kurs; }
+            get { return kurs1; }
             set
             {
-                kurs = value;
-                OnPropertyChanged("Kurs");
+                kurs1 = value;
+                OnPropertyChanged("Kurs1");
             }
         }
 
+        private bool kurs2;
+        public bool Kurs2
+        {
+            get { return kurs2; }
+            set
+            {
+                kurs2 = value;
+                OnPropertyChanged("Kurs2");
+            }
+        }
+
+        private bool kurs3;
+        public bool Kurs3
+        {
+            get { return kurs3; }
+            set
+            {
+                kurs3 = value;
+                OnPropertyChanged("Kurs3");
+            }
+        }
+
+        private bool kurs4;
+        public bool Kurs4
+        {
+            get { return kurs4; }
+            set
+            {
+                kurs4 = value;
+                OnPropertyChanged("Kurs4");
+            }
+        }
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {

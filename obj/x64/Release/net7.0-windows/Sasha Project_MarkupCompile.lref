@@ -1,7 +1,12 @@
-﻿C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\obj\x64\Release\net7.0-windows\GeneratedInternalTypeHelper.g.cs
+﻿
 FC:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\App.xaml;;
-FC:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\Views\MainView.xaml;;
 FC:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\Views\MainWindow.xaml;;
-FC:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\Views\SettingsView.xaml;;
+FC:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\Views\SettingsViews\SettingsGroupsViewl.xaml;;
+FC:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\Views\SettingsViews\SettingsLessonsView.xaml;;
+FC:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\Views\SettingsViews\SettingsPrepodsView.xaml;;
+FC:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\Views\SettingsViews\SettingsRoomsView.xaml;;
+FC:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\Views\SettingsViews\SettingsScheduleView.xaml;;
+FC:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\Views\SettingsViews\SettingsSpecialityView.xaml;;
+FC:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\Views\SettingsViews\SettingsView.xaml;;
 FC:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\Views\TableView.xaml;;
 

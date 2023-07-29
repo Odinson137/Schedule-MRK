@@ -61,4 +61,22 @@ namespace Sasha_Project.Views.Converters
             return null;
         }
     }
+
+
+    class KursColor : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                return "#FF183C65";
+            }
+            return "#FF0C2A4C";
+        }
+
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
 }

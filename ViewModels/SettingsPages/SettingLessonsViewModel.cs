@@ -47,25 +47,31 @@ namespace Sasha_Project.ViewModels.SettingsPages
 
         public bool InsertValue(LessonModel newValue)
         {
-            string request = $"INSERT INTO Lessons (ID, Lessons, Shorts, Kurs) VALUES (@id, @value1, @value2, @value3)";
+            string request = $"INSERT INTO Lessons (ID, Lessons, Shorts, Kurs_1, Kurs_2, Kurs_3, Kurs_4) VALUES (@id, @value1, @value2, @value3, @value4, @value5, @value6)";
             return WorkBase.RequestValue(request, new Dictionary<string, object>()
             {
                 { "id", newValue.ID },
-                { "value1", newValue.Lesson },
-                { "value2", newValue.Shorts },
-                { "value3", newValue.Kurs }
+                { "value1", SelectedItem.Lesson },
+                { "value2", SelectedItem.Shorts },
+                { "value3", SelectedItem.Kurs1 },
+                { "value4", SelectedItem.Kurs2 },
+                { "value5", SelectedItem.Kurs3 },
+                { "value6", SelectedItem.Kurs4 }
             });
         }
 
         public bool PutValue()
         {
-            string request = $"UPDATE Lessons SET (Lessons, Shorts, Kurs) = (@value1, @value2, @value3) WHERE ID = @id";
+            string request = $"UPDATE Lessons SET (Lessons, Shorts, Kurs_1, Kurs_2, Kurs_3, Kurs_4) = (@value1, @value2, @value3, @value4, @value5, @value6) WHERE ID = @id";
             return WorkBase.RequestValue(request, new Dictionary<string, object>()
             {
                 { "id", SelectedItem.ID },
                 { "value1", SelectedItem.Lesson },
                 { "value2", SelectedItem.Shorts },
-                { "value3", SelectedItem.Kurs }
+                { "value3", SelectedItem.Kurs1 },
+                { "value4", SelectedItem.Kurs2 },
+                { "value5", SelectedItem.Kurs3 },
+                { "value6", SelectedItem.Kurs4 }
             });
         }
 
@@ -76,12 +82,15 @@ namespace Sasha_Project.ViewModels.SettingsPages
                 ID = reader.GetInt32(0),
                 Lesson = reader.GetString(1),
                 Shorts = reader.GetString(2),
-                Kurs = reader.GetInt32(3)
+                Kurs1 = reader.GetBoolean(3),
+                Kurs2 = reader.GetBoolean(4),
+                Kurs3 = reader.GetBoolean(5),
+                Kurs4 = reader.GetBoolean(6),
             });
         }
         public bool SelectLessons()
         {
-            string request = $"SELECT ID, Lessons, Shorts, Kurs FROM Lessons ORDER BY Lessons ASC";
+            string request = $"SELECT * FROM Lessons ORDER BY Lessons ASC";
             return WorkBase.SelectValues(request, AddToLessons);
         }
 
@@ -129,10 +138,32 @@ namespace Sasha_Project.ViewModels.SettingsPages
             {
                 if (List[0].ID != -1)
                 {
-                    List.Insert(0, new LessonModel() { ID = -1 });
+                    List.Insert(0, new LessonModel() { ID = -1, Shorts = "" });
                     SelectedItem = List[0];
                 } else
                     MessageBox.Show("Заполните предыдущее значение!");
+            }));
+
+        RelayCommand? changeKurs;
+        public RelayCommand ChangeKurs => changeKurs ??
+            (changeKurs = new RelayCommand(obj =>
+            {
+                string a = obj.ToString();
+                switch (a)
+                {
+                    case "1":
+                        SelectedItem.Kurs1 = !SelectedItem.Kurs1;
+                        break;
+                    case "2":
+                        SelectedItem.Kurs2 = !SelectedItem.Kurs2;
+                        break;
+                    case "3":
+                        SelectedItem.Kurs3 = !SelectedItem.Kurs3;
+                        break;
+                    case "4":
+                        SelectedItem.Kurs4 = !SelectedItem.Kurs4;
+                        break;
+                }
             }));
     }
 }

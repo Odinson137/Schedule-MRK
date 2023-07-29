@@ -10,11 +10,11 @@ none
 false
 TRACE;RELEASE;NET;NET7_0;NETCOREAPP
 C:\Users\buryy\OneDrive\visual studio\WinFormsApp1\Schdeule\App.xaml
-4-1785126965
+91374440456
 
-2072164826
+38921468476
 214541834883
-Views\MainView.xaml;Views\MainWindow.xaml;Views\SettingsView.xaml;Views\TableView.xaml;
+Views\MainWindow.xaml;Views\SettingsViews\SettingsGroupsViewl.xaml;Views\SettingsViews\SettingsLessonsView.xaml;Views\SettingsViews\SettingsPrepodsView.xaml;Views\SettingsViews\SettingsRoomsView.xaml;Views\SettingsViews\SettingsScheduleView.xaml;Views\SettingsViews\SettingsSpecialityView.xaml;Views\SettingsViews\SettingsView.xaml;Views\TableView.xaml;
 
 True
 
