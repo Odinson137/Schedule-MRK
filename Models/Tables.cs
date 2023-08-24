@@ -356,7 +356,7 @@ namespace MainTable
         {
             get
             {
-                if (Room2.Length > 1 || Prepod2.Length > 1)
+                if (Room2 != null && (Room2.Length > 1 || Prepod2.Length > 1))
                 {
                     second = true;
                 }
@@ -378,7 +378,7 @@ namespace MainTable
         {
             get
             {
-                if (Room3.Length > 1 || Prepod3.Length > 1)
+                if (Room3 != null && (Room3.Length > 1 || Prepod3.Length > 1))
                 {
                     third = true;
                 }

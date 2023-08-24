@@ -3,16 +3,8 @@ using System.Data.SQLite;
 using System.Windows;
 using MainTable;
 using System.Collections.ObjectModel;
-using System.Linq.Expressions;
 using System;
 using System.Linq;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using System.Reflection;
-using DocumentFormat.OpenXml.Wordprocessing;
-using DocumentFormat.OpenXml.Office2013.Excel;
-using Sasha_Project.Models.SettingsModels;
-using DocumentFormat.OpenXml.Office2016.Excel;
 
 namespace Sasha_Project.ViewModels.DopModels;
 

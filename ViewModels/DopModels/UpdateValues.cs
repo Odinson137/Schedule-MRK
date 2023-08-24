@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Documents;
 using DocumentFormat.OpenXml.Presentation;
 using MainTable;
+using Sasha_Project.Views.Converters;
 
 namespace Sasha_Project.ViewModels.DopModels
 {
@@ -175,7 +178,16 @@ namespace Sasha_Project.ViewModels.DopModels
             }
         }
         public string Prepod { get; set; }
-        public int Kurs { get; set; }
+
+        public bool[] Kurs
+        {
+            get => new bool[] { Kurs_1, Kurs_2, Kurs_3, Kurs_4 };
+        }
+
+        public bool Kurs_1 { get; set; }
+        public bool Kurs_2 { get; set; }
+        public bool Kurs_3 { get; set; }
+        public bool Kurs_4 { get; set; }
     }
 
     public class UpdateValuesPrepods : UpdateValues
@@ -208,8 +220,14 @@ namespace Sasha_Project.ViewModels.DopModels
 
         public IEnumerable<string> GetLessons()
         {
-            IEnumerable<string> uniqueList = lessons.Where(x => x.Kurs == Kurs).Select(x => x.Lesson).Distinct();
-            return uniqueList;
+            //IEnumerable<string> uniqueList = lessons
+            //    .Where(x => x.Kurs[Kurs - 1] == true)
+            //    .Select(x => x.Lesson).Distinct();
+            //IEnumerable<string> enumerable = uniqueList.Append(new string(""));
+
+            IEnumerable<string> enumerable1 = lessons.Select(x => $"{x.Lesson}" ).Distinct();
+            IEnumerable<string> enumerable = enumerable1.Append("");
+            return enumerable;
         }
 
         public override void ZapolDict(ObservableCollection<Tables> tables)
@@ -333,7 +351,7 @@ namespace Sasha_Project.ViewModels.DopModels
                           where dict[i.Prepod][num] == true
                           select i.Prepod;
                 }
-                List<string> values = new List<string>(mas);
+                List<string> values = new List<string>(mas.Distinct());
 
                 KnowingValue(values, strPrepods);
 

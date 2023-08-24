@@ -18,7 +18,17 @@ namespace Sasha_Project.ViewModels
     public class TableViewModel : BaseViewModel
     {
         public ObservableCollection<Tables> Phones { get; set; }
-        public List<string> RoomsMas { get; set; }
+        public List<string> roomsMas;
+        public List<string> RoomsMas
+        {
+            get => roomsMas;
+            set
+            {
+                roomsMas = value;
+                OnPropertyChanged("RoomsMas");
+            }
+        }
+
         public List<string> TeacherMas { get; set; }
         public List<string> OfficeMas { get; set; }
         public List<string> ChangesMas { get; set; }
@@ -66,7 +76,16 @@ namespace Sasha_Project.ViewModels
             }
         }
 
-        public IEnumerable<string> Lessons { get; set; }
+        private IEnumerable<string> lessons;
+        public IEnumerable<string> Lessons
+        {
+            get => lessons;
+            set
+            {
+                lessons = value;
+                OnPropertyChanged("Lessons");
+            }
+        }
         public string Lesson { get; set; }
         private readonly UpdateValuesPrepods prepods = new UpdateValuesPrepods();
         private readonly UpdateValuesRooms rooms = new UpdateValuesRooms();
@@ -79,13 +98,7 @@ namespace Sasha_Project.ViewModels
             get { return selectedPhone; }
             set
             {
-                //if (selectedPhone != null)
-                //{
-                //    rooms.ChangeValue(SelectedPhone.Groups, selectedPhone.Rooms);
-                //    prepods.ChangeValue(SelectedPhone.Groups, selectedPhone.Prepods);
-                //    prepods.ChangeValue(SelectedPhone.Groups, selectedPhone.Office);
-                //    prepods.ChangeValue(SelectedPhone.Groups, selectedPhone.Changes);
-                //}
+                if (value == null) return;
                 string letterGroup = value.Groups;
 
                 int kurs = 1;
@@ -114,8 +127,6 @@ namespace Sasha_Project.ViewModels
                 Lesson = value.Lesson;
                 selectedPhone = value;
 
-                OnPropertyChanged("Lessons");
-                OnPropertyChanged("RoomsMas");
                 OnPropertyChanged("TeacherMas");
                 OnPropertyChanged("ChangesMas");
                 OnPropertyChanged("OfficeMas");
@@ -125,8 +136,6 @@ namespace Sasha_Project.ViewModels
 
         public TableViewModel()
         {
-            //ReadBook r = new ReadBook();
-            //r.SelectOpenendFile();
             SelectLessons();
             SelectRooms();
             firstCharacters = DataBase.SelectFirstLetterGroup();
@@ -161,14 +170,23 @@ namespace Sasha_Project.ViewModels
             {
                 Lesson = reader.GetString(0),
                 Prepod = prepod,
-                Kurs = reader.GetInt32(2)
+                Kurs_1 = reader.GetBoolean(2), 
+                Kurs_2 = reader.GetBoolean(3), 
+                Kurs_3 = reader.GetBoolean(4), 
+                Kurs_4 = reader.GetBoolean(5),
+                
             });
             prepods.InsertNewValue(prepod);
         }
 
         private void SelectLessons()
         {
-            string request = "SELECT Lessons.Lessons, Prepods.Prepods, Lessons.Kurs FROM Lessons INNER JOIN Prepods ON Lessons.Lessons = Prepods.Lessons ORDER BY Lessons.Lessons;";
+            string request = "SELECT Lessons.Lessons, Prepods.Prepods, "
+                            + "Kurs_1, Kurs_2, Kurs_3, Kurs_4 " 
+                            + "FROM Lessons "
+                            + "INNER JOIN Prepods " 
+                            + "ON Lessons.Lessons = Prepods.Lessons " 
+                            + "ORDER BY Lessons.Lessons;";
             WorkBase.SelectValues(request, SelectTable);
         }
 

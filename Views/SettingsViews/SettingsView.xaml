@@ -114,7 +114,7 @@
                             </TextBlock>
                         </Grid>
                     </Border>
-                    <Border Style="{StaticResource ButtonSwitch}">
+                    <!--<Border Style="{StaticResource ButtonSwitch}">
                         <Grid Background="{Binding Index, Converter={StaticResource ButtonBackground}, ConverterParameter=6}">
                             <TextBlock Style="{StaticResource PaddinBlockText}" Text="Расписание">
                             <i:Interaction.Triggers>
@@ -126,7 +126,7 @@
                             </i:Interaction.Triggers>
                             </TextBlock>
                         </Grid>
-                    </Border>
+                    </Border>-->
                 </StackPanel>
             </Border>
 

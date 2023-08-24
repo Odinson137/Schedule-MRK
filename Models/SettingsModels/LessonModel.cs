@@ -34,6 +34,17 @@ namespace Sasha_Project.Models.SettingsModels
             }
         }
 
+        private bool[] kurs;
+        public bool[] Kurs
+        {
+            get => kurs;
+            set
+            {
+                kurs = value;
+                OnPropertyChanged("Kurs");
+            }
+        }
+
         private bool kurs1;
         public bool Kurs1
         {
@@ -77,6 +88,7 @@ namespace Sasha_Project.Models.SettingsModels
                 OnPropertyChanged("Kurs4");
             }
         }
+
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
