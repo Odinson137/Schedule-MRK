@@ -54,6 +54,42 @@
             </Style.Triggers>
         </Style>
 
+        <ControlTemplate TargetType="ToggleButton" x:Key="ComboBoxToggleButtonTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="20"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.ColumnSpan="2" Name="Border"
+              BorderBrush="{StaticResource MainBlueColorMiddle}" 
+              CornerRadius="5 5 0 0" BorderThickness="1, 1, 1, 1" 
+              Background="{StaticResource MainBlueColorMiddle}" />
+                <Border Grid.Column="1" CornerRadius="0 0 5 0" Margin="1, 1, 1, 1" BorderBrush="{StaticResource MainBlueGentleColor}" Name="ButtonBorder"
+              Background="{StaticResource MainBlueColorMiddle}" />
+
+                <Path Name="Arrow" Grid.Column="1" 
+            Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
+            HorizontalAlignment="Center" Fill="{StaticResource MainBlueGentleColor}"
+            VerticalAlignment="Center" />
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="UIElement.IsMouseOver" Value="True">
+                    <Setter Property="Panel.Background" TargetName="ButtonBorder" Value="{StaticResource MainBlueColorBlack}"/>
+                </Trigger>
+                <Trigger Property="ToggleButton.IsChecked" Value="True">
+                    <Setter Property="Panel.Background" TargetName="ButtonBorder" Value="{StaticResource MainBlueColorBlack}"/>
+                    <Setter Property="Shape.Fill" TargetName="Arrow" Value="{StaticResource MainBlueGentleColor}"/>
+                </Trigger>
+                <Trigger Property="UIElement.IsEnabled" Value="False">
+                    <Setter Property="Panel.Background" TargetName="Border" Value="{StaticResource MainBlueColorMiddle}"/>
+                    <Setter Property="Panel.Background" TargetName="ButtonBorder" Value="{StaticResource MainBlueColorMiddle}"/>
+                    <Setter Property="Border.BorderBrush" TargetName="ButtonBorder" Value="{StaticResource MainBlueColorMiddle}"/>
+                    <Setter Property="TextElement.Foreground" Value="{StaticResource MainBlueColorMiddle}"/>
+                    <Setter Property="Shape.Fill" TargetName="Arrow" Value="{StaticResource MainBlueColorBlack}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
         <Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
             <Setter Property="OverridesDefaultStyle" Value="true"/>
             <Setter Property="IsTabStop" Value="false"/>
@@ -86,6 +122,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
         <ControlTemplate x:Key="ComboBoxTemplate1" TargetType="{x:Type ComboBox}">
             <Grid x:Name="templateRoot" SnapsToDevicePixels="false">
                 <Grid.ColumnDefinitions>
@@ -127,6 +164,79 @@
                 </MultiTrigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+
+        <Style TargetType="{x:Type ComboBox}" x:Name="ComboBoxLigthBlue">
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="UIElement.SnapsToDevicePixels" Value="True"/>
+            <Setter Property="FrameworkElement.OverridesDefaultStyle" Value="True"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+            <Setter Property="TextElement.Foreground" Value="{StaticResource FontColor}"/>
+            <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Name="ToggleButton" Grid.Column="2"
+                ClickMode="Press" Focusable="False"
+                IsChecked="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                Template="{StaticResource ComboBoxToggleButtonTemplate}"/>
+
+                            <ContentPresenter Name="ContentSite" Margin="5, 3, 23, 3" IsHitTestVisible="False"
+                              HorizontalAlignment="Left" VerticalAlignment="Center"                              
+                              Content="{TemplateBinding ComboBox.SelectionBoxItem}" 
+                              ContentTemplate="{TemplateBinding ComboBox.SelectionBoxItemTemplate}"
+                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"/>
+                            <TextBox Name="PART_EditableTextBox" Margin="3, 3, 23, 3"                     
+                                 IsReadOnly="{TemplateBinding IsReadOnly}"
+                                 Visibility="Hidden" Background="{StaticResource MainBlueGentleColor}"
+                                 HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" FontSize="24"
+                                 Focusable="True" >
+                                <TextBox.Template>
+                                    <ControlTemplate TargetType="TextBox">
+                                        <Border Name="PART_ContentHost" Focusable="False"/>
+                                    </ControlTemplate>
+                                </TextBox.Template>
+                            </TextBox>
+                            <!-- Popup showing items -->
+                            <Popup Name="Popup" Placement="Bottom"
+                   Focusable="False" AllowsTransparency="True"
+                   IsOpen="{TemplateBinding ComboBox.IsDropDownOpen}"
+                   PopupAnimation="Slide">
+                                <Grid Name="DropDown" SnapsToDevicePixels="True"
+                    MinWidth="{TemplateBinding FrameworkElement.ActualWidth}"
+                    MaxHeight="{TemplateBinding ComboBox.MaxDropDownHeight}">
+                                    <Border Name="DropDownBorder" Background="{StaticResource MainBlueGentleColor}" Margin="0, 1, 0, 0"
+                        CornerRadius="0" BorderThickness="1,1,1,1" 
+                        BorderBrush="{StaticResource MainBlueColorMiddle}"/>
+                                    <ScrollViewer Margin="4" SnapsToDevicePixels="True">
+                                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="ItemsControl.HasItems" Value="False">
+                                <Setter Property="FrameworkElement.MinHeight" TargetName="DropDownBorder" Value="500"/>
+                            </Trigger>
+                            <Trigger Property="UIElement.IsEnabled" Value="False">
+                                <Setter Property="TextElement.Foreground" Value="{StaticResource MainBlueColorMiddle}"/>
+                            </Trigger>
+                            <Trigger Property="ItemsControl.IsGrouping" Value="True">
+                                <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+                            </Trigger>
+                            <Trigger Property="ComboBox.IsEditable" Value="True">
+                                <Setter Property="KeyboardNavigation.IsTabStop" Value="False"/>
+                                <Setter Property="UIElement.Visibility" TargetName="PART_EditableTextBox" Value="Visible"/>
+                                <Setter Property="UIElement.Visibility" TargetName="ContentSite" Value="Hidden"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </UserControl.Resources>
 
     <Grid>
@@ -143,32 +253,33 @@
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="30*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20*"/>
-                            <ColumnDefinition Width="20*"/>
-                            <ColumnDefinition Width="20*"/>
-                            <ColumnDefinition Width="10*"/>
-                            <ColumnDefinition Width="30*"/>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="50"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Border Grid.Column="1" BorderThickness="1" CornerRadius="0" Background="{StaticResource MainBlueColorMiddle}">
-                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Расписание на"/>
-                            </Border>
-                        </Grid>
-                        <ComboBox SelectedIndex="{Binding Day}" Grid.Column="1" Template="{DynamicResource ComboBoxTemplate1}" FontSize="20" Foreground="White" BorderBrush="{x:Null}" Cursor="Hand">
-                            <TextBlock Text="Понедельник"/>
-                            <TextBlock Text="Вторник"/>
-                            <TextBlock Text="Среда"/>
-                            <TextBlock Text="Четверг"/>
-                            <TextBlock Text="Пятница"/>
-                            <TextBlock Text="Суббота"/>
-                        </ComboBox>
-                        <Border Grid.Column="2">
-                            <TextBlock Foreground="{StaticResource FontColor}" FontSize="20"
+                        <Border Grid.Column="1" BorderThickness="1" CornerRadius="0" Background="{StaticResource MainBlueColorMiddle}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White" Text="Расписание на"/>
+                        </Border>
+                    </Grid>
+                    <ComboBox SelectedIndex="{Binding Day}" Grid.Column="1"  Height="Auto" 
+                              Template="{DynamicResource ComboBoxTemplate1}" FontSize="20" Foreground="White" BorderBrush="{x:Null}" Cursor="Hand">
+                        <TextBlock Text="Понедельник"/>
+                        <TextBlock Text="Вторник"/>
+                        <TextBlock Text="Среда"/>
+                        <TextBlock Text="Четверг"/>
+                        <TextBlock Text="Пятница"/>
+                        <TextBlock Text="Суббота"/>
+                    </ComboBox>
+                    <Border Grid.Column="2">
+                        <TextBlock Foreground="{StaticResource FontColor}" FontSize="20"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" 
                                        Text="{Binding Week}" Cursor="Hand">
                             <i:Interaction.Triggers>
@@ -178,34 +289,35 @@
                                                     CommandParameter="1"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
-                            </TextBlock>
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Setter Property="Background" Value="{StaticResource MainBlueColorDop}"/>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource MainBlueColorBlack}"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Border.Style>
+                        </TextBlock>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="{StaticResource MainBlueColorDop}"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource MainBlueColorBlack}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
 
-                        </Border>
-                        <ComboBox SelectedIndex="{Binding Para}" Grid.Column="3" Template="{DynamicResource ComboBoxTemplate1}" FontSize="20" Foreground="White" BorderBrush="{x:Null}" Cursor="Hand">
-                            <TextBlock Text="1 пара"/>
-                            <TextBlock Text="2 пара"/>
-                            <TextBlock Text="3 пара"/>
-                            <TextBlock Text="4 пара"/>
-                            <TextBlock Text="5 пара"/>
-                            <TextBlock Text="6 пара"/>
-                            <TextBlock Text="7 пара"/>
-                        </ComboBox>
+                    </Border>
+                    <ComboBox SelectedIndex="{Binding Para}" Grid.Column="3" Height="Auto"
+                                  Template="{DynamicResource ComboBoxTemplate1}" FontSize="20" Foreground="White" BorderBrush="{x:Null}" Cursor="Hand">
+                        <TextBlock Text="1 пара"/>
+                        <TextBlock Text="2 пара"/>
+                        <TextBlock Text="3 пара"/>
+                        <TextBlock Text="4 пара"/>
+                        <TextBlock Text="5 пара"/>
+                        <TextBlock Text="6 пара"/>
+                        <TextBlock Text="7 пара"/>
+                    </ComboBox>
                     <Grid Grid.Column="4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
-                            <ColumnDefinition Width="105"/>
                         </Grid.ColumnDefinitions>
-                        <ComboBox SelectedIndex="0" Template="{DynamicResource ComboBoxTemplate1}" 
+                        <ComboBox SelectedIndex="{Binding SelectedFileIndex}" Template="{DynamicResource ComboBoxTemplate1}" 
+                              Height="Auto"
                               FontSize="20" Foreground="White" IsReadOnly="True" Cursor="Hand">
                             <TextBlock Text="Создание файла:"/>
                             <TextBlock Text="Преподаватели (Excel)">
@@ -237,12 +349,10 @@
                             </TextBlock>
                         </ComboBox>
                     </Grid>
-
-                    </Grid>
-
+                </Grid>
             </Grid>
 
-            </Grid>
+        </Grid>
 
         <Grid Grid.Row="1" Background="White"/>
 
@@ -393,7 +503,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Foreground="{StaticResource FontColor}"  Grid.Column="0" Text="Предмет:"
                                        HorizontalAlignment="Center" FontSize="18"/>
-                        <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToString}}" 
+                        <ComboBox Height="26" Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToString}}" 
                                       ItemsSource="{Binding Lessons}" SelectedItem="{Binding SelectedPhone.Lesson}" Grid.Column="1">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="SelectionChanged">
@@ -403,17 +513,17 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
-          
+
                         <!--<Border x:Name="LessonBox" BorderBrush="White" BorderThickness="1 0 0 0" Style="{StaticResource BorderAdd}" Grid.Column="1">
                             <TextBlock Foreground="{StaticResource FontColor}" HorizontalAlignment="Center" 
                                 VerticalAlignment="Center" Text="{Binding SelectedPhone.Lesson}"/>
                         </Border>-->
-                        
+
                         <!--<Border MouseDown="LessonBox_MouseDown" x:Name="LessonBox" BorderBrush="White" BorderThickness="1 0 0 0" Style="{StaticResource BorderAdd}" Grid.Column="1">
                             <TextBlock Foreground="{StaticResource FontColor}" HorizontalAlignment="Center" 
                                            VerticalAlignment="Center" Text="{Binding SelectedPhone.Lesson}"/>
                         </Border>-->
-                        
+
                         <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToStringSecond}}" 
                                   ItemsSource="{Binding Lessons}" SelectedItem="{Binding SelectedPhone.OfficeLesson}" Grid.Column="1">
                             <i:Interaction.Triggers>
@@ -426,7 +536,7 @@
                         </ComboBox>
                     </Grid>
 
-                    
+
                     <StackPanel x:Name="SelectedMenu">
                         <Grid Margin="0,20,0,0">
                             <Grid.ColumnDefinitions>
@@ -436,7 +546,7 @@
                             <TextBlock Foreground="{StaticResource FontColor}" Grid.Column="0"  Text="Преподаватель:" HorizontalAlignment="Center" FontSize="18"/>
                             <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToString}}" 
                                           ItemsSource="{Binding TeacherMas}" SelectedItem="{Binding SelectedPhone.Prepod1}" Grid.Column="1">
-            
+
                             </ComboBox>
                             <ComboBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToStringSecond}}" 
                                           ItemsSource="{Binding OfficeMas}" SelectedItem="{Binding SelectedPhone.Office1}" Grid.Column="1"/>
@@ -623,5 +733,5 @@
     </Grid>
 
 
-    
+
 </UserControl>

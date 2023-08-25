@@ -52,8 +52,8 @@ namespace Sasha_Project.Models.SettingsModels
             }
         }
 
-        private string dist;
-        public string Dist
+        private int dist;
+        public int Dist
         {
             get
             {

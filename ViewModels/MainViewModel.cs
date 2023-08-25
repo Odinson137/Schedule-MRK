@@ -20,8 +20,8 @@ namespace Sasha_Project.ViewModels
 
         public ViewModel()
         {
-            //SelectedViewModel = new TableViewModel();
-            SelectedViewModel = new SettingsViewModel();
+            SelectedViewModel = new TableViewModel();
+            //SelectedViewModel = new SettingsViewModel();
         }
 
         RelayCommand? newPage;

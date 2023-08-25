@@ -560,9 +560,9 @@ namespace Sasha_Project.Word
         {
             string group = reader.GetString(1);
             string office = reader.GetString(2);
-            string dist = reader.GetString(3);
+            int dist = reader.GetInt32(3);
             bool distant = false;
-            if (dist == "1") distant = true;
+            if (dist == 1) distant = true;
 
             if (mas.ContainsKey(office))
                 mas[office].Add(new Group() { Gr = group, Distant = distant });
@@ -655,7 +655,10 @@ namespace Sasha_Project.Word
             string spec = reader.GetString(0);
             string page = reader.GetString(1);
 
-            groupsDict[page].Add(spec);
+            if (!groupsDict.TryAdd(page, new List<string>() { spec }))
+            {
+                groupsDict[page].Add(spec);
+            }
         }
 
         private void SelectSpec()
@@ -689,7 +692,7 @@ namespace Sasha_Project.Word
                 body.Append(sectionProps);
 
                 CreateHeaderText(ref body, date, "дневной", day);
-                CreateText(ref body, "Made by Yura", true);
+                //CreateText(ref body, "Made by Yura", true);
 
                 Table table = new Table();
 

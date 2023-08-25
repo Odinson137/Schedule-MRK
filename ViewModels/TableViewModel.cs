@@ -140,7 +140,7 @@ namespace Sasha_Project.ViewModels
             SelectRooms();
             firstCharacters = DataBase.SelectFirstLetterGroup();
             Phones = DataBase.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
-            selectedPhone = Phones[0];
+            SelectedPhone = Phones[0];
         }
 
         private void UpdateValues()
@@ -260,10 +260,22 @@ namespace Sasha_Project.ViewModels
                 UpdateValues();
             }));
 
+        private int selectedFileIndex;
+        public int SelectedFileIndex
+        {
+            get => selectedFileIndex;
+            set
+            {
+                selectedFileIndex = value;
+                OnPropertyChanged(nameof(SelectedFileIndex));
+            }
+        }
         private RelayCommand? selectFile;
         public RelayCommand SelectFile => selectFile ??
             (selectFile = new RelayCommand(obj =>
             {
+                
+
                 string val = obj.ToString();
                 if (val == "0")
                 {
@@ -304,6 +316,7 @@ namespace Sasha_Project.ViewModels
                         MessageBox.Show("Файл запуска Word не найден. Проверьте путь в файле!");
                     }
                 }
+                SelectedFileIndex = 0;
             }));
 
         private string CreatePathExcel()

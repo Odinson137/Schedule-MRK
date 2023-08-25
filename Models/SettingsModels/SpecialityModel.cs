@@ -23,8 +23,8 @@ namespace Sasha_Project.Models.SettingsModels
             }
         }
 
-        private int excelPage;
-        public int ExcelPage
+        private string excelPage;
+        public string ExcelPage
         {
             get => excelPage;
             set
@@ -45,8 +45,8 @@ namespace Sasha_Project.Models.SettingsModels
             }
         }
 
-        private int code;
-        public int Code
+        private string code;
+        public string Code
         {
             get => code;
             set

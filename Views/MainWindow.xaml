@@ -5,9 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sasha_Project" xmlns:viewmodels="clr-namespace:Sasha_Project.ViewModels"
         mc:Ignorable="d"
-        WindowStyle="None"
-        Background="Transparent"
-        AllowsTransparency="True"
+
         MouseDown="Window_MouseDown"
         Title="Расписание" Height="700" Width="1000" Icon="/Views/timetable.png" ShowInTaskbar="True" WindowStartupLocation="CenterScreen" Topmost="False"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
@@ -15,7 +13,8 @@
     <Window.DataContext>
         <viewmodels:ViewModel/>
     </Window.DataContext>
-
+ 
+    
     <Window.Resources>
         <LinearGradientBrush x:Key="BorderGradientColor" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#3F888F" Offset="0"/>
@@ -25,7 +24,7 @@
     </Window.Resources>
     
     <Grid>
-        <Border CornerRadius="15"
+        <Border 
             BorderThickness="5" BorderBrush="{StaticResource BorderGradientColor}">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
@@ -62,7 +61,7 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" 
+                        <!--<Button Grid.Column="0" 
                         x:Name="MiniMized"
                         Foreground="White"
                         FontSize="16"
@@ -94,12 +93,12 @@
                         </Button>
 
                         <Button Grid.Column="1" 
-                        x:Name="FullWindow"
-                        Foreground="White"
-                        FontSize="16"
-                        Cursor="Hand"
-                        BorderThickness="0"
-                        Click="FullWindow_Click">
+                            x:Name="FullWindow"
+                            Foreground="White"
+                            FontSize="16"
+                            Cursor="Hand"
+                            BorderThickness="0"
+                            Click="FullWindow_Click">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Setter Property="Background" Value="#DAB334"/>
@@ -121,9 +120,9 @@
                                     </Border>
                                 </ControlTemplate>
                             </Button.Template>
-                        </Button>
+                        </Button>-->
 
-                        <Button Grid.Column="15" 
+                        <!--<Button Grid.Column="15" 
                         x:Name="Closed"
                         Foreground="White"
                         FontSize="16"
@@ -151,8 +150,9 @@
                                     </Border>
                                 </ControlTemplate>
                             </Button.Template>
-                        </Button>
+                        </Button>-->
                     </Grid>
+                
                 </Grid>
             </Grid>
         </Border>

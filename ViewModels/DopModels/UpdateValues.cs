@@ -321,7 +321,7 @@ namespace Sasha_Project.ViewModels.DopModels
                       select i.Prepod;
             }
             Console.WriteLine(mas.Count());
-            List<string> values = new List<string>(mas) { "asf" };
+            List<string> values = new List<string>(mas.Distinct().Order()) { "" };
 
             KnowingValue(values, strPrepods);
 

@@ -1,4 +1,5 @@
-﻿using Sasha_Project.Commands;
+﻿using DocumentFormat.OpenXml.EMMA;
+using Sasha_Project.Commands;
 using Sasha_Project.Models.SettingsModels;
 using Sasha_Project.ViewModels.DopModels;
 using System;
@@ -40,8 +41,8 @@ namespace Sasha_Project.ViewModels.SettingsPages
             {
                 ID = reader.GetInt32(0),
                 SpecTitle = reader.GetString(1),
-                //ExcelPage = reader.GetInt32(2),
-                //Code = reader.GetInt32(3)
+                ExcelPage = reader.GetString(2),
+                Code = reader.GetString(4)
             });
         }
 
@@ -53,17 +54,35 @@ namespace Sasha_Project.ViewModels.SettingsPages
 
         public bool DeleteValue()
         {
-            throw new NotImplementedException();
+            string request = $"DELETE FROM Scep WHERE Spec = @spec";
+            return WorkBase.RequestValue(request, new Dictionary<string, object>()
+            {
+                { "spec", SelectedItem.SpecTitle}
+            });
         }
 
         public bool PutValue()
         {
-            throw new NotImplementedException();
+            string request = $"UPDATE Scep SET (Spec, Pages, Code) = (@value1, @value2, @value3) WHERE ID = @id";
+            return WorkBase.RequestValue(request, new Dictionary<string, object>()
+            {
+                  { "id", SelectedItem.ID },
+                { "value1", SelectedItem.SpecTitle },
+                { "value2", SelectedItem.ExcelPage},
+                { "value3", SelectedItem.Code }
+            });
         }
 
-        public bool InsertValue(SpecialityModel newValue)
+        public bool InsertValue(SpecialityModel model)
         {
-            throw new NotImplementedException();
+            string request = $"INSERT INTO Scep (ID, Spec, Pages, Code) VALUES (@id, @value1, @value2, @value3)";
+            return WorkBase.RequestValue(request, new Dictionary<string, object>()
+            {
+                { "id", model.ID },
+                { "value1", model.SpecTitle },
+                { "value2", model.ExcelPage},
+                { "value3", model.Code }
+            });
         }
 
         RelayCommand? putSpec;
@@ -76,7 +95,7 @@ namespace Sasha_Project.ViewModels.SettingsPages
                     {
                         SelectedItem.ID = List.Max(x => x.ID) + 1;
                         if (InsertValue(SelectedItem))
-                            MessageBox.Show("Специальность добавлена добавлен");
+                            MessageBox.Show("Специальность добавлена");
                     }
                     else
                         if (PutValue())
