@@ -1149,11 +1149,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\buryy\\OneDrive\\visual studio\\WinFormsApp1\\Sasha Project\\Sasha Project.csproj",
+      "projectUniqueName": "C:\\Users\\buryy\\OneDrive\\visual studio\\WinFormsApp1\\Schdeule\\Sasha Project.csproj",
       "projectName": "Sasha Project",
-      "projectPath": "C:\\Users\\buryy\\OneDrive\\visual studio\\WinFormsApp1\\Sasha Project\\Sasha Project.csproj",
+      "projectPath": "C:\\Users\\buryy\\OneDrive\\visual studio\\WinFormsApp1\\Schdeule\\Sasha Project.csproj",
       "packagesPath": "C:\\Users\\buryy\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\buryy\\OneDrive\\visual studio\\WinFormsApp1\\Sasha Project\\obj\\",
+      "outputPath": "C:\\Users\\buryy\\OneDrive\\visual studio\\WinFormsApp1\\Schdeule\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
