@@ -6,7 +6,6 @@ using System.Linq;
 using MainTable;
 using Sasha_Project.ViewModels.DopModels;
 using System.Data.SQLite;
-using DocumentFormat.OpenXml.Bibliography;
 
 namespace Sasha_Project.Word
 {
@@ -219,8 +218,17 @@ namespace Sasha_Project.Word
         private Paragraph CreateParagraph(string text, bool textBold, string textFont)
         {
             Run run = new Run(new Text(text));
-            //run.RunProperties = new RunProperties(new RunFonts() { Ascii = "Times New Roman" });
             run.RunProperties = new RunProperties();
+
+            //RunFonts runFonts = new RunFonts()
+            //{
+            //    Ascii = "Times New Roman",
+            //    HighAnsi = "Times New Roman",
+            //    ComplexScript = "Times New Roman"
+            //};
+
+            //run.RunProperties.AppendChild(runFonts);
+
             if (textBold)
             {
                 run.RunProperties.AppendChild(new Bold());
@@ -508,9 +516,16 @@ namespace Sasha_Project.Word
         private void CreateText(ref Body body, string text, bool value = false, bool bold = false)
         {
             Run run = new Run(new Text(text));
-            //run.RunProperties.AppendChild();
             run.RunProperties = new RunProperties();
-            //run.RunProperties.AppendChild(new RunFonts() { Ascii = "Times New Roman Italic" });
+
+            //RunFonts runFonts = new RunFonts()
+            //{
+            //    Ascii = "Times New Roman",
+            //    HighAnsi = "Times New Roman",
+            //    ComplexScript = "Times New Roman"
+            //};
+            //run.RunProperties.AppendChild(runFonts);
+
             run.RunProperties.AppendChild(new FontSize() { Val = "20" });
             if (bold)
             {
@@ -548,7 +563,7 @@ namespace Sasha_Project.Word
         {
             CreateText(ref body, "УТВЕРЖДЕНО                                                .", true);
             CreateText(ref body, "Заместитель директора по УР                  .", true);
-            CreateText(ref body, "_______________________Ф.С.Шумчик ", true);
+            CreateText(ref body, "_______________________ Ф.С.Шумчик ", true);
 
             CreateText(ref body, "ИЗМЕНЕНИЯ");
             CreateText(ref body, $"в расписании учебных занятий групп {text} формы получения образования на");
@@ -641,23 +656,16 @@ namespace Sasha_Project.Word
             WorkBase.SelectValues(request, SelecterWord);
         }
 
-        Dictionary<string, List<string>> groupsDict = new Dictionary<string, List<string>>() {
-            { "1", new List<string>()},
-            { "2", new List<string>()},
-            { "3", new List<string>()},
-            { "4", new List<string>()},
-            { "5", new List<string>()},
-            { "6", new List<string>()},
-        };
+
 
         private void SelecterSpec(SQLiteDataReader reader)
         {
             string spec = reader.GetString(0);
             string page = reader.GetString(1);
 
-            if (!groupsDict.TryAdd(page, new List<string>() { spec }))
+            if (!departMas.TryAdd(page, new List<string>() { spec }))
             {
-                groupsDict[page].Add(spec);
+                departMas[page].Add(spec);
             }
         }
 
@@ -707,7 +715,6 @@ namespace Sasha_Project.Word
 
                 foreach (var depart in departMas)
                 {
-
                     if (depart.Value.Count() > 0)
                     {
                         CreateHeader(ref table);
@@ -763,7 +770,10 @@ namespace Sasha_Project.Word
                 {
                     CreateGroupLine(ref table, group, groups[group]);
                 }
+
+
                 body.Append(table);
+
                 // Сохранение документа
                 mainPart.Document.Save();
             }

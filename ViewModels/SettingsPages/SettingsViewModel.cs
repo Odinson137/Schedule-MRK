@@ -42,7 +42,8 @@ namespace Sasha_Project.ViewModels.SettingsPages
                     SelectedSettingsBaseViewModel = new SettingsGroupsViewModel();
                 else if (Index == "6")
                     SelectedSettingsBaseViewModel = new SettingsScheduleViewModel();
-
+                else
+                    SelectedSettingsBaseViewModel = new SettingsScheduleViewModel();
 
                 OnPropertyChanged("Index");
                 OnPropertyChanged("SelectedSettingsBaseViewModel");

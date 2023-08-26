@@ -305,9 +305,9 @@ class WorkRoom
 
                     if (value)
                     {
-                        if (room1.Length > 1 && room1.Contains(" "))
+                        if (room1.Length > 1 && room1.Contains("\n"))
                         {
-                            foreach (string s in room1.Split(" "))
+                            foreach (string s in room1.Split("\n"))
                             {
                                 dict[para][s] = "1";
                             }
@@ -316,9 +316,9 @@ class WorkRoom
                         {
                             dict[para][room1] = "1";
                         }
-                        if (room2.Length > 1 && room2.Contains(" "))
+                        if (room2.Length > 1 && room2.Contains("\n"))
                         {
-                            foreach (string s in room2.Split(" "))
+                            foreach (string s in room2.Split("\n"))
                             {
                                 dict[para][s] = "2";
                             }
@@ -330,9 +330,9 @@ class WorkRoom
                     }
                     else
                     {
-                        if (room1.Contains(" "))
+                        if (room1.Contains("\n"))
                         {
-                            foreach (string s in room1.Split(" "))
+                            foreach (string s in room1.Split("\n"))
                             {
                                 dict[para][s] = "3";
                             }
@@ -1076,18 +1076,18 @@ class DataBase
 
     }
 
-    public static void InsertLessons(int id, string lesson, int kurs)
+    public static void InsertLessons(int id, string lesson) // kurs
     {
         try
         {
             using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
             {
                 connection.Open();
-                using (SQLiteCommand command = new SQLiteCommand($"INSERT INTO Lessons (ID, Lessons, Kurs) VALUES (@id, @lesson, @kurs)", connection))
+                using (SQLiteCommand command = new SQLiteCommand($"INSERT INTO Lessons (ID, Lessons) VALUES (@id, @lesson)", connection))
                 {
                     command.Parameters.AddWithValue("@id", id);
                     command.Parameters.AddWithValue("@lesson", lesson);
-                    command.Parameters.AddWithValue("@kurs", kurs);
+                    //command.Parameters.AddWithValue("@kurs", kurs);
                     command.ExecuteNonQuery();
                 }
 

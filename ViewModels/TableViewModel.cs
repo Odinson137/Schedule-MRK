@@ -18,17 +18,7 @@ namespace Sasha_Project.ViewModels
     public class TableViewModel : BaseViewModel
     {
         public ObservableCollection<Tables> Phones { get; set; }
-        public List<string> roomsMas;
-        public List<string> RoomsMas
-        {
-            get => roomsMas;
-            set
-            {
-                roomsMas = value;
-                OnPropertyChanged("RoomsMas");
-            }
-        }
-
+        public List<string> RoomsMas { get; set; }
         public List<string> TeacherMas { get; set; }
         public List<string> OfficeMas { get; set; }
         public List<string> ChangesMas { get; set; }
@@ -126,7 +116,8 @@ namespace Sasha_Project.ViewModels
 
                 Lesson = value.Lesson;
                 selectedPhone = value;
-
+                
+                OnPropertyChanged("RoomsMas");
                 OnPropertyChanged("TeacherMas");
                 OnPropertyChanged("ChangesMas");
                 OnPropertyChanged("OfficeMas");

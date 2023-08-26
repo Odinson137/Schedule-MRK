@@ -7,6 +7,9 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="ViewModels\DiologWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\SettingsViews\SettingsGroupsViewl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -33,6 +36,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="ViewModels\DiologWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>

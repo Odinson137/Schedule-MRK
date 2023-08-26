@@ -11,6 +11,6 @@
         <viewmodels:SettingsScheduleViewModel/>
     </UserControl.DataContext>
     <Grid>
-        <TextBlock FontSize="102">Ths is Schedule</TextBlock>
+        <Button Content="Load File" Click="LoadFileButton_Click"/>
     </Grid>
 </UserControl>

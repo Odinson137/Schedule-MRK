@@ -9,6 +9,7 @@ using System.Windows;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Microsoft.VisualBasic;
 using System.Data.SQLite;
+using Sasha_Project.Models.SettingsModels;
 
 namespace Sasha_Project.Excel;
 
@@ -293,16 +294,21 @@ class ReadBook
     {
         DataBase.CLeanTable("Lessons");
 
-        List<string> mas = new List<string>();
-
+        //List<LessonModel> mas = new List<LessonModel>();
+        var lsits = list.DistinctBy(x => x.Lesson);
         int num = 0;
-        foreach (Lessons l in list)
+        foreach (Lessons l in lsits)
         {
-            if (!mas.Contains(l.Lesson))
-            {
-                DataBase.InsertLessons(num++, l.Lesson, (int)l.Kurs);
-                mas.Add(l.Lesson);
-            }
+            //int i = (int)l.Kurs;
+            //mas.Add(new LessonModel()
+            //{
+            //    Lesson = l.Lesson,
+            //});
+            //if (!mas.Contains(l.Lesson))
+            //{
+            DataBase.InsertLessons(num++, l.Lesson);
+                //mas.Add(l.Lesson);
+            //}
         }
     }
 
@@ -331,11 +337,11 @@ class ReadBook
         CreateBaseTables(listGroups);
     }
 
-    public void SelectOpenendFile()
+    public void SelectOpenendFile(FileInfo fileInfo)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-        FileInfo fileInfo = new FileInfo(@"test.xlsx");
+        //FileInfo fileInfo = new FileInfo(@"test.xlsx");
         using (ExcelPackage package = new ExcelPackage(fileInfo))
         {
             ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
@@ -344,8 +350,8 @@ class ReadBook
             List<Lessons> list = removeDuplicates(les);
             //var iList = list.OrderBy(x => x.Lesson);
 
-            //CreateBaseLessons(list);
-            //CreateBasePrepods(list);
+            CreateBaseLessons(list);
+            CreateBasePrepods(list);
             CreateBaseGroups(list);
 
             MessageBox.Show("good");
