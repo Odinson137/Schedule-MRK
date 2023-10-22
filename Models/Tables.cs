@@ -310,13 +310,13 @@ namespace MainTable
             }
         }
 
-        private string lesson = "";
+        private string lesson = " ";
         public string Lesson {
             set
             {
-                if (lesson != "")
+                if (!string.IsNullOrEmpty(lesson) && !string.IsNullOrWhiteSpace(lesson))
                 {
-                    Prepods = " ";
+                    Prepods = "";
                     Changes = "";
                 }
                 lesson = value;
@@ -393,6 +393,62 @@ namespace MainTable
                 OnPropertyChanged("Third");
             }
         }
+
+        public string dopText;
+        public string DopText
+        {
+            get
+            {
+                return dopText;
+            } 
+            set
+            {
+                dopText = value;
+                OnPropertyChanged(nameof(DopText));
+            }
+        }
+
+        public string dopTextZamena;
+        public string DopTextZamena
+        {
+            get
+            {
+                return dopTextZamena;
+            }
+            set
+            {
+                dopTextZamena = value;
+                OnPropertyChanged(nameof(DopTextZamena));
+            }
+        }
+
+        //public string dopText2;
+        //public string DopText2
+        //{
+        //    get
+        //    {
+        //        return dopText2;
+        //    }
+        //    set
+        //    {
+        //        dopText2 = value;
+        //        OnPropertyChanged(nameof(DopText2));
+        //    }
+        //}
+
+        //public string dopTextZamena2;
+        //public string DopTextZamena2
+        //{
+        //    get
+        //    {
+        //        return dopTextZamena2;
+        //    }
+        //    set
+        //    {
+        //        dopTextZamena2 = value;
+        //        OnPropertyChanged(nameof(DopTextZamena2));
+        //    }
+        //}
 
         public Tables? Link { get; set; }
 

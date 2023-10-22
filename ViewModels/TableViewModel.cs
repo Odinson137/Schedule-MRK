@@ -4,6 +4,7 @@ using Sasha_Project.Commands;
 using Sasha_Project.Excel;
 using Sasha_Project.ViewModels.DopModels;
 using Sasha_Project.Word;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.SQLite;
@@ -23,7 +24,21 @@ namespace Sasha_Project.ViewModels
         public List<string> OfficeMas { get; set; }
         public List<string> ChangesMas { get; set; }
 
-        int para = 0;
+        public string Height
+        {
+            get
+            {
+                if (Day == 1)
+                {
+                    return "auto";
+                } else
+                {
+                    return "0";
+                }
+            }
+        }
+
+        int para = 1;
         public int Para
         {
             get
@@ -63,11 +78,12 @@ namespace Sasha_Project.ViewModels
             {
                 day = value;
                 UpdateValues();
+                OnPropertyChanged("Height");
             }
         }
 
-        private IEnumerable<string> lessons;
-        public IEnumerable<string> Lessons
+        private List<string> lessons;
+        public List<string> Lessons
         {
             get => lessons;
             set
@@ -80,8 +96,6 @@ namespace Sasha_Project.ViewModels
         private readonly UpdateValuesPrepods prepods = new UpdateValuesPrepods();
         private readonly UpdateValuesRooms rooms = new UpdateValuesRooms();
 
-        private IEnumerable<string> firstCharacters;
-
         private Tables selectedPhone;
         public Tables SelectedPhone
         {
@@ -89,19 +103,8 @@ namespace Sasha_Project.ViewModels
             set
             {
                 if (value == null) return;
-                string letterGroup = value.Groups;
+                if (selectedPhone == null) return;
 
-                int kurs = 1;
-                foreach (string charachter in firstCharacters)
-                {
-                    if (charachter[0] == letterGroup[0])
-                    {
-                        break;
-                    }
-                    kurs++;
-                }
-
-                prepods.Kurs = kurs;
                 Lessons = prepods.GetLessons();
 
                 RoomsMas = rooms.GetMas(value.Groups, value.Rooms);
@@ -128,17 +131,80 @@ namespace Sasha_Project.ViewModels
         public TableViewModel()
         {
             SelectLessons();
+            
             SelectRooms();
-            firstCharacters = DataBase.SelectFirstLetterGroup();
-            Phones = DataBase.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
-            SelectedPhone = Phones[0];
+            Phones = DataBase.SelectBigBase(Para, weekStr, Day + 1, rooms, prepods);
+            selectedPhone = Phones[0];
+            OnPropertyChanged("SelectedPhone");
         }
+
+        //class LessonTestModel
+        //{
+        //    public int Id { get; set; }
+        //    public string Lesson { get; set; }
+        //    public string Lesson2 { get; set; }
+        //}
+
+        //private List<LessonTestModel> lessonTestModels = new List<LessonTestModel>();
+        //private void SelectTables(SQLiteDataReader reader)
+        //{
+        //    int id = reader.GetInt32(0);
+        //    string lesson = reader.GetString(1);
+        //    string lesson2 = reader.GetString(2);
+            
+        //    if (!string.IsNullOrEmpty(lesson) || !string.IsNullOrEmpty(lesson2))
+        //    {
+        //        lessonTestModels.Add(new LessonTestModel()
+        //        {
+        //            Id = id,
+        //            Lesson = lesson,
+        //            Lesson2 = lesson2
+        //        });
+        //    }
+        //}
+
+        //private void UpdateTables()
+        //{
+        //    string request = "SELECT ID, lessons, lessons_2 FROM Tables ORDER BY groups ASC";
+        //    WorkBase.SelectValues(request, SelectTables);
+
+        //    List<Lessons> list = prepods.GetAllLesson();
+
+        //    foreach (LessonTestModel lesson in lessonTestModels)
+        //    {
+        //        if (list.Where(x => x.ViewLesson != x.Lesson && x.Lesson == lesson.Lesson).Any())
+        //        {
+        //            var i = list.Where(x => x.ViewLesson != x.Lesson && x.Lesson == lesson.Lesson).FirstOrDefault();
+               
+        //            Console.Write("a");
+        //            PutValue(lesson.Id, "lessons", i.ViewLesson);
+        //        }
+        //        if (list.Where(x => x.ViewLesson != x.Lesson && x.Lesson == lesson.Lesson2).Any())
+        //        {
+        //            var i = list.Where(x => x.ViewLesson != x.Lesson && x.Lesson == lesson.Lesson2).FirstOrDefault();
+
+        //            Console.Write("a");
+        //            PutValue(lesson.Id, "lessons_2", i.ViewLesson);
+        //        }
+        //    }
+        //}
+
+        //public bool PutValue(int id, string lesson, string value)
+        //{
+        //    string request = $"UPDATE Tables SET ({lesson}) = (@value1) WHERE ID = @id";
+        //    return WorkBase.RequestValue(request, new Dictionary<string, object>()
+        //    {
+        //        { "id", id },
+        //        { "value1", value },
+        //    });
+        //}
 
         private void UpdateValues()
         {
             SelectLessons();
+
             SelectRooms();
-            Phones = DataBase.SelectBigBase(Para + 1, weekStr, Day + 1, rooms, prepods);
+            Phones = DataBase.SelectBigBase(Para, weekStr, Day + 1, rooms, prepods);
             OnPropertyChanged("Phones");
         }
 
@@ -156,28 +222,27 @@ namespace Sasha_Project.ViewModels
 
         private void SelectTable(SQLiteDataReader reader)
         {
-            string prepod = reader.GetString(1);
+            string prepod = reader.IsDBNull(2) ? " " : reader.GetString(2);
             prepods.InsertNewStruct(new Lessons()
             {
                 Lesson = reader.GetString(0),
                 Prepod = prepod,
-                Kurs_1 = reader.GetBoolean(2), 
-                Kurs_2 = reader.GetBoolean(3), 
-                Kurs_3 = reader.GetBoolean(4), 
-                Kurs_4 = reader.GetBoolean(5),
-                
+                ShortLesson = reader.GetString(1),
             });
             prepods.InsertNewValue(prepod);
         }
 
         private void SelectLessons()
         {
-            string request = "SELECT Lessons.Lessons, Prepods.Prepods, "
-                            + "Kurs_1, Kurs_2, Kurs_3, Kurs_4 " 
-                            + "FROM Lessons "
-                            + "INNER JOIN Prepods " 
-                            + "ON Lessons.Lessons = Prepods.Lessons " 
-                            + "ORDER BY Lessons.Lessons;";
+            prepods.DeleteValues();
+
+            string request = "SELECT Lessons.Lessons, Lessons.Shorts, Prepods.Prepods " +
+                "FROM Lessons LEFT JOIN Prepods " +
+                "ON Lessons.ID = Prepods.LessonId " +
+                "UNION " +
+                "SELECT Lessons.Lessons, Lessons.Shorts, Prepods.Prepods " +
+                "FROM Lessons RIGHT JOIN Prepods ON Lessons.ID = Prepods.LessonId " +
+                "ORDER BY Lessons.Lessons; ";
             WorkBase.SelectValues(request, SelectTable);
         }
 
@@ -262,16 +327,20 @@ namespace Sasha_Project.ViewModels
             }
         }
         private RelayCommand? selectFile;
-        public RelayCommand SelectFile => selectFile ??
+        public RelayCommand SelectFile => 
             (selectFile = new RelayCommand(obj =>
             {
-                
-
                 string val = obj.ToString();
                 if (val == "0")
                 {
-                    WorkExcel a = new WorkExcel();
-                    a.CreateExcel(weekStr, Para + 1, Day + 1);
+                    try
+                    {
+                        WorkExcel a = new WorkExcel();
+                        a.CreateExcel(weekStr, Day + 1);
+                    } catch
+                    {
+                        MessageBox.Show("Ошибка при создании файла!");
+                    }
 
                     try
                     {
@@ -284,11 +353,11 @@ namespace Sasha_Project.ViewModels
                 else if (val == "1")
                 {
                     CreateRoomWord a = new CreateRoomWord();
-                    a.CreateWord(weekStr, (Para + 1).ToString());
+                    a.CreateWord(weekStr, (Day+1).ToString());
 
                     try
                     {
-                        Process.Start(CreatePathWord(), "Комнаты.docx");
+                        Process.Start(CreatePathWord(), $"Комнаты_{weekStr}_{(Day + 1)}.docx");
                     } catch
                     {
                         MessageBox.Show("Файл запуска Word не найден. Проверьте путь в файле!");
@@ -300,14 +369,14 @@ namespace Sasha_Project.ViewModels
                     a.MainDocument(Day + 1, weekStr);
                     try
                     {
-                        Process.Start(CreatePathWord(), "Учащиеся.docx");
+                        Process.Start(CreatePathWord(), $"Учащиеся_{weekStr}_{Day + 1}.docx");
                     }
                     catch
                     {
                         MessageBox.Show("Файл запуска Word не найден. Проверьте путь в файле!");
                     }
                 }
-                SelectedFileIndex = 0;
+                //SelectedFileIndex = 0;
             }));
 
         private string CreatePathExcel()

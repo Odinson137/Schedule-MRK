@@ -3,9 +3,13 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Collections.Generic;
 using System.Linq;
-using MainTable;
 using Sasha_Project.ViewModels.DopModels;
 using System.Data.SQLite;
+using Sasha_Project.Excel;
+
+using System;
+using System.Windows;
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 namespace Sasha_Project.Word
 {
@@ -39,8 +43,8 @@ namespace Sasha_Project.Word
 
             TableCellWidth tableCellWidth1;
             tableCellWidth1 = new TableCellWidth() { Width = "4000", Type = TableWidthUnitValues.Dxa };
+            
             cell.Append(tableCellWidth1);
-
             return cell;
         }
 
@@ -62,14 +66,7 @@ namespace Sasha_Project.Word
             cell2.Append(cellVerticalProperties2);
         }
 
-        private void AddToRow(ref TableRow[] rows, TableCell cell, int i)
-        {
-            TableRow row = new TableRow();
-            row.Append(cell);
-            rows[i] = row;
-        }
-
-        private void CreateTable(List<string> mas, Body body, Dictionary<string, Dictionary<string, string>> dict)
+        private void CreateTable(List<string> mas, Body body, Dictionary<string, Dictionary<string, string>> dict, int numer)
         {
             Table table = new Table();
 
@@ -77,30 +74,28 @@ namespace Sasha_Project.Word
             TableRow main = new TableRow();
             main.Append(mainCell);
 
-            TableRow[] rows = new TableRow[14];
-
-            int strNumer = 1;
-            int numer = 1;
-            for (int i = 0; i < rows.Length; i += 2, strNumer += 2, numer++)
-            {
-                TableCell a = CreateCell(numer.ToString());
-                TableCell b = CreateCell("");
-                MergeHorizont(ref a, ref b);
-            
-                AddToRow(ref rows, a, i);
-                AddToRow(ref rows, b, strNumer);
-            }
-
             foreach (string item in mas)
             {
-                main.Append(CreateCell(item));
+                TableCell cell = CreateCell(item);
+                main.Append(cell);
+            }
+            
+            table.Append(main);
 
-                int nums = 1;
-                int ints = 1;
-                for (int i = 0; i < rows.Length; i += 2, ints += 2)
+            for (; numer <= 7; numer++)
+            {
+                TableCell cell1 = CreateCell(numer.ToString());
+                TableCell cell2 = CreateCell("");
+                MergeHorizont(ref cell1, ref cell2);
+
+                TableRow tableRow1 = new TableRow();
+                tableRow1.Append(cell1);
+                TableRow tableRow2 = new TableRow();
+                tableRow2.Append(cell2);
+
+                for (int i = 0, ints = 0; i < mas.Count; i++, ints += 2)
                 {
-                    string strNums = nums.ToString();
-                    string value = dict[strNums][item];
+                    string value = dict[numer.ToString()][mas[i]];
 
                     TableCell a;
                     TableCell b;
@@ -129,18 +124,14 @@ namespace Sasha_Project.Word
 
                         MergeHorizont(ref a, ref b);
                     }
-
-                    rows[i].Append(a);
-                    rows[ints].Append(b);
-                    nums++;
+                    tableRow1.Append(a);
+                    tableRow2.Append(b);
                 }
+
+                table.Append(tableRow1);
+                table.Append(tableRow2);
             }
 
-            table.Append(main);
-            foreach (TableRow i in rows)
-            {
-                table.Append(i);
-            }
             body.Append(table);
             Paragraph para = new Paragraph();
             body.AppendChild(para);
@@ -148,7 +139,7 @@ namespace Sasha_Project.Word
 
         public void CreateWord(string week, string day)
         {
-            using (WordprocessingDocument document = WordprocessingDocument.Create("Комнаты.docx", WordprocessingDocumentType.Document))
+            using (WordprocessingDocument document = WordprocessingDocument.Create($"Комнаты_{week}_{day}.docx", WordprocessingDocumentType.Document))
             {
                 // Добавление основной части документа
                 MainDocumentPart mainPart = document.AddMainDocumentPart();
@@ -185,12 +176,15 @@ namespace Sasha_Project.Word
 
                 List<string> sortMas = new List<string>();
                 int nums = 1;
+
+                int numer = day == "2" ? 0 : 1;
+
                 foreach (CreateRoom item in mas)
                 {
                     sortMas.Add(item.Value);
                     if (nums == 22)
                     {
-                        CreateTable(sortMas, body, dict);
+                        CreateTable(sortMas, body, dict, numer);
                         
                         nums = 0;
                         sortMas.Clear();
@@ -208,14 +202,10 @@ namespace Sasha_Project.Word
     class WorkWord
     {
 
-        Dictionary<string, List<Group>> mas;
-
-        Dictionary<string, Dictionary<int, Tables[]>> groups;
-
-        Dictionary<string, List<string>> departMas;
-
+        List<ScheduleModel> groups = new List<ScheduleModel>();
         public WorkWord() { }
-        private Paragraph CreateParagraph(string text, bool textBold, string textFont)
+
+        private Paragraph CreateParagraph(string text, bool textBold, string textFont, bool change = false)
         {
             Run run = new Run(new Text(text));
             run.RunProperties = new RunProperties();
@@ -233,32 +223,61 @@ namespace Sasha_Project.Word
             {
                 run.RunProperties.AppendChild(new Bold());
             }
+
             run.RunProperties.AppendChild(new FontSize() { Val = textFont });
 
             Paragraph paragraph = new Paragraph(run);
 
             ParagraphProperties paragraphProperties = new ParagraphProperties();
-            paragraphProperties.SpacingBetweenLines = new SpacingBetweenLines() { Before = "0", After = "0", Line = "200" };
+            if (change)
+            {
+                paragraphProperties.SpacingBetweenLines = new SpacingBetweenLines() { Before = "0", After = "0", Line = "150" };
+            } else
+            {
+                paragraphProperties.SpacingBetweenLines = new SpacingBetweenLines() { Before = "10", After = "10", Line = "200" };
+
+            }
             paragraph.ParagraphProperties = paragraphProperties;
 
             return paragraph;
         }
 
-        private TableCell CreateCell(int num, string masString, string textFont, bool textBold, string width = "10000")
+        private TableCell CreateCell(int num, string masString, string textFont, bool textBold, string width = "10000", bool change = false)
         {
             TableCell cell = new TableCell();
+            int n = 0;
             if (masString.Contains("|"))
             {
                 foreach (string i in masString.Split("|"))
                 {
-                    Paragraph paragraph = CreateParagraph(i, textBold, textFont);
-                    cell.Append(new ParagraphProperties(new Justification() { Val = JustificationValues.Center }));
+                    if (!string.IsNullOrEmpty(i))
+                    {
+                        Paragraph paragraph;
+                        if (i.ToLower().Contains("практика") || i.ToLower().Contains("обучение"))
+                        {
+                            paragraph = CreateParagraph(i, true, "20");
+                        }
+                        else
+                        {
+                            paragraph = CreateParagraph(i, textBold, textFont);
+                        }
+                        cell.Append(new ParagraphProperties(new Justification() { Val = JustificationValues.Center }));
+                        cell.Append(paragraph);
+                    } else
+                    {
+                        n++;
+                    }
+                }
+                if (n == 3)
+                {
+                    Paragraph paragraph = CreateParagraph(" ", false, "16");
                     cell.Append(paragraph);
                 }
             }
             else
             {
-                Paragraph paragraph = CreateParagraph(masString, textBold, textFont);
+                Paragraph paragraph = CreateParagraph(masString, textBold, textFont, change);
+
                 cell.Append(new ParagraphProperties(new Justification() { Val = JustificationValues.Center }));
                 cell.Append(paragraph);
             }
@@ -327,16 +346,30 @@ namespace Sasha_Project.Word
             table.Append(headerRow);
         }
 
-        void CreateHeader(ref Table table)
+        void CreateHeader(ref Table table, bool infoHour)
         {
-            TableCell[] masRow1 = new TableCell[8];
-            TableCell[] masRow2 = new TableCell[8];
+            TableCell[] masRow1;
+            TableCell[] masRow2;
+            string[] masString1;
+            string[] masString2;
+            if (infoHour)
+            {
+                masRow1 = new TableCell[9];
+                masRow2 = new TableCell[9];
 
-            string[] masString1 = new string[] { "№ группы", "1 пара", "2 пара", "3 пара", "4 пара", "5 пара", "6 пара", "7 пара" };
+                masString1 = new string[] { "№ группы", "", "1 пара", "2 пара", "3 пара", "4 пара", "5 пара", "6 пара", "7 пара" };
+                masString2 = new string[] { "", "8:00-8:20", "8:30-10.05", "10:15-11.50", "12.10-13.45", "13:55-15.30", "15:50-17.25", "17:35-19.10", "19:20-20.55" };
+            }
+            else
+            {
+                masRow1 = new TableCell[8];
+                masRow2 = new TableCell[8];
 
-            string[] masString2 = new string[] { "", "8:30-10.05", "10:15-11.50", "12.10-13.45", "13:55-15.30", "15:50-17.25", "17:35-19.10", "19:20-20.55" };
+                masString1 = new string[] { "№ группы", "1 пара", "2 пара", "3 пара", "4 пара", "5 пара", "6 пара", "7 пара" };
+                masString2 = new string[] { "", "8:30-10.05", "10:15-11.50", "12.10-13.45", "13:55-15.30", "15:50-17.25", "17:35-19.10", "19:20-20.55" };
+            }
 
-            FromMas(table, ref masRow1, masString1, "28", true);
+            FromMas(table, ref masRow1, masString1, "26", true);
             FromMas(table, ref masRow2, masString2, "18", false);
 
             ToOneCell(ref masRow1[0], ref masRow2[0]);
@@ -376,32 +409,7 @@ namespace Sasha_Project.Word
             groupFreeRow.Append(cell, cellDop);
             groupRow.Append(free, cellDop2);
         }
-
-        private string CheckShortTitle(string title)
-        {
-            if (title.Contains("("))
-            {
-                return title;
-            }
-            char[] spliters = new char[] { '-', ' ' };
-            string[] mas = title.Split(spliters);
-            string new_title;
-            if (mas.Length > 2)
-            {
-                new_title = "";
-                foreach (string i in mas)
-                {
-                    new_title += i.ToUpper().First();
-                }
-            } else
-            {
-                new_title = title;
-            }
-
-            return new_title;
-        }
-
-        private string MakeText(Tables oneTab, int i = 0)
+        private string MakeText(ScheduleModel oneTab, int i = 0)
         {
             string readyText;
             if (oneTab.Lesson == " ")
@@ -412,38 +420,41 @@ namespace Sasha_Project.Word
             {
                 if (i == 0)
                 {
-                    readyText = $"{CheckShortTitle(oneTab.Lesson)}|{oneTab.Prepods}|{oneTab.Rooms}";
+                    readyText = $"{oneTab.Lesson}{(!string.IsNullOrEmpty(oneTab.DopText) && !string.IsNullOrWhiteSpace(oneTab.DopText) ? $" {oneTab.DopText}"  : string.Empty)}|{oneTab.Prepod1}|{oneTab.Room1}";
                 } else if (i == 1)
                 {
-                    readyText = $"{CheckShortTitle(oneTab.Lesson)}|{oneTab.Changes}|{oneTab.Rooms}";
+                    readyText = $"{oneTab.Lesson}{(!string.IsNullOrEmpty(oneTab.DopText) && !string.IsNullOrWhiteSpace(oneTab.DopText) ? $" {oneTab.DopText}"  : string.Empty)}|{oneTab.Changes1}|{oneTab.Room1}";
+                    //readyText = $"{oneTab.Lesson}|{oneTab.Changes1}|{oneTab.Room1}";
                 } else
                 {
-                    readyText = $"{CheckShortTitle(oneTab.OfficeLesson)}|{oneTab.Office}|{oneTab.Rooms}";
+                    readyText = $"{oneTab.LessonZamena}{(!string.IsNullOrEmpty(oneTab.DopTextOffice1) && !string.IsNullOrWhiteSpace(oneTab.DopTextOffice1) ? $" {oneTab.DopTextOffice1}"  : string.Empty)}|{oneTab.Office1}|{oneTab.Room1}";
+                    //readyText = $"{oneTab.Office1}|{oneTab.Office1}|{oneTab.Room1}";
                 }
             }
             return readyText;
         }
 
-        private void CreateHalfChanged(Tables oneTab, int index, int i, ref TableRow groupFreeRow, ref TableRow groupRow)
+        private void CreateHalfChanged(ScheduleModel oneTab, int index, int i, ref TableRow groupFreeRow, ref TableRow groupRow)
         {
             string readyText = MakeText(oneTab, index);
 
-            TableCell freeCell = CreateCell(1, "замена", "16", true);
+            TableCell freeCell = CreateCell(1, "Замена", "16", true, change: true);
+
             TableCell paraCell = CreateCell(i, readyText, "16", false);
 
             groupFreeRow.Append(freeCell);
             groupRow.Append(paraCell);
         }
 
-        private void CreateHalf(Tables oneTab, int i, ref TableRow groupFreeRow, ref TableRow groupRow)
+        private void CreateHalf(ScheduleModel oneTab, int i, ref TableRow groupFreeRow, ref TableRow groupRow)
         {
 
             string readyText;
-            if (oneTab.Changes.Length > 1)
+            if (oneTab.Changes1.Length > 1)
             {
                 CreateHalfChanged(oneTab, 1, 1, ref groupFreeRow, ref groupRow);
             }
-            else if (oneTab.OfficeLesson.Length > 2)
+            else if (oneTab.LessonZamena.Length > 2)
             {
                 CreateHalfChanged(oneTab, 1, 2, ref groupFreeRow, ref groupRow);
             }
@@ -459,56 +470,95 @@ namespace Sasha_Project.Word
             }
         }
 
-        private void createChanges(Tables oneTab, int index, ref TableRow groupFreeRow, ref TableRow groupRow)
+        private void createChanges(ScheduleModel oneTab, int index, ref TableRow groupFreeRow, ref TableRow groupRow)
         {
             string readyText = MakeText(oneTab, index);
-            TableCell freeCell = CreateCell(1, "замена", "16", true);
+            TableCell freeCell = CreateCell(1, "Замена", "16", true, change: true);
             TableCell paraCell = CreateCell(1, readyText, "16", false);
 
             Merging(ref groupFreeRow, ref groupRow, freeCell, paraCell, false);
         }
 
-        private void CreateGroupLine(ref Table table, string titleGroup, Dictionary<int, Tables[]> valueGroup)
+        private void CreateGroupLine(ref Table table, List<ScheduleModel> group, bool infoHour)
         {
-            TableRow groupRow = new TableRow();
-            TableRow groupFreeRow = new TableRow();
+            TableRowProperties rowProperties = new TableRowProperties(new TableRowHeight { Val = 400U, HeightType = HeightRuleValues.AtLeast });
+            TableRowProperties rowProperties1 = new TableRowProperties(new TableRowHeight { Val = 400U, HeightType = HeightRuleValues.AtLeast });
 
-            TableCell cell = CreateCell(0, titleGroup, "32", true);
+            TableRow groupRow = new TableRow(rowProperties);
+            TableRow groupFreeRow = new TableRow(rowProperties1);
+
+
+            TableCell cell = CreateCell(0, group[0].Title, "32", true);
             TableCell free = CreateCell(1, "", "14", false);
+
+            string? last = "";
 
             Merging(ref groupFreeRow, ref groupRow, cell, free);
 
-            for (int i = 1; i < 8; i++)
+            for (int i = 0; i < (infoHour ? 8 : 7); i++)
             {
-                Tables[] tab = valueGroup[i];
-                if (tab.Length == 1)
+                ScheduleModel tab = group[i];
+                if (!tab.RazdelPara)
                 {
-                    Tables oneTab = tab[0];
-
-                    if (oneTab.Changes.Length > 2)
+                    if (tab.Changes1.Length > 2)
                     {
-                        createChanges(oneTab, 1, ref groupFreeRow, ref groupRow);
+                        createChanges(tab, 1, ref groupFreeRow, ref groupRow);
                     }
-                    else if (oneTab.OfficeLesson.Length > 2)
+                    else if (tab.Office1.Length > 2)
                     {
-                        createChanges(oneTab, 2, ref groupFreeRow, ref groupRow);
+                        createChanges(tab, 2, ref groupFreeRow, ref groupRow);
                     }
                     else
                     {
-                        string readyText = MakeText(oneTab);
+                        string readyText = MakeText(tab);
                         TableCell paraCell = CreateCell(1, "", "14", false);
                         TableCell freeCell = CreateCell(i, readyText, "16", false);
 
                         Merging(ref groupFreeRow, ref groupRow, freeCell, paraCell);
+
+                        if ((last.Contains("обучение") || last.Contains("практика")) && readyText.Length == 2 && (!readyText.ToLower().Contains("практика") || !readyText.ToLower().Contains("обучение")))
+                        {
+                            TableCellProperties cellOneProperties = new TableCellProperties();
+                            cellOneProperties.Append(new HorizontalMerge()
+                            {
+                                Val = MergedCellValues.Continue
+                            });
+
+                            TableCellProperties cellTwoProperties = new TableCellProperties();
+                            cellTwoProperties.Append(new HorizontalMerge()
+                            {
+                                Val = MergedCellValues.Continue
+                            });
+
+                            paraCell.Append(cellOneProperties);
+                            freeCell.Append(cellTwoProperties);
+                        }
+                        else
+                        {
+                            TableCellProperties cellOneProperties = new TableCellProperties();
+                            cellOneProperties.Append(new HorizontalMerge()
+                            {
+                                Val = MergedCellValues.Restart
+                            });
+
+                            paraCell.Append(cellOneProperties);
+
+                            last = readyText.ToLower();
+                        }
+
+
                     }
                 }
                 else
                 {
-                    CreateHalf(tab[0], i, ref groupFreeRow, ref groupRow);
+                    CreateHalf(tab, i, ref groupFreeRow, ref groupRow);
 
-                    CreateHalf(tab[1], i, ref groupFreeRow, ref groupRow);
+                    ScheduleModel oneTab = tab.Copy();
+
+                    CreateHalf(oneTab, i, ref groupFreeRow, ref groupRow);
                 }
             }
+
             table.Append(groupFreeRow);
             table.Append(groupRow);
         }
@@ -571,212 +621,153 @@ namespace Sasha_Project.Word
             //CreateText(ref body, "");
         }
 
-        private void SelecterGroup(SQLiteDataReader reader)
+        private static string Nulling(SQLiteDataReader reader, int index)
         {
-            string group = reader.GetString(1);
-            string office = reader.GetString(2);
-            int dist = reader.GetInt32(3);
-            bool distant = false;
-            if (dist == 1) distant = true;
-
-            if (mas.ContainsKey(office))
-                mas[office].Add(new Group() { Gr = group, Distant = distant });
-            else
-                mas.Add(office, new List<Group>() { new Group() { Gr = group, Distant = distant } });
-        }
-
-        private void SelectGroups()
-        {
-            mas = new Dictionary<string, List<Group>>();
-            string request = "SELECT * FROM Groups ORDER BY offices ASC";
-            WorkBase.SelectValues(request, SelecterGroup);
+            if (!reader.IsDBNull(index))
+            {
+                return reader.GetString(index);
+            }
+            else return "";
         }
 
         private void SelecterWord(SQLiteDataReader reader)
         {
-            string titleGroup = reader.GetString(1);
-            string para = reader.GetString(7);
-
-            Tables[] tables;
-
-            bool RazdelPara = reader.GetBoolean(8);
-
-            Tables table = new Tables()
+            ScheduleModel scheduleModel = new ScheduleModel()
             {
-                Groups = titleGroup,
-                Rooms = reader.GetString(2),
-                Prepods = reader.GetString(3),
-                Changes = reader.GetString(4),
-                Office = reader.GetString(5),
-                Lesson = reader.GetString(14),
-                OfficeLesson = reader.GetString(16),
+                Title = reader.GetString(1),
+                Room1 = reader.GetString(2),
+                Prepod1 = reader.GetString(3),
+                Lesson = reader.GetString(4),
+                Changes1 = reader.GetString(5),
+                Office1 = reader.GetString(6),
+                RazdelPara = reader.GetBoolean(9),
+                Room2 = reader.GetString(10),
+                Prepod2 = reader.GetString(11),
+                Changes2 = reader.GetString(12),
+                Office2 = reader.GetString(13),
+
+                Para = reader.GetString(8),
+
+                Lesson2 = reader.GetString(14),
+                LessonZamena = reader.GetString(15),
+                LessonZamena2 = reader.GetString(16),
+
+                DopText = Nulling(reader, 17),
+                DopText2 = Nulling(reader, 18),
+                DopTextOffice1 = Nulling(reader, 19),
+                DopTextOffice2 = Nulling(reader, 20),
+
+                Page = reader.GetInt32(21),
+                Numeric = reader.GetInt32(22)
             };
 
-            if (RazdelPara)
-            {
-                tables = new Tables[2];
+            groups.Add(scheduleModel);
 
-                Tables tableTwo = new Tables()
-                {
-                    Groups = "Вторая половина",
-                    Rooms = reader.GetString(9),
-                    Prepods = reader.GetString(10),
-                    Changes = reader.GetString(11),
-                    Office = reader.GetString(12),
-                    Lesson = reader.GetString(15),
-                    OfficeLesson = reader.GetString(17),
-                };
-
-                tables[0] = table;
-                tables[1] = tableTwo;
-
-            }
-            else
-            {
-                tables = new Tables[1];
-                tables[0] = table;
-            }
-
-            int paraInt = int.Parse(para);
-            if (groups.ContainsKey(titleGroup))
-            {
-                groups[titleGroup].Add(paraInt, tables);
-            }
-            else
-            {
-                groups.Add(titleGroup, new Dictionary<int, Tables[]> { { paraInt, tables } });
-            }
         }
 
         private void SelectForWord(string week, int day)
         {
-            groups = new Dictionary<string, Dictionary<int, Tables[]>>();
-            mas = new Dictionary<string, List<Group>>();
-            string request = $"SELECT * FROM Tables WHERE week = '{week}' AND days = {day} ORDER BY groups ASC";
+            //groups = new Dictionary<string, Dictionary<int, Tables[]>>();
+
+            string request = $"SELECT t.ID, t.groups, t.rooms, t.prepods, t.lessons, t.changes, t.offices, t.week, t.para, " +
+                $"t.razdelsPara, t.rooms_2, t.prepods_2, t.changes_2, t.offices_2, t.lessons_2, t.lessons_zamena, t.lessons_zamena_2, " +
+                $"t.dopTextLesson, t.dopTextLesson_2, t.dopTextLessonZamena, t.dopTextLessonZamena_2, g.Page, g.Numeric " +
+                $"FROM Tables t " +
+                $"INNER JOIN Groups g ON t.groups = g.groups " +
+                $"WHERE t.week = '{week}' AND t.days = {day} " +
+                $"ORDER BY t.groups ASC";
+
             WorkBase.SelectValues(request, SelecterWord);
-        }
-
-
-
-        private void SelecterSpec(SQLiteDataReader reader)
-        {
-            string spec = reader.GetString(0);
-            string page = reader.GetString(1);
-
-            if (!departMas.TryAdd(page, new List<string>() { spec }))
-            {
-                departMas[page].Add(spec);
-            }
-        }
-
-        private void SelectSpec()
-        {
-            departMas = new Dictionary<string, List<string>>();
-            string request = "SELECT Spec, Pages FROM Scep ORDER BY Departments ASC";
-            WorkBase.SelectValues(request, SelecterSpec);
         }
 
         public void MainDocument(int day, string week)
         {
-            using (WordprocessingDocument document = WordprocessingDocument.Create("Учащиеся.docx", WordprocessingDocumentType.Document))
+            try
             {
-                // Добавление основной части документа
-                MainDocumentPart mainPart = document.AddMainDocumentPart();
-                mainPart.Document = new Document();
-                Body body = mainPart.Document.AppendChild(new Body());
-
-                int sheetWidth = 16839;
-
-                // Создание раздела документа
-                SectionProperties sectionProps = new SectionProperties();
-                PageSize pageSize = new PageSize() { Width = 16839U, Height = 11907U, Orient = PageOrientationValues.Landscape };
-                PageMargin pageMargin1 = new PageMargin() { Left = 720U, Right = 720U, Top = 720, Bottom = 720 };
-
-                sectionProps.Append(pageMargin1);
-                sectionProps.Append(pageSize);
-
-                WorkDate date = new WorkDate();
-
-                body.Append(sectionProps);
-
-                CreateHeaderText(ref body, date, "дневной", day);
-                //CreateText(ref body, "Made by Yura", true);
-
-                Table table = new Table();
-
-                SelectForWord(week, day);
-
-                SelectGroups();
-                SelectSpec();
-
-                int sum = 0;
-
-                List<string> distantGroups = new List<string>();
-
-                foreach (var depart in departMas)
+                using (WordprocessingDocument document = WordprocessingDocument.Create($"Учащиеся_{week}_{day}.docx", WordprocessingDocumentType.Document))
                 {
-                    if (depart.Value.Count() > 0)
+                    // Добавление основной части документа
+                    MainDocumentPart mainPart = document.AddMainDocumentPart();
+                    mainPart.Document = new Document();
+                    Body body = mainPart.Document.AppendChild(new Body());
+
+                    int sheetWidth = 16839;
+
+                    // Создание раздела документа
+                    SectionProperties sectionProps = new SectionProperties();
+                    PageSize pageSize = new PageSize() { Width = 16839U, Height = 11907U, Orient = PageOrientationValues.Landscape };
+                    PageMargin pageMargin1 = new PageMargin() { Left = 720U, Right = 720U, Top = 720, Bottom = 720 };
+
+                    sectionProps.Append(pageMargin1);
+                    sectionProps.Append(pageSize);
+
+                    WorkDate date = new WorkDate();
+
+                    body.Append(sectionProps);
+
+                    CreateHeaderText(ref body, date, "дневной", day);
+                    CreateText(ref body, "Made by Yuri", true);
+
+                    Table table = new Table();
+
+                    SelectForWord(week, day);
+
+                    int maxPage = groups.Max(x => x.Page);
+                    int maxMumeric;
+                    for (int i = 1; i < maxPage; i++)
                     {
-                        CreateHeader(ref table);
-
-                        Dictionary<string, List<Group>> dictDays = date.GetDate();
-
-                        foreach (string i in depart.Value)
+                        if (i != 1)
                         {
-                            List<Group> list = mas[i];
-                            foreach (Group l in list)
-                            {
-                                dictDays[l.Gr.Substring(0, 1)].Add(l);
-                            }
+                            table = NewRazdel(body, table);
                         }
 
-                        foreach (var sortedGroups in dictDays)
+                        maxMumeric = groups.Where(x => x.Page == i).Max(x => x.Numeric);
+
+                        bool infoHour = groups.Where(x => x.Page == i && x.Para == "0").Any(x => !string.IsNullOrEmpty(x.Lesson));
+
+                        CreateHeader(ref table, infoHour);
+
+                        for (int a = 1; a <= maxMumeric; a++)
                         {
-                            if (sortedGroups.Value.Count > 5)
-                            {
-                                sum++;
-                            }
+                            IOrderedEnumerable<ScheduleModel> request;
+                            if (infoHour)
+                                request = groups.Where(x => x.Page == i && x.Numeric == a).OrderBy(x => x.Title).OrderBy(x => x.Para);
+                            else
+                                request = groups.Where(x => x.Page == i && x.Numeric == a && x.Para != "0").OrderBy(x => x.Title).OrderBy(x => x.Para);
 
-                            if (sum == 3)
-                            {
-                                table = NewRazdel(body, table);
-                                CreateHeader(ref table);
-                                sum = 0;
-                            }
-
-                            foreach (var group in sortedGroups.Value)
-                            {
-                                if (group.Distant == false)
-                                {
-                                    CreateGroupLine(ref table, group.Gr, groups[group.Gr]);
-                                }
-                                else
-                                {
-                                    distantGroups.Add(group.Gr);
-                                }
-                            }
+                            List<ScheduleModel> list = request.ToList();
+                            CreateGroupLine(ref table, list, infoHour);
                         }
-
-                        table = NewRazdel(body, table);
                     }
 
+                    table = NewRazdel(body, table);
+                    CreateHeaderText(ref body, date, "заочной/дистанционной", day);
+                    CreateText(ref body, "Made by Yuri", true);
+
+                    CreateHeader(ref table, false);
+                    maxMumeric = groups.Where(x => x.Page == maxPage).Max(x => x.Numeric);
+
+                    for (int a = 1; a <= maxMumeric; a++)
+                    {
+                        List<ScheduleModel> list = groups.Where(x => x.Page == maxPage && x.Numeric == a && x.Para != "0").OrderBy(x => x.Title).OrderBy(x => x.Para).ToList();
+                        CreateGroupLine(ref table, list, false);
+                    }
+                    // Устанавливаем свойство, чтобы растянуть таблицу на всю ширину листа
+                    TableProperties tableProperties = new TableProperties(new TableWidth { Width = "100%", Type = TableWidthUnitValues.Pct });
+                    table.AppendChild(tableProperties);
+                    body.Append(table);
+
+                    // Сохранение документа
+                    mainPart.Document.Save();
                 }
 
-                CreateHeaderText(ref body, date, "заочной", day);
-                CreateText(ref body, "", true);
-
-                CreateHeader(ref table);
-                foreach (var group in distantGroups)
-                {
-                    CreateGroupLine(ref table, group, groups[group]);
-                }
-
-
-                body.Append(table);
-
-                // Сохранение документа
-                mainPart.Document.Save();
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Закройте предыдущий ворд файл, " + ex.Message.ToString());
+            }
+
+
         }
     }
 

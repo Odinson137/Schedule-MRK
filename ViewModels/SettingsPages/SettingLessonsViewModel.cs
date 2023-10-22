@@ -82,10 +82,6 @@ namespace Sasha_Project.ViewModels.SettingsPages
                 ID = reader.GetInt32(0),
                 Lesson = reader.GetString(1),
                 Shorts = reader.GetString(2),
-                Kurs1 = reader.GetBoolean(3),
-                Kurs2 = reader.GetBoolean(4),
-                Kurs3 = reader.GetBoolean(5),
-                Kurs4 = reader.GetBoolean(6),
             });
         }
         public bool SelectLessons()

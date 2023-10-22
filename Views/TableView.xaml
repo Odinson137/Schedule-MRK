@@ -304,6 +304,7 @@
                     </Border>
                     <ComboBox SelectedIndex="{Binding Para}" Grid.Column="3" Height="Auto"
                                   Template="{DynamicResource ComboBoxTemplate1}" FontSize="20" Foreground="White" BorderBrush="{x:Null}" Cursor="Hand">
+                        <TextBlock Height="{Binding Height}" Text="0 пара"/>
                         <TextBlock Text="1 пара"/>
                         <TextBlock Text="2 пара"/>
                         <TextBlock Text="3 пара"/>
@@ -419,7 +420,8 @@
             <Grid Grid.Row="1" Grid.Column="1">
                 <StackPanel Margin="0 0 10 0">
                     <StackPanel Orientation="Horizontal" Margin="0 10" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock Grid.ColumnSpan="2" Foreground="{StaticResource FontColor}" DataContext="{Binding SelectedPhone}" FontSize="20" HorizontalAlignment="Center" Text="{Binding Groups}" VerticalAlignment="Center"/>
+                        <TextBlock Grid.ColumnSpan="2" Foreground="{StaticResource FontColor}" DataContext="{Binding SelectedPhone}" 
+                                   FontSize="20" HorizontalAlignment="Center" Text="{Binding Groups}" VerticalAlignment="Center"/>
                         <Image ToolTip="Сохранить" Margin="10 0 0 0" Grid.Column="2" Source="/Views/diskette.png" Cursor="Hand">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseDown">
@@ -504,7 +506,7 @@
                         <TextBlock Foreground="{StaticResource FontColor}"  Grid.Column="0" Text="Предмет:"
                                        HorizontalAlignment="Center" FontSize="18"/>
                         <ComboBox Height="26" Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToString}}" 
-                                      ItemsSource="{Binding Lessons}" SelectedItem="{Binding SelectedPhone.Lesson}" Grid.Column="1">
+                                      ItemsSource="{Binding Lessons}" SelectedItem="{Binding SelectedPhone.Lesson, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="SelectionChanged">
                                     <i:InvokeCommandAction 
@@ -513,6 +515,7 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
+
 
                         <!--<Border x:Name="LessonBox" BorderBrush="White" BorderThickness="1 0 0 0" Style="{StaticResource BorderAdd}" Grid.Column="1">
                             <TextBlock Foreground="{StaticResource FontColor}" HorizontalAlignment="Center" 
@@ -536,9 +539,22 @@
                         </ComboBox>
                     </Grid>
 
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="7*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Доп текст" Foreground="White" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToString}}" 
+                                 Grid.Column="1" Margin="5" FontSize="16" Text="{Binding SelectedPhone.DopText, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox Visibility="{Binding SelectedPhone.OfficeValue, Converter={StaticResource BoolToStringSecond}}" 
+                                Grid.Column="1" Margin="5" FontSize="16" Text="{Binding SelectedPhone.DopTextZamena, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    </Grid>
 
                     <StackPanel x:Name="SelectedMenu">
-                        <Grid Margin="0,20,0,0">
+
+                        <Grid Margin="0,15,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>

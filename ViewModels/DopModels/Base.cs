@@ -42,7 +42,6 @@ class WorkBase
             return false;
         }
         return true;
-
     }
 
     public static bool RequestValue(string request, Dictionary<string, object> mas)
@@ -270,6 +269,7 @@ class WorkRoom
     public Dictionary<string, Dictionary<string, string>> SelectAllRooms(string week, string days, List<CreateRoom> mas)
     {
         Dictionary<string, Dictionary<string, string>> dict = new Dictionary<string, Dictionary<string, string>> {
+            { "0", new Dictionary<string, string>()},
             { "1", new Dictionary<string, string>()},
             { "2", new Dictionary<string, string>()},
             { "3", new Dictionary<string, string>()},
@@ -636,28 +636,36 @@ class DataBase
             connection.Open();
             // Создаем команду для обновления значения в таблице
             string sqlQuery = $"UPDATE Tables SET (rooms, prepods, changes, offices, " +
-                                $"razdelsPara, rooms_2, prepods_2, changes_2, offices_2, lessons, lessons_2, lessons_zamena, lessons_zamena_2) = " +
+                                $"razdelsPara, rooms_2, prepods_2, changes_2, offices_2, lessons, lessons_2, lessons_zamena, lessons_zamena_2, " +
+                                $"dopTextLesson, dopTextLessonZamena, dopTextLesson_2, dopTextLessonZamena_2) = " +
                                 $"(@newRooms, @newPrepods, @newChanges, @newOffices, " +
-                                $" @newRazdelPara, @newRooms2, @newPrepods2, @newChanges2, @newOffices2, @lesson, @lesson2, @zamenaLesson, @zamenaLesson2) " +
+                                $" @newRazdelPara, @newRooms2, @newPrepods2, @newChanges2, @newOffices2, @lesson, @lesson2, @zamenaLesson, @zamenaLesson2, " +
+                                $"@dopTextLesson, @dopTextLessonZamena, @dopTextLesson_2, @dopTextLessonZamena_2) " +
                                 $"WHERE Id = @id";
 
             using (SQLiteCommand command = new SQLiteCommand(sqlQuery, connection))
             {
-                command.Parameters.AddWithValue("@newRooms", list.Rooms);
-                command.Parameters.AddWithValue("@newPrepods", list.Prepods);
-                command.Parameters.AddWithValue("@newChanges", list.Changes);
-                command.Parameters.AddWithValue("@newOffices", list.Office);
-                command.Parameters.AddWithValue("@lesson", list.Lesson);
-                command.Parameters.AddWithValue("@zamenaLesson", list.OfficeLesson);
+                command.Parameters.AddWithValue("@newRooms", list.Rooms ?? "");
+                command.Parameters.AddWithValue("@newPrepods", list.Prepods ?? "");
+                command.Parameters.AddWithValue("@newChanges", list.Changes ?? "");
+                command.Parameters.AddWithValue("@newOffices", list.Office ?? "");
+                command.Parameters.AddWithValue("@lesson", list.Lesson ?? "");
+                command.Parameters.AddWithValue("@zamenaLesson", list.OfficeLesson ?? "");
+
+                command.Parameters.AddWithValue("@dopTextLesson", list.DopText );
+                command.Parameters.AddWithValue("@dopTextLessonZamena", list.DopTextZamena);
 
                 command.Parameters.AddWithValue("@newRazdelPara", value);
 
-                command.Parameters.AddWithValue("@newRooms2", list2.Rooms);
-                command.Parameters.AddWithValue("@newPrepods2", list2.Prepods);
-                command.Parameters.AddWithValue("@newChanges2", list2.Changes);
-                command.Parameters.AddWithValue("@newOffices2", list2.Office);
-                command.Parameters.AddWithValue("@lesson2", list2.Lesson);
-                command.Parameters.AddWithValue("@zamenaLesson2", list2.OfficeLesson);
+                command.Parameters.AddWithValue("@newRooms2", list2.Rooms ?? "");
+                command.Parameters.AddWithValue("@newPrepods2", list2.Prepods ?? "");
+                command.Parameters.AddWithValue("@newChanges2", list2.Changes ?? "");
+                command.Parameters.AddWithValue("@newOffices2", list2.Office ?? "");
+                command.Parameters.AddWithValue("@lesson2", list2.Lesson ?? "");
+                command.Parameters.AddWithValue("@zamenaLesson2", list2.OfficeLesson ?? "");
+
+                command.Parameters.AddWithValue("@dopTextLesson_2", list2.DopText);
+                command.Parameters.AddWithValue("@dopTextLessonZamena_2", list2.DopTextZamena);
 
                 command.Parameters.AddWithValue("@id", id);
                 int rowsChanged = command.ExecuteNonQuery();
@@ -754,9 +762,9 @@ class DataBase
                 connection.Close();
             }
         }
-        catch
+        catch (Exception ex) 
         {
-            MessageBox.Show("Error InsertGeneraltBase");
+            MessageBox.Show($"Error InsertGeneraltBase: {ex}");
         }
     }
 
@@ -906,7 +914,11 @@ class DataBase
             using (SQLiteConnection connection = new SQLiteConnection("Data Source=DataBase.sqlite"))
             {
                 connection.Open();
-                using (SQLiteCommand command = new SQLiteCommand($"SELECT * FROM Tables WHERE para = @para and week = @week and days = @days ORDER BY groups ASC", connection))
+                using (SQLiteCommand command = new SQLiteCommand($"SELECT ID, " +
+                    $"rooms, rooms_2, prepods, prepods_2, razdelsPara, groups, " +
+                    $"changes, offices, lessons_zamena, lessons, changes_2, lessons_zamena_2, offices_2, lessons_2, " +
+                    $"dopTextLesson, dopTextLessonZamena, dopTextLesson_2, dopTextLessonZamena_2" +
+                    $" FROM Tables WHERE para = @para and week = @week and days = @days ORDER BY groups ASC", connection))
                 {
                     command.Parameters.AddWithValue("@para", indexLastPara);
                     command.Parameters.AddWithValue("@week", week);
@@ -916,12 +928,12 @@ class DataBase
                     while (reader.Read())
                     {
                         int id = reader.GetInt32(0);
-                        string room = reader.GetString(2) ?? "";
-                        string room2 = reader.GetString(9) ?? "";
+                        string room = reader.GetString(1) ?? "";
+                        string room2 = reader.GetString(2) ?? "";
                         string prepod = reader.GetString(3) ?? "";
-                        string prepod2 = reader.GetString(10) ?? "";
-                        bool razdelPara = reader.GetBoolean(8);
-                        string titleGroup = reader.GetString(1) ?? "";
+                        string prepod2 = reader.GetString(4) ?? "";
+                        bool razdelPara = reader.GetBoolean(5);
+                        string titleGroup = reader.GetString(6) ?? "";
 
                         if (razdelPara) titleGroup += " (1 час)";
 
@@ -931,11 +943,13 @@ class DataBase
                             Groups = titleGroup,
                             Rooms = room,
                             Prepods = prepod,
-                            Changes = reader.GetString(4) ?? "",
-                            Office = reader.GetString(5) ?? "",
-                            OfficeLesson = reader.GetString(16) ?? "",
+                            Changes = reader.GetString(7) ?? "",
+                            Office = reader.GetString(8) ?? "",
+                            OfficeLesson = reader.GetString(9) ?? "",
                             RazdelPara = razdelPara,
-                            Lesson = reader.GetString(14) ?? "",
+                            Lesson = reader.GetString(10) ?? "",
+                            DopText = reader.GetString(15) ?? "",
+                            DopTextZamena = reader.GetString(16) ?? "",
                         };
 
                         phonesList.Add(firstTable);
@@ -945,15 +959,18 @@ class DataBase
                             Tables secondTable = new Tables
                             {
                                 Id = id,
-                                Groups = reader.GetString(1) + " (2 час)",
+                                Groups = reader.GetString(6) + " (2 час)",
                                 Rooms = room2,
                                 Prepods = prepod2,
                                 Changes = reader.GetString(11) ?? "",
-                                OfficeLesson = reader.GetString(17) ?? "",
-                                Office = reader.GetString(12) ?? "",
+                                OfficeLesson = reader.GetString(12) ?? "",
+                                Office = reader.GetString(13) ?? "",
                                 RazdelPara = true,
-                                Lesson = reader.GetString(15) ?? "",
-                                Link = firstTable
+                                Lesson = reader.GetString(14) ?? "",
+                                Link = firstTable,
+                                DopText = reader.GetString(17) ?? "",
+                                DopTextZamena = reader.GetString(18) ?? "",
+
                             };
                             phonesList.Add(secondTable);
                             firstTable.Link = secondTable;
@@ -963,9 +980,9 @@ class DataBase
                 connection.Close();
             }
         }
-        catch
+        catch (Exception ex)
         {
-            MessageBox.Show("Базы данных нет");
+            MessageBox.Show("Базы данных нет: " + ex.ToString());
         }
 
         rooms.ZapolDict(phonesList);
@@ -1098,7 +1115,6 @@ class DataBase
         {
             MessageBox.Show("Error InsertLessons");
         }
-
     }
 
     public static void CLeanTable(string table)

@@ -10,12 +10,16 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using Microsoft.VisualBasic;
 using System.Data.SQLite;
 using Sasha_Project.Models.SettingsModels;
+using DocumentFormat.OpenXml.Office2010.PowerPoint;
+using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace Sasha_Project.Excel;
 
 internal class WorkExcel
 {
-    static List<string[]> masMain = new List<string[]>();
+    //static List<string[]> masMain = new List<string[]>();
+    List<ScheduleModel> scheduleModels = new List<ScheduleModel>();
 
     private bool IsWorksheetExist(string sheetName, ExcelPackage package)
     {
@@ -33,23 +37,23 @@ internal class WorkExcel
         return result;
     }
 
-    private void Zapol(ref ExcelWorksheet sheet, ref int num, string[] s)
+    private void Zapol(ref ExcelWorksheet sheet, ref int num, ScheduleModel s)
     {
-        sheet.Cells[$"A{num}"].Value = s[0];
-        sheet.Cells[$"B{num}"].Value = s[1].Replace("\n", " ");
+        sheet.Cells[$"A{num}"].Value = s.Title;
+        sheet.Cells[$"B{num}"].Value = s.Room1.Replace("\n", " ");
 
-        sheet.Cells[$"C{num}"].Value = s[2].Replace("\n", " ");
-        sheet.Cells[$"D{num}"].Value = s[4].Replace("\n", " ");
-        sheet.Cells[$"E{num}"].Value = s[5].Replace("\n", " ");
+        sheet.Cells[$"C{num}"].Value = s.Prepod1.Replace("\n", " ");
+        sheet.Cells[$"D{num}"].Value = s.Changes1.Replace("\n", " ");
+        sheet.Cells[$"E{num}"].Value = s.Office1.Replace("\n", " ");
 
         num++;
-        if (s[3] == "True")
+        if (s.RazdelPara)
         {
             sheet.Cells[$"A{num - 1}:A{num}"].Merge = true;
-            sheet.Cells[$"B{num}"].Value = s[6].Replace("\n", " ");
-            sheet.Cells[$"C{num}"].Value = s[7].Replace("\n", " ");
-            sheet.Cells[$"D{num}"].Value = s[8].Replace("\n", " ");
-            sheet.Cells[$"E{num}"].Value = s[9].Replace("\n", " ");
+            sheet.Cells[$"B{num}"].Value = s.Room2.Replace("\n", " ");
+            sheet.Cells[$"C{num}"].Value = s.Prepod2.Replace("\n", " ");
+            sheet.Cells[$"D{num}"].Value = s.Changes2.Replace("\n", " ");
+            sheet.Cells[$"E{num}"].Value = s.Office2.Replace("\n", " ");
             num++;
         }
 
@@ -60,7 +64,7 @@ internal class WorkExcel
         WorkDate date = new WorkDate();
         sheet.Cells[$"A{num}:E{num}"].Merge = true;
         sheet.Cells[$"A{num}"].Value = $"{date.GetDaier(days)[1]} {date.GetWeeker(week)[1]} {para} пара {date.GetPara(para)}";
-        sheet.Cells[$"F{num}"].Value = GetDate();
+        sheet.Cells[$"F{num}"].Value = date.GetNextMonday(days).ToShortDateString();
         sheet.Cells[$"A{++num}"].Value = "Группа";
         sheet.Cells[$"B{num}"].Value = "ауд.";
         sheet.Cells[$"C{num}"].Value = "Ф.И.О. преподавателя";
@@ -94,38 +98,58 @@ internal class WorkExcel
         return todayStr;
     }
 
-    private static void Selecter(SQLiteDataReader reader)
+
+
+    private void Selecter(SQLiteDataReader reader)
     {
-        string[] mas = new string[11];
+        ScheduleModel scheduleModel = new ScheduleModel()
+        {
+            Title = reader.GetString(1),
+            Room1 = reader.GetString(2),
+            Prepod1 = reader.GetString(3),
+            Lesson = reader.GetString(4),
+            Changes1 = reader.GetString(5),
+            Office1 = reader.GetString(6),
+            RazdelPara = reader.GetBoolean(9),
+            Room2 = reader.GetString(10),
+            Prepod2 = reader.GetString(11),
+            Changes2 = reader.GetString(12),
+            Office2 = reader.GetString(13),
 
-        mas[0] = reader.GetString(1);
-        mas[1] = reader.GetString(2);
-        mas[2] = reader.GetString(3);
-        mas[3] = reader.GetBoolean(8).ToString();
-        mas[4] = reader.GetString(4);
-        mas[5] = reader.GetString(5);
+            //Day = reader.GetString(14),
+            Para = reader.GetString(8),
 
-        mas[6] = reader.GetString(9);
-        mas[7] = reader.GetString(10);
-        mas[8] = reader.GetString(11);
-        mas[9] = reader.GetString(12);
-        mas[10] = reader.GetString(7);
+            Lesson2 = reader.GetString(14),
+            LessonZamena = reader.GetString(15),
+            LessonZamena2 = reader.GetString(16),
 
-        masMain.Add(mas);
+            //DopText = Nulling(reader, 18),
+            //DopText2 = Nulling(reader, 19),
+            //DopTextOffice1 = Nulling(reader, 20),
+            //DopTextOffice2 = Nulling(reader, 21)
+        };
+
+        scheduleModels.Add(scheduleModel);
     }
 
-    private static void SelectBaseSelecter(string week, int days)
+    private void SelectBaseSelecter(string week, int days)
     {
-        string request = $"SELECT * FROM Tables WHERE week = '{week}' AND days = {days} ORDER BY para ASC";
+        string request = $"SELECT ID, " +
+                    $"groups, rooms, prepods, lessons, changes, offices, week, para, razdelsPara, rooms_2, prepods_2, changes_2, offices_2,  " +
+                    $"lessons_2, lessons_zamena, lessons_zamena_2 " +
+                    $"FROM Tables WHERE week = '{week}' and days = {days} ORDER BY para ASC, groups ASC";
+        //string request = $"SELECT * FROM Tables WHERE week = '{week}' AND days = {days} ORDER BY para ASC";
         WorkBase.SelectValues(request, Selecter);
     }
 
-    public void CreateExcel(string week, int para, int days)
+    public void CreateExcel(string week, int days)
     {
+        int para = 0;
+
         WorkDate date = new WorkDate();
         SelectBaseSelecter(week, days);
+        
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
 
         using (var excel = new ExcelPackage(new FileInfo(@"Преподаватели.xlsx")))
         {
@@ -143,21 +167,33 @@ internal class WorkExcel
             }
 
             int num = 1;
+
+            int i = 0;
+            
+            if (days != 2)
+            {
+                para = 1;
+                while (scheduleModels[i].Para != "1")
+                    i++;
+            }
+
             CreateHeader(ref sheet, ref num, days, week[0], para);
             num++;
-            string v = para.ToString();
+            var v = para.ToString();
 
-            foreach (string[] s in masMain)
+            for (; i < scheduleModels.Count; i++)
             {
-                if (s[1].Length > 1)
+                ScheduleModel s = scheduleModels[i];
+
+                if (s.Prepod1.Length > 1 || s.Prepod2.Length > 1)
                 {
-                    if (v != s[10])
+                    if (v != s.Para)
                     {
                         num = num + 1;
                         CreateHeader(ref sheet, ref num, days, week[0], ++para);
                         num = num + 1;
 
-                        v = s[10];
+                        v = s.Para;
                     }
                  
                     Zapol(ref sheet, ref num, s);
@@ -170,6 +206,49 @@ internal class WorkExcel
             FileInfo excelFile = new FileInfo(@"Преподаватели.xlsx");
             excel.SaveAs(excelFile);
         }
+    }
+}
+
+class ScheduleModel
+{
+    public int ID { get; set; }
+    public string Title { get; set; }
+    public string Lesson { get; set; }
+    public string DopText { get; set; }
+    public string Lesson2 { get; set; }
+    public string DopText2 { get; set; }
+    public string Room1 { get; set; }
+    public string Room2 { get; set; }
+    public string Prepod1 { get; set; }
+    public string Prepod2 { get; set; }
+    public bool RazdelPara { get; set; }
+    public string Changes1 { get; set; }
+    public string Changes2 { get; set; }
+    public string LessonZamena { get; set; }
+    public string Office1 { get; set; }
+    public string DopTextOffice1 { get; set; }
+    public string LessonZamena2 { get; set; }
+    public string Office2 { get; set; }
+    public string DopTextOffice2 { get; set; }
+    public string Day { get; set; }
+    public string Para { get; set; }
+    public int Page { get; set; }
+    public int Numeric { get; set; }
+
+    public ScheduleModel Copy()
+    {
+        return new ScheduleModel()
+        {
+            Title = Title,
+            Lesson = Lesson2,
+            LessonZamena = LessonZamena2,
+            Room1 = Room2,
+            Prepod1 = Prepod2,
+            Changes1 = Changes2,
+            Office1 = Office2,
+            DopText = DopText2,
+            DopTextOffice1 = DopTextOffice2,
+        };
     }
 }
 
@@ -239,6 +318,7 @@ class ReadBook
                         l = l.Trim();
 
                         string group = (string)worksheet.Cells[$"A{num}"].Value;
+                        group = group.Replace("+", "");
 
                         Double kurs;
                         if (k != null)
@@ -326,7 +406,7 @@ class ReadBook
         Dictionary<string, string> spec = DataBase.SelectSpecCode();
         List<string> interfaceGroupd = list.ConvertAll(s => s.Group);
         List<string> listGroups = removeDuplicates(interfaceGroupd);
-
+        //List<string> la = 
         int id = 1;
         foreach (string group in listGroups)
         {
@@ -341,7 +421,6 @@ class ReadBook
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-        //FileInfo fileInfo = new FileInfo(@"test.xlsx");
         using (ExcelPackage package = new ExcelPackage(fileInfo))
         {
             ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
@@ -350,11 +429,11 @@ class ReadBook
             List<Lessons> list = removeDuplicates(les);
             //var iList = list.OrderBy(x => x.Lesson);
 
-            CreateBaseLessons(list);
-            CreateBasePrepods(list);
-            CreateBaseGroups(list);
+            //CreateBaseLessons(list);
+            //CreateBasePrepods(list);
+            //CreateBaseGroups(list);
 
-            MessageBox.Show("good");
+            //MessageBox.Show("good");
         }
     }
 

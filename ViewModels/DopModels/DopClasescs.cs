@@ -65,11 +65,24 @@ namespace Sasha_Project.ViewModels.DopModels
             [6] = DayOfWeek.Saturday
         };
 
-        public DateTime GetNextMonday(int day)
+        //public DateTime GetNextMonday(int day)
+        //{
+        //    DateTime todayDate = DateTime.Now;
+        //    int daysUntilMonday = ((int)daierCount[day] - (int)todayDate.DayOfWeek + 7) % 7;
+        //    return todayDate.AddDays(daysUntilMonday);
+        //}
+
+        public DateTime GetNextMonday(int targetDayOfWeek)
         {
-            DateTime todayDate = DateTime.Now;
-            int daysUntilMonday = ((int)daierCount[day] - (int)todayDate.DayOfWeek + 7) % 7;
-            return todayDate.AddDays(daysUntilMonday);
+            int currentDayOfWeek = (int)DateTime.Now.DayOfWeek;
+            int daysUntilTargetDay = (targetDayOfWeek - currentDayOfWeek + 7) % 7;
+            if (daysUntilTargetDay == 0)
+            {
+                daysUntilTargetDay = 7;
+            }
+
+            DateTime nextOccurrence = DateTime.Now.AddDays(daysUntilTargetDay);
+            return nextOccurrence;
         }
 
 
@@ -87,6 +100,7 @@ namespace Sasha_Project.ViewModels.DopModels
 
         Dictionary<int, string> parier = new Dictionary<int, string>()
         {
+            [0] = "(8:00-8:20)",
             [1] = "(8:30-10:05)",
             [2] = "(10:15 - 11:50)",
             [3] = "(12:10 - 13:45)",

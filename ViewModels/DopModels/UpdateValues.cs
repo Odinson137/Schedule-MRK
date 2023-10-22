@@ -113,24 +113,26 @@ namespace Sasha_Project.ViewModels.DopModels
                 {
                     Tables tableNext = tables[++i];
                     string roomNext = tableNext.Rooms;
-
                     DopFunc(room, 0);
                     DopFunc(roomNext, 1);
                 }
                 else
                 {
-                    string[] mas = room.Split("\n");
+                    if (table.Lesson != "Практика")
+                    {
+                        string[] mas = room.Split("\n");
 
-                    if (mas.Length > 0)
-                    {
-                        foreach (string m in mas)
+                        if (mas.Length > 0)
                         {
-                            FuncWithout(m);
+                            foreach (string m in mas)
+                            {
+                                FuncWithout(m);
+                            }
                         }
-                    }
-                    else
-                    {
-                        FuncWithout(room);
+                        else
+                        {
+                            FuncWithout(room);
+                        }
                     }
                 }
             }
@@ -173,21 +175,23 @@ namespace Sasha_Project.ViewModels.DopModels
         {
             get
             {
-                if (ShortLesson != null) return ShortLesson;
+                if (!string.IsNullOrEmpty(ShortLesson) && !string.IsNullOrWhiteSpace(ShortLesson)) return ShortLesson;
                 else return Lesson;
             }
         }
         public string Prepod { get; set; }
 
-        public bool[] Kurs
-        {
-            get => new bool[] { Kurs_1, Kurs_2, Kurs_3, Kurs_4 };
-        }
 
-        public bool Kurs_1 { get; set; }
-        public bool Kurs_2 { get; set; }
-        public bool Kurs_3 { get; set; }
-        public bool Kurs_4 { get; set; }
+
+        //public bool[] Kurs
+        //{
+        //    get => new bool[] { Kurs_1, Kurs_2, Kurs_3, Kurs_4 };
+        //}
+
+        //public bool Kurs_1 { get; set; }
+        //public bool Kurs_2 { get; set; }
+        //public bool Kurs_3 { get; set; }
+        //public bool Kurs_4 { get; set; }
     }
 
     public class UpdateValuesPrepods : UpdateValues
@@ -197,7 +201,6 @@ namespace Sasha_Project.ViewModels.DopModels
 
         public UpdateValuesPrepods() { }
 
-
         private List<Lessons> lessons = new List<Lessons>();
         public void NewMas(List<Lessons> mas)
         {
@@ -206,6 +209,7 @@ namespace Sasha_Project.ViewModels.DopModels
         public override void DeleteValues()
         {
             lessons.Clear();
+            dict.Clear();
         }
 
         public override void InsertNewValue(string value)
@@ -218,15 +222,19 @@ namespace Sasha_Project.ViewModels.DopModels
             lessons.Add(value);
         }
 
-        public IEnumerable<string> GetLessons()
+        public List<Lessons> GetAllLesson()
+        {
+            return lessons;
+        }
+
+        public List<string> GetLessons()
         {
             //IEnumerable<string> uniqueList = lessons
             //    .Where(x => x.Kurs[Kurs - 1] == true)
             //    .Select(x => x.Lesson).Distinct();
             //IEnumerable<string> enumerable = uniqueList.Append(new string(""));
-
-            IEnumerable<string> enumerable1 = lessons.Select(x => $"{x.Lesson}" ).Distinct();
-            IEnumerable<string> enumerable = enumerable1.Append("");
+            List<string> enumerable = lessons.Select(x => $"{x.ViewLesson}" ).Distinct().ToList();
+            enumerable.Add("");
             return enumerable;
         }
 
@@ -320,7 +328,7 @@ namespace Sasha_Project.ViewModels.DopModels
                       where dict[i.Prepod][num] == true
                       select i.Prepod;
             }
-            Console.WriteLine(mas.Count());
+            
             List<string> values = new List<string>(mas.Distinct().Order()) { "" };
 
             KnowingValue(values, strPrepods);
@@ -338,21 +346,25 @@ namespace Sasha_Project.ViewModels.DopModels
                 if (razdel == false)
                 {
                     mas = from i in lessons
-                          where i.Lesson == Lesson
+                          where i.ViewLesson == Lesson
                           where dict[i.Prepod][0] == true && dict[i.Prepod][1] == true
                           select i.Prepod;
+
+                    //values = mas.Distinct().Select(x => (dict[x][0] == true && dict[x][1] == true) ? x : $"{x} (занят)").ToList();
                 }
                 else
                 {
-                    int num = 1;
-                    if (value) num = 0;
+                    int num = value ? 0 : 1;
+                    //if (value) num = 0;
                     mas = from i in lessons
-                          where i.Lesson == Lesson
+                          where i.ViewLesson == Lesson
                           where dict[i.Prepod][num] == true
                           select i.Prepod;
-                }
-                List<string> values = new List<string>(mas.Distinct());
 
+                    //values = mas.Distinct().Select(x => (dict[x][num] == true) ? x : $"{x} (занят)").ToList();
+                }
+
+                var values = mas.Distinct().ToList();
                 KnowingValue(values, strPrepods);
 
                 return values;

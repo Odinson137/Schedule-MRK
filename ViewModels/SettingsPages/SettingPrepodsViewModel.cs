@@ -6,6 +6,7 @@ using Sasha_Project.Models.SettingsModels;
 using Sasha_Project.ViewModels.DopModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Windows;
@@ -16,7 +17,7 @@ namespace Sasha_Project.ViewModels.SettingsPages
     {
         public List<PrepodModel> BigList { get; set; }
         public ObservableCollection<PrepodModel> List { get; set; }
-        public ObservableCollection<PrepodModel> TeacherLessons { get; set; }
+        public ObservableCollection<string> TeacherLessons { get; set; }
         public List<LessonModel> Lessons { get; set; }
 
         private PrepodModel selectedItem;
@@ -27,7 +28,10 @@ namespace Sasha_Project.ViewModels.SettingsPages
             {
                 selectedItem = value;
 
-                TeacherLessons = new ObservableCollection<PrepodModel>(BigList.Where(x => x.Name == value.Name).OrderBy(x=> x.Lesson));
+                var b = Lessons.Where(x => x.ID == 0).ToList();
+
+                var a = BigList.Where(x => x.Name == value.Name).Select(x => Lessons.Where(y => y.ID == x.LessonId && !string.IsNullOrEmpty(y.Lesson)).First()).Select(x => x.Lesson).Order().Distinct();
+                TeacherLessons = new ObservableCollection<string>(a);
 
                 OnPropertyChanged("TeacherLessons");
                 OnPropertyChanged("SelectedItem");
@@ -45,22 +49,22 @@ namespace Sasha_Project.ViewModels.SettingsPages
 
         public bool InsertValue(PrepodModel model)
         {
-            string request = $"INSERT INTO Prepods (ID, Lessons, Prepods, DopNamePrepods) VALUES (@id, @value1, @value2, @value3)";
+            string request = $"INSERT INTO Prepods (ID, LessonId, Prepods, DopNamePrepods) VALUES (@id, @value1, @value2, @value3)";
             return WorkBase.RequestValue(request, new Dictionary<string, object>()
             {
                 { "id", model.ID },
-                { "value1", model.Lesson },
+                { "value1", model.LessonId },
                 { "value2", model.Name },
                 { "value3", model.LastName }
             });
         }
         public bool PutValue()
         {
-            string request = $"UPDATE Prepods SET (Lessons, Prepods, DopNamePrepods) = (@value1, @value2, @value3) WHERE ID = @id";
+            string request = $"UPDATE Prepods SET (LessonId, Prepods, DopNamePrepods) = (@value1, @value2, @value3) WHERE ID = @id";
             return WorkBase.RequestValue(request, new Dictionary<string, object>()
             {
                 { "id", SelectedItem.ID },
-                { "value1", SelectedItem.Lesson },
+                { "value1", SelectedItem.LessonId },
                 { "value2", SelectedItem.Name },
                 { "value3", SelectedItem.LastName }
             });
@@ -81,6 +85,7 @@ namespace Sasha_Project.ViewModels.SettingsPages
             {
                 ID = reader.GetInt32(0),
                 Lesson = Nulling(reader, 1),
+                LessonId = reader.GetInt32(4),
                 Name = reader.GetString(2),
                 LastName = reader.GetString(3)
             });
@@ -165,8 +170,10 @@ namespace Sasha_Project.ViewModels.SettingsPages
             {
                 if (obj != null)
                 {
-                    PrepodModel selectedLesson = obj as PrepodModel;
-                    if (DeletePrepodsLesson(selectedLesson.ID))
+                    string selectedLesson = obj as string;
+                    int id = Lessons.Where(x => x.Lesson == selectedLesson).Select(x => x.ID).First();
+                    int needId = BigList.Where(x => x.LessonId == id).Select(x => x.ID).First();
+                    if (DeletePrepodsLesson(needId))
                     {
                         TeacherLessons.Remove(selectedLesson);
                         MessageBox.Show("Предмет удалён");
@@ -204,12 +211,12 @@ namespace Sasha_Project.ViewModels.SettingsPages
                     PrepodModel newLesson = new PrepodModel()
                     {
                         ID = BigList.Max(x => x.ID) + 1,
-                        Lesson = lesson.Lesson,
+                        LessonId = Lessons.Where(x => x.Lesson == lesson.Lesson).Select(x => x.ID).First(),
                         Name = SelectedItem.Name,
                         LastName = SelectedItem.LastName
                     };
 
-                    if (TeacherLessons.Select(x => x.Lesson).Contains(lesson.Lesson))
+                    if (TeacherLessons.Contains(lesson.Lesson))
                     {
                         MessageBox.Show("Такой предмет уже есть");
                         return;
@@ -217,7 +224,7 @@ namespace Sasha_Project.ViewModels.SettingsPages
 
                     if (InsertValue(newLesson))
                     {
-                        TeacherLessons.Insert(0, newLesson);
+                        TeacherLessons.Insert(0, lesson.Lesson); // asdffffffffffffffffff
 
                         BigList.Add(newLesson);
                         MessageBox.Show("Предмет добавлен");

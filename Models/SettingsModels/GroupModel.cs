@@ -38,31 +38,45 @@ namespace Sasha_Project.Models.SettingsModels
             }
         }
 
-        private string office;
-        public string Office
+        //private string office;
+        //public string Office
+        //{
+        //    get
+        //    {
+        //        return office;
+        //    }
+        //    set
+        //    {
+        //        office = value;
+        //        OnPropertyChanged("Office");
+        //    }
+        //}
+
+        private int page;
+        public int Page
         {
             get
             {
-                return office;
+                return page;
             }
             set
             {
-                office = value;
-                OnPropertyChanged("Office");
+                page = value;
+                OnPropertyChanged("Page");
             }
         }
 
-        private int dist;
-        public int Dist
+        private int numeric;
+        public int Numeric
         {
             get
             {
-                return dist;
+                return numeric;
             }
             set
             {
-                dist = value;
-                OnPropertyChanged("Dist");
+                numeric = value;
+                OnPropertyChanged("Numeric");
             }
         }
 

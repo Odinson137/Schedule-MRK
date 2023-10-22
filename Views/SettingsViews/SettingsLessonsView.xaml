@@ -35,7 +35,7 @@
                           ItemsSource="{Binding List, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedItem}" 
                           IsSynchronizedWithCurrentItem="False" x:Name="Table"
                           BorderBrush="{x:Null}" SelectionUnit="FullRow" Padding="1,1,1,1" IsReadOnly="True"
-                          FontSize="20" FontFamily="Calibri" Foreground="White" 
+                          FontSize="16" FontFamily="Calibri" Foreground="White" 
                           HorizontalAlignment="Center" Background="{x:Null}" 
                           SelectionMode="Single" 
                           CanUserDeleteRows="False" CanUserResizeRows="False" 

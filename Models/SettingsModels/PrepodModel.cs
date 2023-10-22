@@ -36,6 +36,19 @@ namespace Sasha_Project.Models.SettingsModels
             }
         }
 
+        private int lessonId;
+        public int LessonId
+        {
+            get
+            {
+                return lessonId;
+            }
+            set
+            {
+                this.lessonId = value;
+                OnPropertyChanged("LessonId");
+            }
+        }
         private string name;
         public string Name
         {

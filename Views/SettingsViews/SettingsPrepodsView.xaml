@@ -161,7 +161,6 @@
 
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="*" Header="Фамилии" Binding="{Binding Path=Name}"/>
-                        <DataGridTextColumn Width="50" Header="И.О." Binding="{Binding Path=LastName}"/>
                     </DataGrid.Columns>
 
                     <DataGrid.RowStyle>
@@ -264,7 +263,7 @@
                                    BorderBrush="{x:Null}" x:Name="ListTeacherLessons">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                     <TextBlock Width="Auto" FontSize="18" TextWrapping="Wrap" Foreground="{StaticResource FontColor}" Text="{Binding Lesson}"/>
+                                     <TextBlock Width="Auto" FontSize="18" TextWrapping="Wrap" Foreground="{StaticResource FontColor}" Text="{Binding}"/>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
